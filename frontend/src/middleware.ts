@@ -5,11 +5,17 @@ import { SESSION_COOKIE_NAME, verifyJWT } from "./lib/auth";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Allow static files, Next.js internal assets, auth APIs, public assets, and health checks
+  // 1. Allow static files, Next.js internal assets, auth APIs, public assets, and public reference data
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/auth") ||
     pathname === "/api/health" ||
+    pathname.startsWith("/api/markets") ||
+    pathname === "/markets" ||
+    pathname === "/crops" ||
+    pathname.startsWith("/api/crops") ||
+    pathname === "/schemes" ||
+    pathname === "/knowledge" ||
     pathname === "/favicon.ico" ||
     pathname.endsWith(".svg") ||
     pathname.endsWith(".png") ||
