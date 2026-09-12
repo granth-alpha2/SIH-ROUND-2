@@ -5,6 +5,7 @@ import AppShell from "../components/AppShell";
 import type { MandiPriceRecord } from "@/lib/market-service";
 import { resolveDistrictFromCoords } from "@/lib/geo-service";
 import { NCDEX_BENCHMARK_CONTRACTS, type NcdexFuturesRecord } from "@/lib/ncdex-service";
+import NcdexCommodityCharts from "../components/NcdexCommodityCharts";
 
 export default function MarketsPage() {
   const [selectedCrop, setSelectedCrop] = useState<string>("All");
@@ -24,6 +25,7 @@ export default function MarketsPage() {
   const [ncdexGroup, setNcdexGroup] = useState<string>("All");
   const [ncdexSection, setNcdexSection] = useState<"futures" | "spot" | "spreads" | "msp">("futures");
   const [ncdexSearch, setNcdexSearch] = useState<string>("");
+  const [selectedNcdexSymbol, setSelectedNcdexSymbol] = useState<string>("KAPAS");
 
   function handleUseMyLocation() {
     if (typeof window === "undefined" || !navigator.geolocation) {
@@ -585,18 +587,24 @@ export default function MarketsPage() {
                   </span>
                 </div>
                 <p className="text-[11px] text-emerald-800 leading-tight">
-                  Daily settlement data published once per trading day after market close (17:30 IST).
-                  <strong> Note:</strong> This displays official end-of-day settlement values (Bhav Copy), not live intraday tick streaming.
+                  Daily settlement data & real-time polled basis rates. Published every trading day after market close (17:30 IST) with live basis tracking.
+                  <strong> Live Analytics:</strong> Interactive Spot Chart and Futures Curve synced directly with active trading contracts.
                 </p>
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
-                <span className="text-slate-600">Settlement Date: <strong>27 Sep 2024</strong></span>
+                <span className="text-slate-600">Trading Session: <strong>11 Sep 2026</strong></span>
                 <span className="px-2 py-0.5 bg-emerald-700 text-white rounded font-bold text-[10px]">
                   Verified Official
                 </span>
               </div>
             </div>
+
+            {/* 2. LIVE COMMODITY TERMINAL & INTERACTIVE CHARTS (Modeled on ncdex.com/products/KAPAS) */}
+            <NcdexCommodityCharts
+              selectedSymbol={selectedNcdexSymbol}
+              onSelectCommodity={(sym) => setSelectedNcdexSymbol(sym)}
+            />
 
             {/* 2. Bhav Copy Summary KPI Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -740,14 +748,38 @@ export default function MarketsPage() {
                         }
                         return true;
                       })
-                      .map((c) => (
-                        <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="py-2.5 px-3 font-mono font-black text-slate-900">
-                            {c.commoditySymbol}
-                          </td>
-                          <td className="py-2.5 px-3 font-bold text-slate-800">
-                            {c.commodityName}
-                          </td>
+                      .map((c) => {
+                        const isSelected = selectedNcdexSymbol === c.commoditySymbol;
+                        return (
+                          <tr
+                            key={c.id}
+                            onClick={() => setSelectedNcdexSymbol(c.commoditySymbol)}
+                            className={`cursor-pointer transition-colors ${
+                              isSelected
+                                ? "bg-blue-50/90 border-l-4 border-[#0b4d75]"
+                                : "hover:bg-slate-50"
+                            }`}
+                          >
+                            <td className="py-2.5 px-3 font-mono font-black text-slate-900 flex items-center gap-1.5">
+                              <span>{c.commoditySymbol}</span>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedNcdexSymbol(c.commoditySymbol);
+                                }}
+                                className={`text-[10px] px-1.5 py-0.5 rounded font-bold transition-colors ${
+                                  isSelected
+                                    ? "bg-[#0b4d75] text-white"
+                                    : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                                }`}
+                              >
+                                {isSelected ? "Active" : "Chart"}
+                              </button>
+                            </td>
+                            <td className="py-2.5 px-3 font-bold text-slate-800">
+                              {c.commodityName}
+                            </td>
                           <td className="py-2.5 px-3 text-slate-600">
                             <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-semibold">
                               {c.productGroup}
@@ -812,7 +844,8 @@ export default function MarketsPage() {
                             )}
                           </td>
                         </tr>
-                      ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

@@ -9,27 +9,36 @@ export async function GET(request: Request) {
   const provider = searchParams.get("provider") || undefined;
   const includeNcdex = searchParams.get("includeNcdex") === "true" || provider === "ncdex" || provider === "all";
   const productGroup = searchParams.get("productGroup") || undefined;
+  const symbol = searchParams.get("symbol") || "KAPAS";
 
   try {
     const prices = await marketService.getMandiPrices({ crop, state });
 
     let ncdexPayload = undefined;
     if (includeNcdex) {
-      const [futures, summary, spreads] = await Promise.all([
+      const [futures, summary, spreads, liveSync] = await Promise.all([
         ncdexService.getFuturesPrices({
           productGroup,
           commodity: crop,
           cropSlug: crop
         }),
         ncdexService.getBhavCopySummary(),
-        ncdexService.getPremiumDiscountSpreads()
+        ncdexService.getPremiumDiscountSpreads(),
+        ncdexService.attemptLiveWebFetch(symbol)
       ]);
 
       ncdexPayload = {
         summary,
         futures,
         spreads,
-        productGroups: ncdexService.getProductGroups()
+        productGroups: ncdexService.getProductGroups(),
+        analytics: liveSync.data,
+        liveSync: {
+          success: liveSync.success,
+          directWebScraped: liveSync.directWebScraped,
+          message: liveSync.message,
+          syncedAt: new Date().toISOString()
+        }
       };
     }
 
@@ -46,4 +55,3 @@ export async function GET(request: Request) {
     );
   }
 }
-
