@@ -1,0 +1,201 @@
+notification_id,farmer_id,farm_id,notification_type,message,scheduled_date,priority,status
+NOTIF00001,FARM_USR0001,FARM0001,Irrigation Reminder,Your Sunflower crop on FARM0001 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-30,Medium,Sent
+NOTIF00002,FARM_USR0026,FARM0028,Disease Risk Alert,Weather conditions favor fungal disease risk for Onion at FARM0028. Consider preventive spray.,2026-08-14,Low,Read
+NOTIF00003,FARM_USR0017,FARM0019,Irrigation Reminder,Your Rice (Paddy) crop on FARM0019 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-15,Low,Read
+NOTIF00004,FARM_USR0040,FARM0045,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0045.,2026-06-04,Low,Sent
+NOTIF00005,FARM_USR0005,FARM0006,Irrigation Reminder,Your Banana crop on FARM0006 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-06,Low,Pending
+NOTIF00006,FARM_USR0042,FARM0047,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0047.,2026-08-25,Low,Read
+NOTIF00007,FARM_USR0044,FARM0050,Irrigation Reminder,Your Pigeon Pea (Tur) crop on FARM0050 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-27,Low,Sent
+NOTIF00008,FARM_USR0010,FARM0012,Price Alert,Modal price for Cotton at your nearest mandi has moved by more than 8% this week.,2026-06-13,Low,Read
+NOTIF00009,FARM_USR0025,FARM0027,Price Alert,Modal price for Soybean at your nearest mandi has moved by more than 8% this week.,2026-07-14,Medium,Sent
+NOTIF00010,FARM_USR0029,FARM0033,Price Alert,Modal price for Wheat at your nearest mandi has moved by more than 8% this week.,2026-07-18,High,Read
+NOTIF00011,FARM_USR0054,FARM0065,Disease Risk Alert,Weather conditions favor fungal disease risk for Black Gram (Urad) at FARM0065. Consider preventive spray.,2026-08-19,Medium,Read
+NOTIF00012,FARM_USR0004,FARM0004,Disease Risk Alert,Weather conditions favor fungal disease risk for Sugarcane at FARM0004. Consider preventive spray.,2026-06-13,Low,Read
+NOTIF00013,FARM_USR0058,FARM0069,MSP Update,New MSP announced for Chickpea (Gram) for the upcoming season.,2026-06-12,Medium,Sent
+NOTIF00014,FARM_USR0048,FARM0056,Irrigation Reminder,Your Sugarcane crop on FARM0056 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-26,Low,Read
+NOTIF00015,FARM_USR0006,FARM0007,Irrigation Reminder,Your Groundnut crop on FARM0007 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-02,Low,Pending
+NOTIF00016,FARM_USR0022,FARM0024,Disease Risk Alert,Weather conditions favor fungal disease risk for Potato at FARM0024. Consider preventive spray.,2026-07-15,High,Pending
+NOTIF00017,FARM_USR0019,FARM0021,Price Alert,Modal price for Chickpea (Gram) at your nearest mandi has moved by more than 8% this week.,2026-08-29,Low,Sent
+NOTIF00018,FARM_USR0009,FARM0011,Disease Risk Alert,Weather conditions favor fungal disease risk for Turmeric at FARM0011. Consider preventive spray.,2026-08-11,Medium,Pending
+NOTIF00019,FARM_USR0041,FARM0046,Irrigation Reminder,Your Mustard crop on FARM0046 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-21,High,Read
+NOTIF00020,FARM_USR0048,FARM0055,Irrigation Reminder,Your Groundnut crop on FARM0055 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-27,Low,Sent
+NOTIF00021,FARM_USR0059,FARM0070,MSP Update,New MSP announced for Barley for the upcoming season.,2026-07-19,High,Pending
+NOTIF00022,FARM_USR0050,FARM0059,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0059.,2026-08-16,Medium,Read
+NOTIF00023,FARM_USR0005,FARM0005,Price Alert,Modal price for Potato at your nearest mandi has moved by more than 8% this week.,2026-07-12,Medium,Read
+NOTIF00024,FARM_USR0049,FARM0058,MSP Update,New MSP announced for Banana for the upcoming season.,2026-07-12,Low,Sent
+NOTIF00025,FARM_USR0029,FARM0033,MSP Update,New MSP announced for Pigeon Pea (Tur) for the upcoming season.,2026-06-17,Low,Pending
+NOTIF00026,FARM_USR0028,FARM0031,MSP Update,New MSP announced for Chickpea (Gram) for the upcoming season.,2026-07-05,Low,Read
+NOTIF00027,FARM_USR0018,FARM0020,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0020.,2026-07-12,Medium,Sent
+NOTIF00028,FARM_USR0028,FARM0031,Price Alert,Modal price for Chickpea (Gram) at your nearest mandi has moved by more than 8% this week.,2026-07-04,High,Read
+NOTIF00029,FARM_USR0012,FARM0014,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0014.,2026-06-14,Low,Sent
+NOTIF00030,FARM_USR0017,FARM0019,Price Alert,Modal price for Banana at your nearest mandi has moved by more than 8% this week.,2026-07-09,Medium,Sent
+NOTIF00031,FARM_USR0012,FARM0014,Price Alert,Modal price for Chickpea (Gram) at your nearest mandi has moved by more than 8% this week.,2026-07-20,Medium,Sent
+NOTIF00032,FARM_USR0048,FARM0056,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0056.,2026-08-20,Low,Sent
+NOTIF00033,FARM_USR0029,FARM0033,MSP Update,New MSP announced for Banana for the upcoming season.,2026-07-22,Low,Sent
+NOTIF00034,FARM_USR0048,FARM0056,MSP Update,New MSP announced for Potato for the upcoming season.,2026-08-22,Medium,Sent
+NOTIF00035,FARM_USR0027,FARM0030,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0030.,2026-06-16,Medium,Sent
+NOTIF00036,FARM_USR0011,FARM0013,Disease Risk Alert,Weather conditions favor fungal disease risk for Pigeon Pea (Tur) at FARM0013. Consider preventive spray.,2026-07-22,Medium,Pending
+NOTIF00037,FARM_USR0029,FARM0033,Disease Risk Alert,Weather conditions favor fungal disease risk for Cotton at FARM0033. Consider preventive spray.,2026-07-29,Low,Read
+NOTIF00038,FARM_USR0056,FARM0067,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0067.,2026-07-12,Medium,Sent
+NOTIF00039,FARM_USR0053,FARM0063,Irrigation Reminder,Your Wheat crop on FARM0063 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-03,Medium,Sent
+NOTIF00040,FARM_USR0024,FARM0026,MSP Update,New MSP announced for Groundnut for the upcoming season.,2026-06-13,High,Sent
+NOTIF00041,FARM_USR0025,FARM0027,Disease Risk Alert,Weather conditions favor fungal disease risk for Sugarcane at FARM0027. Consider preventive spray.,2026-06-03,Medium,Read
+NOTIF00042,FARM_USR0056,FARM0067,Price Alert,Modal price for Sunflower at your nearest mandi has moved by more than 8% this week.,2026-07-29,Low,Pending
+NOTIF00043,FARM_USR0045,FARM0051,MSP Update,New MSP announced for Mango for the upcoming season.,2026-06-16,Medium,Pending
+NOTIF00044,FARM_USR0007,FARM0008,Price Alert,Modal price for Green Gram (Moong) at your nearest mandi has moved by more than 8% this week.,2026-07-19,Low,Sent
+NOTIF00045,FARM_USR0047,FARM0054,Disease Risk Alert,Weather conditions favor fungal disease risk for Tomato at FARM0054. Consider preventive spray.,2026-08-29,Medium,Pending
+NOTIF00046,FARM_USR0012,FARM0014,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0014.,2026-07-22,High,Pending
+NOTIF00047,FARM_USR0026,FARM0029,Disease Risk Alert,Weather conditions favor fungal disease risk for Sesame at FARM0029. Consider preventive spray.,2026-06-28,Low,Read
+NOTIF00048,FARM_USR0008,FARM0009,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0009.,2026-08-22,Medium,Sent
+NOTIF00049,FARM_USR0017,FARM0019,Price Alert,Modal price for Chili at your nearest mandi has moved by more than 8% this week.,2026-08-21,High,Read
+NOTIF00050,FARM_USR0046,FARM0053,Disease Risk Alert,Weather conditions favor fungal disease risk for Black Gram (Urad) at FARM0053. Consider preventive spray.,2026-08-10,Medium,Read
+NOTIF00051,FARM_USR0052,FARM0061,Price Alert,Modal price for Pigeon Pea (Tur) at your nearest mandi has moved by more than 8% this week.,2026-07-05,Medium,Pending
+NOTIF00052,FARM_USR0048,FARM0055,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0055.,2026-06-01,High,Read
+NOTIF00053,FARM_USR0041,FARM0046,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0046.,2026-07-09,Low,Sent
+NOTIF00054,FARM_USR0009,FARM0011,Price Alert,Modal price for Pearl Millet (Bajra) at your nearest mandi has moved by more than 8% this week.,2026-07-09,High,Sent
+NOTIF00055,FARM_USR0038,FARM0042,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0042.,2026-07-15,Medium,Sent
+NOTIF00056,FARM_USR0002,FARM0002,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0002.,2026-08-23,Low,Pending
+NOTIF00057,FARM_USR0017,FARM0019,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0019.,2026-07-28,Low,Sent
+NOTIF00058,FARM_USR0045,FARM0052,MSP Update,New MSP announced for Barley for the upcoming season.,2026-08-18,High,Pending
+NOTIF00059,FARM_USR0010,FARM0012,MSP Update,New MSP announced for Tomato for the upcoming season.,2026-07-09,Low,Pending
+NOTIF00060,FARM_USR0057,FARM0068,Irrigation Reminder,Your Banana crop on FARM0068 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-27,Medium,Sent
+NOTIF00061,FARM_USR0014,FARM0016,Price Alert,Modal price for Sunflower at your nearest mandi has moved by more than 8% this week.,2026-06-30,High,Sent
+NOTIF00062,FARM_USR0007,FARM0008,Disease Risk Alert,Weather conditions favor fungal disease risk for Sesame at FARM0008. Consider preventive spray.,2026-06-19,Medium,Sent
+NOTIF00063,FARM_USR0020,FARM0022,MSP Update,New MSP announced for Onion for the upcoming season.,2026-06-01,Low,Sent
+NOTIF00064,FARM_USR0054,FARM0064,Price Alert,Modal price for Sesame at your nearest mandi has moved by more than 8% this week.,2026-07-18,Medium,Read
+NOTIF00065,FARM_USR0008,FARM0010,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0010.,2026-07-17,Medium,Sent
+NOTIF00066,FARM_USR0005,FARM0006,Price Alert,Modal price for Sorghum (Jowar) at your nearest mandi has moved by more than 8% this week.,2026-08-05,Medium,Read
+NOTIF00067,FARM_USR0017,FARM0019,Irrigation Reminder,Your Chickpea (Gram) crop on FARM0019 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-24,Medium,Sent
+NOTIF00068,FARM_USR0042,FARM0047,Price Alert,Modal price for Cotton at your nearest mandi has moved by more than 8% this week.,2026-08-07,Medium,Read
+NOTIF00069,FARM_USR0033,FARM0037,Disease Risk Alert,Weather conditions favor fungal disease risk for Soybean at FARM0037. Consider preventive spray.,2026-07-25,Low,Sent
+NOTIF00070,FARM_USR0034,FARM0038,Price Alert,Modal price for Groundnut at your nearest mandi has moved by more than 8% this week.,2026-08-03,Medium,Pending
+NOTIF00071,FARM_USR0031,FARM0035,MSP Update,New MSP announced for Groundnut for the upcoming season.,2026-06-27,Medium,Read
+NOTIF00072,FARM_USR0039,FARM0043,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0043.,2026-07-09,Low,Read
+NOTIF00073,FARM_USR0010,FARM0012,Irrigation Reminder,Your Mustard crop on FARM0012 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-10,High,Pending
+NOTIF00074,FARM_USR0006,FARM0007,Disease Risk Alert,Weather conditions favor fungal disease risk for Black Gram (Urad) at FARM0007. Consider preventive spray.,2026-06-14,Low,Sent
+NOTIF00075,FARM_USR0052,FARM0061,MSP Update,New MSP announced for Mango for the upcoming season.,2026-08-24,Low,Pending
+NOTIF00076,FARM_USR0059,FARM0070,MSP Update,New MSP announced for Mustard for the upcoming season.,2026-08-18,Low,Pending
+NOTIF00077,FARM_USR0009,FARM0011,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0011.,2026-08-25,Medium,Pending
+NOTIF00078,FARM_USR0021,FARM0023,Irrigation Reminder,Your Chili crop on FARM0023 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-24,High,Sent
+NOTIF00079,FARM_USR0011,FARM0013,Irrigation Reminder,Your Groundnut crop on FARM0013 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-18,Medium,Pending
+NOTIF00080,FARM_USR0030,FARM0034,Price Alert,Modal price for Barley at your nearest mandi has moved by more than 8% this week.,2026-07-24,Low,Sent
+NOTIF00081,FARM_USR0006,FARM0007,Disease Risk Alert,Weather conditions favor fungal disease risk for Potato at FARM0007. Consider preventive spray.,2026-08-06,Low,Sent
+NOTIF00082,FARM_USR0047,FARM0054,MSP Update,New MSP announced for Turmeric for the upcoming season.,2026-07-22,Medium,Sent
+NOTIF00083,FARM_USR0044,FARM0050,MSP Update,New MSP announced for Potato for the upcoming season.,2026-08-24,High,Sent
+NOTIF00084,FARM_USR0046,FARM0053,MSP Update,New MSP announced for Sorghum (Jowar) for the upcoming season.,2026-06-11,Medium,Sent
+NOTIF00085,FARM_USR0018,FARM0020,Irrigation Reminder,Your Sunflower crop on FARM0020 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-01,Low,Pending
+NOTIF00086,FARM_USR0010,FARM0012,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0012.,2026-06-17,Medium,Sent
+NOTIF00087,FARM_USR0028,FARM0032,Disease Risk Alert,Weather conditions favor fungal disease risk for Banana at FARM0032. Consider preventive spray.,2026-06-24,High,Sent
+NOTIF00088,FARM_USR0017,FARM0019,Irrigation Reminder,Your Black Gram (Urad) crop on FARM0019 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-20,Medium,Sent
+NOTIF00089,FARM_USR0029,FARM0033,Irrigation Reminder,Your Turmeric crop on FARM0033 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-05,Low,Sent
+NOTIF00090,FARM_USR0009,FARM0011,Disease Risk Alert,Weather conditions favor fungal disease risk for Black Gram (Urad) at FARM0011. Consider preventive spray.,2026-07-10,Medium,Sent
+NOTIF00091,FARM_USR0053,FARM0063,MSP Update,New MSP announced for Wheat for the upcoming season.,2026-07-11,Low,Pending
+NOTIF00092,FARM_USR0049,FARM0057,Disease Risk Alert,Weather conditions favor fungal disease risk for Chili at FARM0057. Consider preventive spray.,2026-06-22,Low,Read
+NOTIF00093,FARM_USR0042,FARM0047,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0047.,2026-07-24,Medium,Read
+NOTIF00094,FARM_USR0049,FARM0058,Price Alert,Modal price for Mango at your nearest mandi has moved by more than 8% this week.,2026-08-12,Low,Sent
+NOTIF00095,FARM_USR0039,FARM0043,MSP Update,New MSP announced for Banana for the upcoming season.,2026-06-02,High,Pending
+NOTIF00096,FARM_USR0036,FARM0040,MSP Update,New MSP announced for Sunflower for the upcoming season.,2026-07-02,Low,Pending
+NOTIF00097,FARM_USR0027,FARM0030,Disease Risk Alert,Weather conditions favor fungal disease risk for Black Gram (Urad) at FARM0030. Consider preventive spray.,2026-08-28,Low,Sent
+NOTIF00098,FARM_USR0048,FARM0055,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0055.,2026-06-06,Low,Sent
+NOTIF00099,FARM_USR0017,FARM0019,Price Alert,Modal price for Jute at your nearest mandi has moved by more than 8% this week.,2026-08-27,Medium,Sent
+NOTIF00100,FARM_USR0058,FARM0069,Irrigation Reminder,Your Jute crop on FARM0069 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-10,Medium,Sent
+NOTIF00101,FARM_USR0027,FARM0030,Price Alert,Modal price for Onion at your nearest mandi has moved by more than 8% this week.,2026-06-08,Medium,Sent
+NOTIF00102,FARM_USR0025,FARM0027,Price Alert,Modal price for Potato at your nearest mandi has moved by more than 8% this week.,2026-06-02,Medium,Sent
+NOTIF00103,FARM_USR0010,FARM0012,MSP Update,New MSP announced for Groundnut for the upcoming season.,2026-06-09,Low,Pending
+NOTIF00104,FARM_USR0030,FARM0034,MSP Update,New MSP announced for Soybean for the upcoming season.,2026-08-01,Medium,Sent
+NOTIF00105,FARM_USR0026,FARM0028,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0028.,2026-06-24,High,Sent
+NOTIF00106,FARM_USR0041,FARM0046,Disease Risk Alert,Weather conditions favor fungal disease risk for Mango at FARM0046. Consider preventive spray.,2026-08-06,High,Sent
+NOTIF00107,FARM_USR0054,FARM0064,Price Alert,Modal price for Sorghum (Jowar) at your nearest mandi has moved by more than 8% this week.,2026-07-18,Medium,Read
+NOTIF00108,FARM_USR0018,FARM0020,Price Alert,Modal price for Onion at your nearest mandi has moved by more than 8% this week.,2026-06-04,Low,Pending
+NOTIF00109,FARM_USR0003,FARM0003,Irrigation Reminder,Your Wheat crop on FARM0003 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-27,High,Read
+NOTIF00110,FARM_USR0053,FARM0063,MSP Update,New MSP announced for Potato for the upcoming season.,2026-06-28,Low,Read
+NOTIF00111,FARM_USR0048,FARM0055,Irrigation Reminder,Your Sesame crop on FARM0055 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-15,High,Read
+NOTIF00112,FARM_USR0029,FARM0033,Irrigation Reminder,Your Soybean crop on FARM0033 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-26,High,Sent
+NOTIF00113,FARM_USR0004,FARM0004,Irrigation Reminder,Your Wheat crop on FARM0004 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-11,Low,Read
+NOTIF00114,FARM_USR0053,FARM0063,Irrigation Reminder,Your Onion crop on FARM0063 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-21,Low,Sent
+NOTIF00115,FARM_USR0010,FARM0012,Price Alert,Modal price for Soybean at your nearest mandi has moved by more than 8% this week.,2026-08-12,Low,Sent
+NOTIF00116,FARM_USR0054,FARM0065,Disease Risk Alert,Weather conditions favor fungal disease risk for Barley at FARM0065. Consider preventive spray.,2026-07-28,High,Sent
+NOTIF00117,FARM_USR0028,FARM0031,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0031.,2026-06-05,High,Read
+NOTIF00118,FARM_USR0007,FARM0008,MSP Update,New MSP announced for Rice (Paddy) for the upcoming season.,2026-06-07,Low,Pending
+NOTIF00119,FARM_USR0052,FARM0062,Irrigation Reminder,Your Sorghum (Jowar) crop on FARM0062 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-19,Low,Sent
+NOTIF00120,FARM_USR0024,FARM0026,Price Alert,Modal price for Potato at your nearest mandi has moved by more than 8% this week.,2026-08-15,Medium,Pending
+NOTIF00121,FARM_USR0052,FARM0061,Price Alert,Modal price for Groundnut at your nearest mandi has moved by more than 8% this week.,2026-07-03,Low,Sent
+NOTIF00122,FARM_USR0043,FARM0049,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0049.,2026-07-01,High,Read
+NOTIF00123,FARM_USR0002,FARM0002,Disease Risk Alert,Weather conditions favor fungal disease risk for Turmeric at FARM0002. Consider preventive spray.,2026-06-25,Medium,Sent
+NOTIF00124,FARM_USR0026,FARM0029,Irrigation Reminder,Your Onion crop on FARM0029 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-18,High,Sent
+NOTIF00125,FARM_USR0049,FARM0058,Irrigation Reminder,Your Mustard crop on FARM0058 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-03,Medium,Sent
+NOTIF00126,FARM_USR0039,FARM0044,Price Alert,Modal price for Pigeon Pea (Tur) at your nearest mandi has moved by more than 8% this week.,2026-08-01,Low,Sent
+NOTIF00127,FARM_USR0039,FARM0043,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0043.,2026-06-08,Low,Sent
+NOTIF00128,FARM_USR0017,FARM0019,Disease Risk Alert,Weather conditions favor fungal disease risk for Pearl Millet (Bajra) at FARM0019. Consider preventive spray.,2026-07-05,Medium,Sent
+NOTIF00129,FARM_USR0004,FARM0004,Price Alert,Modal price for Potato at your nearest mandi has moved by more than 8% this week.,2026-07-08,Low,Sent
+NOTIF00130,FARM_USR0053,FARM0063,Irrigation Reminder,Your Soybean crop on FARM0063 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-29,High,Sent
+NOTIF00131,FARM_USR0055,FARM0066,Irrigation Reminder,Your Tomato crop on FARM0066 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-25,High,Pending
+NOTIF00132,FARM_USR0033,FARM0037,Irrigation Reminder,Your Green Gram (Moong) crop on FARM0037 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-26,High,Sent
+NOTIF00133,FARM_USR0030,FARM0034,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0034.,2026-06-13,Low,Sent
+NOTIF00134,FARM_USR0019,FARM0021,Irrigation Reminder,Your Banana crop on FARM0021 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-08,Low,Pending
+NOTIF00135,FARM_USR0049,FARM0057,MSP Update,New MSP announced for Soybean for the upcoming season.,2026-08-05,Low,Sent
+NOTIF00136,FARM_USR0057,FARM0068,Price Alert,Modal price for Barley at your nearest mandi has moved by more than 8% this week.,2026-07-17,Medium,Read
+NOTIF00137,FARM_USR0026,FARM0028,Price Alert,Modal price for Potato at your nearest mandi has moved by more than 8% this week.,2026-06-24,Low,Sent
+NOTIF00138,FARM_USR0027,FARM0030,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0030.,2026-08-16,Low,Sent
+NOTIF00139,FARM_USR0054,FARM0064,Price Alert,Modal price for Barley at your nearest mandi has moved by more than 8% this week.,2026-06-27,Low,Pending
+NOTIF00140,FARM_USR0023,FARM0025,MSP Update,New MSP announced for Black Gram (Urad) for the upcoming season.,2026-06-26,Low,Pending
+NOTIF00141,FARM_USR0056,FARM0067,Disease Risk Alert,Weather conditions favor fungal disease risk for Banana at FARM0067. Consider preventive spray.,2026-06-08,Medium,Sent
+NOTIF00142,FARM_USR0033,FARM0037,Disease Risk Alert,Weather conditions favor fungal disease risk for Maize at FARM0037. Consider preventive spray.,2026-06-02,Medium,Read
+NOTIF00143,FARM_USR0016,FARM0018,Price Alert,Modal price for Pigeon Pea (Tur) at your nearest mandi has moved by more than 8% this week.,2026-06-24,Medium,Read
+NOTIF00144,FARM_USR0005,FARM0005,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0005.,2026-07-18,Medium,Read
+NOTIF00145,FARM_USR0041,FARM0046,MSP Update,New MSP announced for Sesame for the upcoming season.,2026-08-06,Low,Sent
+NOTIF00146,FARM_USR0028,FARM0032,Price Alert,Modal price for Mango at your nearest mandi has moved by more than 8% this week.,2026-07-19,Medium,Read
+NOTIF00147,FARM_USR0034,FARM0038,Irrigation Reminder,Your Banana crop on FARM0038 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-03,Medium,Sent
+NOTIF00148,FARM_USR0058,FARM0069,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0069.,2026-07-02,High,Sent
+NOTIF00149,FARM_USR0022,FARM0024,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0024.,2026-07-10,Low,Read
+NOTIF00150,FARM_USR0004,FARM0004,Irrigation Reminder,Your Sorghum (Jowar) crop on FARM0004 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-29,Medium,Sent
+NOTIF00151,FARM_USR0051,FARM0060,MSP Update,New MSP announced for Pigeon Pea (Tur) for the upcoming season.,2026-08-29,Medium,Sent
+NOTIF00152,FARM_USR0011,FARM0013,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0013.,2026-07-05,Low,Sent
+NOTIF00153,FARM_USR0054,FARM0065,Price Alert,Modal price for Sorghum (Jowar) at your nearest mandi has moved by more than 8% this week.,2026-06-16,Low,Read
+NOTIF00154,FARM_USR0059,FARM0070,MSP Update,New MSP announced for Pigeon Pea (Tur) for the upcoming season.,2026-06-30,Low,Pending
+NOTIF00155,FARM_USR0045,FARM0051,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0051.,2026-08-21,Low,Sent
+NOTIF00156,FARM_USR0057,FARM0068,Irrigation Reminder,Your Mustard crop on FARM0068 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-07,Medium,Sent
+NOTIF00157,FARM_USR0028,FARM0031,Price Alert,Modal price for Turmeric at your nearest mandi has moved by more than 8% this week.,2026-07-26,High,Pending
+NOTIF00158,FARM_USR0038,FARM0042,Disease Risk Alert,Weather conditions favor fungal disease risk for Jute at FARM0042. Consider preventive spray.,2026-06-07,Low,Sent
+NOTIF00159,FARM_USR0041,FARM0046,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0046.,2026-08-24,Medium,Sent
+NOTIF00160,FARM_USR0057,FARM0068,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0068.,2026-07-12,Medium,Pending
+NOTIF00161,FARM_USR0003,FARM0003,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0003.,2026-07-24,High,Read
+NOTIF00162,FARM_USR0050,FARM0059,Irrigation Reminder,Your Wheat crop on FARM0059 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-05,High,Pending
+NOTIF00163,FARM_USR0031,FARM0035,MSP Update,New MSP announced for Wheat for the upcoming season.,2026-08-19,Low,Sent
+NOTIF00164,FARM_USR0002,FARM0002,Disease Risk Alert,Weather conditions favor fungal disease risk for Pigeon Pea (Tur) at FARM0002. Consider preventive spray.,2026-06-06,Low,Sent
+NOTIF00165,FARM_USR0020,FARM0022,Irrigation Reminder,Your Wheat crop on FARM0022 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-16,High,Read
+NOTIF00166,FARM_USR0031,FARM0035,Irrigation Reminder,Your Sesame crop on FARM0035 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-08-15,Medium,Sent
+NOTIF00167,FARM_USR0014,FARM0016,MSP Update,New MSP announced for Pearl Millet (Bajra) for the upcoming season.,2026-07-08,High,Pending
+NOTIF00168,FARM_USR0032,FARM0036,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0036.,2026-06-12,Medium,Sent
+NOTIF00169,FARM_USR0050,FARM0059,MSP Update,New MSP announced for Turmeric for the upcoming season.,2026-08-12,Low,Sent
+NOTIF00170,FARM_USR0060,FARM0071,Price Alert,Modal price for Sesame at your nearest mandi has moved by more than 8% this week.,2026-08-10,Low,Sent
+NOTIF00171,FARM_USR0036,FARM0040,Irrigation Reminder,Your Pigeon Pea (Tur) crop on FARM0040 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-13,Low,Pending
+NOTIF00172,FARM_USR0044,FARM0050,MSP Update,New MSP announced for Mustard for the upcoming season.,2026-06-02,High,Sent
+NOTIF00173,FARM_USR0028,FARM0031,Price Alert,Modal price for Jute at your nearest mandi has moved by more than 8% this week.,2026-07-12,Medium,Sent
+NOTIF00174,FARM_USR0026,FARM0028,Price Alert,Modal price for Wheat at your nearest mandi has moved by more than 8% this week.,2026-06-03,Low,Sent
+NOTIF00175,FARM_USR0040,FARM0045,Disease Risk Alert,Weather conditions favor fungal disease risk for Chili at FARM0045. Consider preventive spray.,2026-06-08,Medium,Read
+NOTIF00176,FARM_USR0041,FARM0046,Irrigation Reminder,Your Sugarcane crop on FARM0046 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-06-29,High,Pending
+NOTIF00177,FARM_USR0018,FARM0020,Disease Risk Alert,Weather conditions favor fungal disease risk for Soybean at FARM0020. Consider preventive spray.,2026-08-25,Low,Pending
+NOTIF00178,FARM_USR0032,FARM0036,MSP Update,New MSP announced for Sorghum (Jowar) for the upcoming season.,2026-07-31,Low,Pending
+NOTIF00179,FARM_USR0015,FARM0017,Disease Risk Alert,Weather conditions favor fungal disease risk for Sorghum (Jowar) at FARM0017. Consider preventive spray.,2026-06-01,Medium,Pending
+NOTIF00180,FARM_USR0014,FARM0016,Disease Risk Alert,Weather conditions favor fungal disease risk for Mustard at FARM0016. Consider preventive spray.,2026-08-13,Low,Read
+NOTIF00181,FARM_USR0032,FARM0036,MSP Update,New MSP announced for Onion for the upcoming season.,2026-06-15,Low,Sent
+NOTIF00182,FARM_USR0050,FARM0059,Price Alert,Modal price for Banana at your nearest mandi has moved by more than 8% this week.,2026-07-16,Low,Sent
+NOTIF00183,FARM_USR0044,FARM0050,Price Alert,Modal price for Rice (Paddy) at your nearest mandi has moved by more than 8% this week.,2026-08-03,Low,Sent
+NOTIF00184,FARM_USR0058,FARM0069,Price Alert,Modal price for Pearl Millet (Bajra) at your nearest mandi has moved by more than 8% this week.,2026-07-26,Medium,Pending
+NOTIF00185,FARM_USR0010,FARM0012,Price Alert,Modal price for Soybean at your nearest mandi has moved by more than 8% this week.,2026-08-17,High,Read
+NOTIF00186,FARM_USR0025,FARM0027,Disease Risk Alert,Weather conditions favor fungal disease risk for Rice (Paddy) at FARM0027. Consider preventive spray.,2026-06-04,Low,Pending
+NOTIF00187,FARM_USR0054,FARM0064,Price Alert,Modal price for Jute at your nearest mandi has moved by more than 8% this week.,2026-07-10,Medium,Read
+NOTIF00188,FARM_USR0056,FARM0067,MSP Update,New MSP announced for Banana for the upcoming season.,2026-08-27,Medium,Sent
+NOTIF00189,FARM_USR0005,FARM0006,MSP Update,New MSP announced for Chili for the upcoming season.,2026-07-15,Medium,Sent
+NOTIF00190,FARM_USR0008,FARM0009,MSP Update,New MSP announced for Pigeon Pea (Tur) for the upcoming season.,2026-06-13,Medium,Pending
+NOTIF00191,FARM_USR0018,FARM0020,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0020.,2026-08-02,Medium,Read
+NOTIF00192,FARM_USR0039,FARM0044,MSP Update,New MSP announced for Banana for the upcoming season.,2026-06-12,Low,Sent
+NOTIF00193,FARM_USR0008,FARM0010,Price Alert,Modal price for Sugarcane at your nearest mandi has moved by more than 8% this week.,2026-06-23,Low,Read
+NOTIF00194,FARM_USR0039,FARM0044,MSP Update,New MSP announced for Sunflower for the upcoming season.,2026-08-20,Low,Sent
+NOTIF00195,FARM_USR0055,FARM0066,Weather Alert,Heavy rainfall (>40mm) expected in your area over the next 48 hours near FARM0066.,2026-06-25,Medium,Sent
+NOTIF00196,FARM_USR0012,FARM0014,Price Alert,Modal price for Potato at your nearest mandi has moved by more than 8% this week.,2026-08-20,Medium,Sent
+NOTIF00197,FARM_USR0046,FARM0053,Irrigation Reminder,Your Rice (Paddy) crop on FARM0053 is due for irrigation within 2 days based on current soil moisture and forecast.,2026-07-10,Medium,Pending
+NOTIF00198,FARM_USR0035,FARM0039,Disease Risk Alert,Weather conditions favor fungal disease risk for Sorghum (Jowar) at FARM0039. Consider preventive spray.,2026-08-15,Low,Sent
+NOTIF00199,FARM_USR0021,FARM0023,Disease Risk Alert,Weather conditions favor fungal disease risk for Mango at FARM0023. Consider preventive spray.,2026-08-10,Medium,Read
+NOTIF00200,FARM_USR0058,FARM0069,MSP Update,New MSP announced for Pearl Millet (Bajra) for the upcoming season.,2026-08-13,Low,Pending

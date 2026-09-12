@@ -1,0 +1,126 @@
+calendar_id,crop_id,crop_name,stage_number,stage_name,start_day,end_day,irrigation_guidance,fertilizer_guidance,pest_disease_risk_note
+CAL0001,CROP001,Rice (Paddy),1,Land Preparation & Sowing,0,10,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0002,CROP001,Rice (Paddy),2,Germination & Seedling,10,29,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0003,CROP001,Rice (Paddy),3,Vegetative Growth,29,72,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0004,CROP001,Rice (Paddy),4,Flowering & Reproductive,72,104,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0005,CROP001,Rice (Paddy),5,Maturity & Harvest,104,130,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0006,CROP002,Wheat,1,Land Preparation & Sowing,0,10,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0007,CROP002,Wheat,2,Germination & Seedling,10,29,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0008,CROP002,Wheat,3,Vegetative Growth,29,72,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0009,CROP002,Wheat,4,Flowering & Reproductive,72,104,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0010,CROP002,Wheat,5,Maturity & Harvest,104,130,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0011,CROP003,Maize,1,Land Preparation & Sowing,0,8,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0012,CROP003,Maize,2,Germination & Seedling,8,22,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0013,CROP003,Maize,3,Vegetative Growth,22,55,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0014,CROP003,Maize,4,Flowering & Reproductive,55,80,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0015,CROP003,Maize,5,Maturity & Harvest,80,100,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0016,CROP004,Sorghum (Jowar),1,Land Preparation & Sowing,0,9,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0017,CROP004,Sorghum (Jowar),2,Germination & Seedling,9,24,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0018,CROP004,Sorghum (Jowar),3,Vegetative Growth,24,61,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0019,CROP004,Sorghum (Jowar),4,Flowering & Reproductive,61,88,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0020,CROP004,Sorghum (Jowar),5,Maturity & Harvest,88,110,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0021,CROP005,Pearl Millet (Bajra),1,Land Preparation & Sowing,0,7,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0022,CROP005,Pearl Millet (Bajra),2,Germination & Seedling,7,20,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0023,CROP005,Pearl Millet (Bajra),3,Vegetative Growth,20,50,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0024,CROP005,Pearl Millet (Bajra),4,Flowering & Reproductive,50,72,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0025,CROP005,Pearl Millet (Bajra),5,Maturity & Harvest,72,90,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0026,CROP006,Barley,1,Land Preparation & Sowing,0,10,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0027,CROP006,Barley,2,Germination & Seedling,10,26,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0028,CROP006,Barley,3,Vegetative Growth,26,66,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0029,CROP006,Barley,4,Flowering & Reproductive,66,96,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0030,CROP006,Barley,5,Maturity & Harvest,96,120,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0031,CROP007,Chickpea (Gram),1,Land Preparation & Sowing,0,8,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0032,CROP007,Chickpea (Gram),2,Germination & Seedling,8,22,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0033,CROP007,Chickpea (Gram),3,Vegetative Growth,22,55,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0034,CROP007,Chickpea (Gram),4,Flowering & Reproductive,55,80,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0035,CROP007,Chickpea (Gram),5,Maturity & Harvest,80,100,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0036,CROP008,Pigeon Pea (Tur),1,Land Preparation & Sowing,0,13,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0037,CROP008,Pigeon Pea (Tur),2,Germination & Seedling,13,35,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0038,CROP008,Pigeon Pea (Tur),3,Vegetative Growth,35,88,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0039,CROP008,Pigeon Pea (Tur),4,Flowering & Reproductive,88,128,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0040,CROP008,Pigeon Pea (Tur),5,Maturity & Harvest,128,160,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0041,CROP009,Green Gram (Moong),1,Land Preparation & Sowing,0,5,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0042,CROP009,Green Gram (Moong),2,Germination & Seedling,5,14,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0043,CROP009,Green Gram (Moong),3,Vegetative Growth,14,36,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0044,CROP009,Green Gram (Moong),4,Flowering & Reproductive,36,52,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0045,CROP009,Green Gram (Moong),5,Maturity & Harvest,52,65,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0046,CROP010,Black Gram (Urad),1,Land Preparation & Sowing,0,6,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0047,CROP010,Black Gram (Urad),2,Germination & Seedling,6,15,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0048,CROP010,Black Gram (Urad),3,Vegetative Growth,15,38,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0049,CROP010,Black Gram (Urad),4,Flowering & Reproductive,38,56,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0050,CROP010,Black Gram (Urad),5,Maturity & Harvest,56,70,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0051,CROP011,Soybean,1,Land Preparation & Sowing,0,8,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0052,CROP011,Soybean,2,Germination & Seedling,8,22,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0053,CROP011,Soybean,3,Vegetative Growth,22,55,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0054,CROP011,Soybean,4,Flowering & Reproductive,55,80,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0055,CROP011,Soybean,5,Maturity & Harvest,80,100,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0056,CROP012,Groundnut,1,Land Preparation & Sowing,0,9,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0057,CROP012,Groundnut,2,Germination & Seedling,9,24,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0058,CROP012,Groundnut,3,Vegetative Growth,24,61,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0059,CROP012,Groundnut,4,Flowering & Reproductive,61,88,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0060,CROP012,Groundnut,5,Maturity & Harvest,88,110,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0061,CROP013,Mustard,1,Land Preparation & Sowing,0,10,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0062,CROP013,Mustard,2,Germination & Seedling,10,26,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0063,CROP013,Mustard,3,Vegetative Growth,26,66,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0064,CROP013,Mustard,4,Flowering & Reproductive,66,96,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0065,CROP013,Mustard,5,Maturity & Harvest,96,120,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0066,CROP014,Sunflower,1,Land Preparation & Sowing,0,8,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0067,CROP014,Sunflower,2,Germination & Seedling,8,22,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0068,CROP014,Sunflower,3,Vegetative Growth,22,55,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0069,CROP014,Sunflower,4,Flowering & Reproductive,55,80,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0070,CROP014,Sunflower,5,Maturity & Harvest,80,100,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0071,CROP015,Sesame,1,Land Preparation & Sowing,0,7,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0072,CROP015,Sesame,2,Germination & Seedling,7,20,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0073,CROP015,Sesame,3,Vegetative Growth,20,50,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0074,CROP015,Sesame,4,Flowering & Reproductive,50,72,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0075,CROP015,Sesame,5,Maturity & Harvest,72,90,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0076,CROP016,Cotton,1,Land Preparation & Sowing,0,14,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0077,CROP016,Cotton,2,Germination & Seedling,14,40,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0078,CROP016,Cotton,3,Vegetative Growth,40,99,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0079,CROP016,Cotton,4,Flowering & Reproductive,99,144,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0080,CROP016,Cotton,5,Maturity & Harvest,144,180,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0081,CROP017,Sugarcane,1,Land Preparation & Sowing,0,29,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0082,CROP017,Sugarcane,2,Germination & Seedling,29,79,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0083,CROP017,Sugarcane,3,Vegetative Growth,79,198,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0084,CROP017,Sugarcane,4,Flowering & Reproductive,198,288,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0085,CROP017,Sugarcane,5,Maturity & Harvest,288,360,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0086,CROP018,Jute,1,Land Preparation & Sowing,0,10,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0087,CROP018,Jute,2,Germination & Seedling,10,26,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0088,CROP018,Jute,3,Vegetative Growth,26,66,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0089,CROP018,Jute,4,Flowering & Reproductive,66,96,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0090,CROP018,Jute,5,Maturity & Harvest,96,120,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0091,CROP019,Potato,1,Land Preparation & Sowing,0,8,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0092,CROP019,Potato,2,Germination & Seedling,8,22,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0093,CROP019,Potato,3,Vegetative Growth,22,55,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0094,CROP019,Potato,4,Flowering & Reproductive,55,80,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0095,CROP019,Potato,5,Maturity & Harvest,80,100,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0096,CROP020,Onion,1,Land Preparation & Sowing,0,10,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0097,CROP020,Onion,2,Germination & Seedling,10,26,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0098,CROP020,Onion,3,Vegetative Growth,26,66,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0099,CROP020,Onion,4,Flowering & Reproductive,66,96,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0100,CROP020,Onion,5,Maturity & Harvest,96,120,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0101,CROP021,Tomato,1,Land Preparation & Sowing,0,8,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0102,CROP021,Tomato,2,Germination & Seedling,8,22,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0103,CROP021,Tomato,3,Vegetative Growth,22,55,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0104,CROP021,Tomato,4,Flowering & Reproductive,55,80,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0105,CROP021,Tomato,5,Maturity & Harvest,80,100,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0106,CROP022,Chili,1,Land Preparation & Sowing,0,12,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0107,CROP022,Chili,2,Germination & Seedling,12,33,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0108,CROP022,Chili,3,Vegetative Growth,33,82,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0109,CROP022,Chili,4,Flowering & Reproductive,82,120,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0110,CROP022,Chili,5,Maturity & Harvest,120,150,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0111,CROP023,Turmeric,1,Land Preparation & Sowing,0,22,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0112,CROP023,Turmeric,2,Germination & Seedling,22,59,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0113,CROP023,Turmeric,3,Vegetative Growth,59,148,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0114,CROP023,Turmeric,4,Flowering & Reproductive,148,216,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0115,CROP023,Turmeric,5,Maturity & Harvest,216,270,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0116,CROP024,Banana,1,Land Preparation & Sowing,0,26,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0117,CROP024,Banana,2,Germination & Seedling,26,73,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0118,CROP024,Banana,3,Vegetative Growth,73,182,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0119,CROP024,Banana,4,Flowering & Reproductive,182,264,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0120,CROP024,Banana,5,Maturity & Harvest,264,330,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.
+CAL0121,CROP025,Mango,1,Land Preparation & Sowing,0,29,Pre-sowing irrigation if soil moisture is low.,Apply basal dose of fertilizer (as per soil test).,Check seed treatment / seed-borne disease risk.
+CAL0122,CROP025,Mango,2,Germination & Seedling,29,80,"Light, frequent irrigation to maintain moisture.",Avoid over-fertilizing at this stage.,Monitor for cutworms / damping-off.
+CAL0123,CROP025,Mango,3,Vegetative Growth,80,201,Irrigate at critical vegetative growth intervals.,First top-dressing of nitrogen.,"Watch for aphids, leaf miners, foliar disease."
+CAL0124,CROP025,Mango,4,Flowering & Reproductive,201,292,Do not let crop face water stress during flowering.,Second top-dressing; add potash if needed.,Highest pest/disease vulnerability window; scout weekly.
+CAL0125,CROP025,Mango,5,Maturity & Harvest,292,365,Reduce/stop irrigation to allow field drying before harvest.,No further fertilizer application.,Monitor for pre-harvest pest damage and lodging risk.

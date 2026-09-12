@@ -1,0 +1,72 @@
+farm_id,farmer_id,district_id,state,district,latitude,longitude,area_hectares,boundary_type,soil_type,water_source,irrigation_type,registration_date
+FARM0001,FARM_USR0001,DIST003,Punjab,Bathinda,30.313443,74.834833,1.04,polygon,Loam,River Lift,Rainfed,2024-01-24
+FARM0002,FARM_USR0002,DIST003,Punjab,Bathinda,30.283554,74.941248,0.36,pin,Red soil,Farm Pond,Rainfed,2023-04-10
+FARM0003,FARM_USR0003,DIST019,Gujarat,Rajkot,22.194963,70.755261,0.59,pin,Alluvial,Rainfed,Sprinkler,2024-10-17
+FARM0004,FARM_USR0004,DIST002,Punjab,Amritsar,31.53365,74.846771,0.65,pin,Red soil,Canal,Rainfed,2023-10-25
+FARM0005,FARM_USR0005,DIST018,Maharashtra,Nagpur,21.130236,79.17067,1.46,pin,Clay loam,Borewell,Flood,2023-04-17
+FARM0006,FARM_USR0005,DIST018,Maharashtra,Nagpur,21.133989,79.171664,3.69,pin,Clay loam,Farm Pond,Flood,2023-05-08
+FARM0007,FARM_USR0006,DIST018,Maharashtra,Nagpur,21.261987,79.140676,1.18,polygon,Black soil,Canal,Sprinkler,2024-07-31
+FARM0008,FARM_USR0007,DIST014,Madhya Pradesh,Bhopal,23.348928,77.477773,0.39,polygon,Sandy loam,River Lift,Flood,2024-05-21
+FARM0009,FARM_USR0008,DIST026,Andhra Pradesh,Krishna,16.504944,80.769024,1.18,polygon,Loam,Rainfed,Sprinkler,2023-04-06
+FARM0010,FARM_USR0008,DIST026,Andhra Pradesh,Krishna,16.704649,80.699711,0.89,pin,Clay loam,Farm Pond,Flood,2023-03-31
+FARM0011,FARM_USR0009,DIST015,Madhya Pradesh,Ujjain,23.209256,75.853348,1.98,pin,Clay loam,Borewell,Flood,2023-05-05
+FARM0012,FARM_USR0010,DIST014,Madhya Pradesh,Bhopal,23.112043,77.388677,2.17,polygon,Clay loam,Farm Pond,Drip,2025-03-13
+FARM0013,FARM_USR0011,DIST012,West Bengal,Nadia,23.459941,88.42315,6.57,pin,Alluvial,River Lift,Sprinkler,2024-09-07
+FARM0014,FARM_USR0012,DIST023,Karnataka,Belagavi,15.948236,74.630243,2.48,pin,Alluvial,Farm Pond,Flood,2023-03-19
+FARM0015,FARM_USR0013,DIST013,Madhya Pradesh,Indore,22.608044,75.776829,0.74,polygon,Red soil,River Lift,Sprinkler,2023-02-19
+FARM0016,FARM_USR0014,DIST016,Maharashtra,Nashik,19.914724,73.812259,1.75,pin,Alluvial,Farm Pond,Sprinkler,2025-03-21
+FARM0017,FARM_USR0015,DIST028,Tamil Nadu,Coimbatore,10.917657,77.040469,3.66,polygon,Clay loam,River Lift,Sprinkler,2023-06-21
+FARM0018,FARM_USR0016,DIST014,Madhya Pradesh,Bhopal,23.402442,77.344878,1.51,pin,Sandy loam,Borewell,Rainfed,2025-01-10
+FARM0019,FARM_USR0017,DIST003,Punjab,Bathinda,30.11173,75.05851,4.49,pin,Clay loam,River Lift,Sprinkler,2023-08-26
+FARM0020,FARM_USR0018,DIST009,Bihar,Patna,25.697704,85.038083,0.98,pin,Clay loam,River Lift,Drip,2023-06-01
+FARM0021,FARM_USR0019,DIST028,Tamil Nadu,Coimbatore,11.066291,77.048151,0.57,pin,Black soil,Rainfed,Drip,2024-04-19
+FARM0022,FARM_USR0020,DIST013,Madhya Pradesh,Indore,22.580259,75.79216,1.53,pin,Loam,Canal,Rainfed,2024-10-23
+FARM0023,FARM_USR0021,DIST006,Uttar Pradesh,Meerut,29.076861,77.56983,1.37,pin,Red soil,Rainfed,Drip,2024-09-27
+FARM0024,FARM_USR0022,DIST012,West Bengal,Nadia,23.530009,88.534616,1.0,polygon,Alluvial,Canal,Flood,2023-04-06
+FARM0025,FARM_USR0023,DIST009,Bihar,Patna,25.484471,85.087007,2.11,polygon,Alluvial,River Lift,Sprinkler,2024-05-01
+FARM0026,FARM_USR0024,DIST016,Maharashtra,Nashik,20.145267,73.712281,1.48,pin,Red soil,Borewell,Sprinkler,2023-06-06
+FARM0027,FARM_USR0025,DIST023,Karnataka,Belagavi,15.702874,74.596892,1.28,pin,Sandy loam,Farm Pond,Rainfed,2023-08-02
+FARM0028,FARM_USR0026,DIST018,Maharashtra,Nagpur,21.227233,79.19806,2.33,pin,Alluvial,Canal,Flood,2025-03-16
+FARM0029,FARM_USR0026,DIST018,Maharashtra,Nagpur,21.178684,79.199988,0.88,pin,Black soil,Borewell,Flood,2025-03-13
+FARM0030,FARM_USR0027,DIST017,Maharashtra,Pune,18.643614,73.715832,1.05,polygon,Black soil,Rainfed,Rainfed,2024-01-30
+FARM0031,FARM_USR0028,DIST008,Uttar Pradesh,Varanasi,25.369368,82.845302,0.63,polygon,Clay loam,River Lift,Drip,2025-04-21
+FARM0032,FARM_USR0028,DIST008,Uttar Pradesh,Varanasi,25.222021,82.980204,0.37,pin,Sandy loam,Rainfed,Sprinkler,2025-04-25
+FARM0033,FARM_USR0029,DIST016,Maharashtra,Nashik,20.007998,73.734913,0.82,pin,Clay loam,Rainfed,Sprinkler,2023-02-26
+FARM0034,FARM_USR0030,DIST020,Gujarat,Ahmedabad,22.930252,72.527753,1.91,pin,Clay loam,Canal,Drip,2025-04-28
+FARM0035,FARM_USR0031,DIST004,Haryana,Karnal,29.649213,76.902386,1.11,polygon,Sandy loam,Canal,Rainfed,2023-07-31
+FARM0036,FARM_USR0032,DIST012,West Bengal,Nadia,23.390801,88.541824,0.76,pin,Sandy loam,Borewell,Flood,2024-12-03
+FARM0037,FARM_USR0033,DIST014,Madhya Pradesh,Bhopal,23.192795,77.413142,1.18,polygon,Loam,Borewell,Flood,2023-04-01
+FARM0038,FARM_USR0034,DIST024,Karnataka,Mysuru,12.340838,76.668086,2.2,pin,Alluvial,Borewell,Flood,2023-07-18
+FARM0039,FARM_USR0035,DIST026,Andhra Pradesh,Krishna,16.686386,80.5899,0.45,polygon,Clay loam,Rainfed,Drip,2024-10-09
+FARM0040,FARM_USR0036,DIST018,Maharashtra,Nagpur,21.197511,79.151815,2.3,pin,Loam,Canal,Flood,2023-01-25
+FARM0041,FARM_USR0037,DIST005,Haryana,Hisar,29.196135,75.615779,4.96,pin,Sandy loam,Farm Pond,Drip,2025-05-15
+FARM0042,FARM_USR0038,DIST017,Maharashtra,Pune,18.382289,74.00329,0.47,pin,Alluvial,River Lift,Sprinkler,2023-09-24
+FARM0043,FARM_USR0039,DIST012,West Bengal,Nadia,23.566623,88.597451,0.83,pin,Black soil,Farm Pond,Sprinkler,2024-11-18
+FARM0044,FARM_USR0039,DIST012,West Bengal,Nadia,23.413296,88.480418,2.03,polygon,Black soil,Borewell,Sprinkler,2024-11-22
+FARM0045,FARM_USR0040,DIST017,Maharashtra,Pune,18.549215,73.734271,1.27,pin,Sandy loam,Rainfed,Flood,2024-06-27
+FARM0046,FARM_USR0041,DIST001,Punjab,Ludhiana,30.884444,75.738713,2.63,polygon,Alluvial,Farm Pond,Drip,2023-07-01
+FARM0047,FARM_USR0042,DIST011,West Bengal,Bardhaman,23.287871,87.956568,0.53,pin,Alluvial,Farm Pond,Sprinkler,2025-03-24
+FARM0048,FARM_USR0043,DIST009,Bihar,Patna,25.679726,85.031304,2.15,pin,Black soil,Farm Pond,Sprinkler,2024-06-10
+FARM0049,FARM_USR0043,DIST009,Bihar,Patna,25.692283,85.161812,1.46,pin,Clay loam,Canal,Flood,2024-06-13
+FARM0050,FARM_USR0044,DIST020,Gujarat,Ahmedabad,23.061155,72.498977,0.37,pin,Sandy loam,River Lift,Sprinkler,2025-01-02
+FARM0051,FARM_USR0045,DIST023,Karnataka,Belagavi,15.953772,74.474076,1.63,pin,Black soil,Farm Pond,Sprinkler,2024-08-05
+FARM0052,FARM_USR0045,DIST023,Karnataka,Belagavi,15.792848,74.573916,0.8,pin,Clay loam,Farm Pond,Flood,2024-08-06
+FARM0053,FARM_USR0046,DIST004,Haryana,Karnal,29.698489,76.97778,0.35,polygon,Alluvial,River Lift,Sprinkler,2023-12-18
+FARM0054,FARM_USR0047,DIST022,Rajasthan,Kota,25.074382,75.940856,2.11,pin,Black soil,Farm Pond,Rainfed,2025-04-02
+FARM0055,FARM_USR0048,DIST005,Haryana,Hisar,29.167722,75.839944,0.42,pin,Clay loam,Canal,Drip,2025-02-27
+FARM0056,FARM_USR0048,DIST005,Haryana,Hisar,29.294766,75.606414,2.75,polygon,Black soil,River Lift,Rainfed,2025-02-15
+FARM0057,FARM_USR0049,DIST027,Tamil Nadu,Thanjavur,10.652781,79.207587,0.49,polygon,Alluvial,Farm Pond,Rainfed,2024-12-27
+FARM0058,FARM_USR0049,DIST027,Tamil Nadu,Thanjavur,10.89996,79.085988,0.53,pin,Loam,Canal,Sprinkler,2025-01-14
+FARM0059,FARM_USR0050,DIST007,Uttar Pradesh,Lucknow,26.963397,80.989396,0.99,pin,Red soil,Farm Pond,Drip,2023-04-06
+FARM0060,FARM_USR0051,DIST015,Madhya Pradesh,Ujjain,23.102833,75.925424,1.2,pin,Loam,Canal,Drip,2024-02-07
+FARM0061,FARM_USR0052,DIST004,Haryana,Karnal,29.65728,76.88851,2.04,pin,Red soil,Rainfed,Rainfed,2023-04-21
+FARM0062,FARM_USR0052,DIST004,Haryana,Karnal,29.585193,77.073858,1.09,pin,Clay loam,Borewell,Flood,2023-05-06
+FARM0063,FARM_USR0053,DIST025,Andhra Pradesh,Guntur,16.197159,80.574918,0.89,polygon,Sandy loam,Canal,Drip,2024-12-02
+FARM0064,FARM_USR0054,DIST017,Maharashtra,Pune,18.649686,73.814168,1.39,pin,Sandy loam,Rainfed,Sprinkler,2024-12-25
+FARM0065,FARM_USR0054,DIST017,Maharashtra,Pune,18.589826,73.863812,1.16,pin,Alluvial,Canal,Drip,2025-01-09
+FARM0066,FARM_USR0055,DIST014,Madhya Pradesh,Bhopal,23.125727,77.276704,1.15,pin,Clay loam,Borewell,Sprinkler,2023-10-24
+FARM0067,FARM_USR0056,DIST020,Gujarat,Ahmedabad,23.157028,72.448788,0.65,pin,Clay loam,Rainfed,Sprinkler,2023-04-08
+FARM0068,FARM_USR0057,DIST018,Maharashtra,Nagpur,21.060236,79.167122,1.37,pin,Black soil,Borewell,Flood,2024-10-09
+FARM0069,FARM_USR0058,DIST009,Bihar,Patna,25.72554,85.128514,1.24,pin,Loam,Borewell,Flood,2023-08-11
+FARM0070,FARM_USR0059,DIST007,Uttar Pradesh,Lucknow,26.858417,81.06372,0.94,pin,Black soil,Canal,Flood,2024-06-02
+FARM0071,FARM_USR0060,DIST002,Punjab,Amritsar,31.730934,74.905116,3.01,polygon,Loam,Rainfed,Flood,2025-02-08

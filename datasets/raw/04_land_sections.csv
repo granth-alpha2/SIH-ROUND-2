@@ -1,0 +1,112 @@
+section_id,farm_id,section_number,area_hectares,soil_type,irrigation_type,assigned_crop_id,assigned_crop_name
+SEC00001,FARM0001,1,1.04,Loam,Rainfed,CROP008,Pigeon Pea (Tur)
+SEC00002,FARM0002,1,0.36,Red soil,Rainfed,,
+SEC00003,FARM0003,1,0.59,Alluvial,Sprinkler,CROP013,Mustard
+SEC00004,FARM0004,1,0.65,Red soil,Rainfed,CROP020,Onion
+SEC00005,FARM0005,1,1.46,Clay loam,Flood,CROP002,Wheat
+SEC00006,FARM0006,1,3.69,Clay loam,Flood,CROP023,Turmeric
+SEC00007,FARM0007,1,0.61,Black soil,Sprinkler,,
+SEC00008,FARM0007,2,0.33,Black soil,Sprinkler,CROP006,Barley
+SEC00009,FARM0007,3,0.24,Black soil,Sprinkler,CROP017,Sugarcane
+SEC00010,FARM0008,1,0.12,Sandy loam,Flood,CROP013,Mustard
+SEC00011,FARM0008,2,0.27,Sandy loam,Flood,,
+SEC00012,FARM0009,1,0.51,Loam,Sprinkler,CROP003,Maize
+SEC00013,FARM0009,2,0.26,Loam,Sprinkler,CROP004,Sorghum (Jowar)
+SEC00014,FARM0009,3,0.41,Loam,Sprinkler,CROP025,Mango
+SEC00015,FARM0010,1,0.89,Clay loam,Flood,CROP010,Black Gram (Urad)
+SEC00016,FARM0011,1,0.85,Clay loam,Flood,CROP016,Cotton
+SEC00017,FARM0011,2,1.13,Clay loam,Flood,CROP018,Jute
+SEC00018,FARM0012,1,0.78,Clay loam,Drip,CROP016,Cotton
+SEC00019,FARM0012,2,0.43,Clay loam,Drip,CROP021,Tomato
+SEC00020,FARM0012,3,0.96,Clay loam,Drip,,
+SEC00021,FARM0013,1,6.57,Alluvial,Sprinkler,CROP003,Maize
+SEC00022,FARM0014,1,0.79,Alluvial,Flood,CROP003,Maize
+SEC00023,FARM0014,2,1.69,Alluvial,Flood,,
+SEC00024,FARM0015,1,0.74,Red soil,Sprinkler,CROP020,Onion
+SEC00025,FARM0016,1,1.75,Alluvial,Sprinkler,CROP023,Turmeric
+SEC00026,FARM0017,1,3.66,Clay loam,Sprinkler,CROP001,Rice (Paddy)
+SEC00027,FARM0018,1,0.72,Sandy loam,Rainfed,,
+SEC00028,FARM0018,2,0.79,Sandy loam,Rainfed,,
+SEC00029,FARM0019,1,4.49,Clay loam,Sprinkler,,
+SEC00030,FARM0020,1,0.98,Clay loam,Drip,CROP015,Sesame
+SEC00031,FARM0021,1,0.24,Black soil,Drip,CROP014,Sunflower
+SEC00032,FARM0021,2,0.18,Black soil,Drip,CROP016,Cotton
+SEC00033,FARM0021,3,0.15,Black soil,Drip,CROP024,Banana
+SEC00034,FARM0022,1,1.53,Loam,Rainfed,CROP005,Pearl Millet (Bajra)
+SEC00035,FARM0023,1,0.55,Red soil,Drip,CROP012,Groundnut
+SEC00036,FARM0023,2,0.82,Red soil,Drip,,
+SEC00037,FARM0024,1,0.45,Alluvial,Flood,CROP006,Barley
+SEC00038,FARM0024,2,0.55,Alluvial,Flood,CROP003,Maize
+SEC00039,FARM0025,1,0.94,Alluvial,Sprinkler,CROP006,Barley
+SEC00040,FARM0025,2,1.17,Alluvial,Sprinkler,,
+SEC00041,FARM0026,1,0.88,Red soil,Sprinkler,CROP003,Maize
+SEC00042,FARM0026,2,0.22,Red soil,Sprinkler,CROP023,Turmeric
+SEC00043,FARM0026,3,0.38,Red soil,Sprinkler,,
+SEC00044,FARM0027,1,1.28,Sandy loam,Rainfed,CROP015,Sesame
+SEC00045,FARM0028,1,1.17,Alluvial,Flood,CROP025,Mango
+SEC00046,FARM0028,2,1.16,Alluvial,Flood,CROP004,Sorghum (Jowar)
+SEC00047,FARM0029,1,0.34,Black soil,Flood,CROP009,Green Gram (Moong)
+SEC00048,FARM0029,2,0.54,Black soil,Flood,CROP024,Banana
+SEC00049,FARM0030,1,1.05,Black soil,Rainfed,CROP006,Barley
+SEC00050,FARM0031,1,0.63,Clay loam,Drip,CROP019,Potato
+SEC00051,FARM0032,1,0.37,Sandy loam,Sprinkler,CROP009,Green Gram (Moong)
+SEC00052,FARM0033,1,0.37,Clay loam,Sprinkler,CROP004,Sorghum (Jowar)
+SEC00053,FARM0033,2,0.22,Clay loam,Sprinkler,,
+SEC00054,FARM0033,3,0.23,Clay loam,Sprinkler,CROP016,Cotton
+SEC00055,FARM0034,1,0.71,Clay loam,Drip,CROP012,Groundnut
+SEC00056,FARM0034,2,0.37,Clay loam,Drip,CROP004,Sorghum (Jowar)
+SEC00057,FARM0034,3,0.83,Clay loam,Drip,CROP020,Onion
+SEC00058,FARM0035,1,0.53,Sandy loam,Rainfed,,
+SEC00059,FARM0035,2,0.24,Sandy loam,Rainfed,,
+SEC00060,FARM0035,3,0.34,Sandy loam,Rainfed,CROP009,Green Gram (Moong)
+SEC00061,FARM0036,1,0.38,Sandy loam,Flood,CROP021,Tomato
+SEC00062,FARM0036,2,0.38,Sandy loam,Flood,CROP020,Onion
+SEC00063,FARM0037,1,1.18,Loam,Flood,CROP011,Soybean
+SEC00064,FARM0038,1,2.2,Alluvial,Flood,CROP009,Green Gram (Moong)
+SEC00065,FARM0039,1,0.45,Clay loam,Drip,CROP007,Chickpea (Gram)
+SEC00066,FARM0040,1,1.25,Loam,Flood,CROP012,Groundnut
+SEC00067,FARM0040,2,1.05,Loam,Flood,CROP010,Black Gram (Urad)
+SEC00068,FARM0041,1,4.96,Sandy loam,Drip,CROP016,Cotton
+SEC00069,FARM0042,1,0.15,Alluvial,Sprinkler,CROP013,Mustard
+SEC00070,FARM0042,2,0.32,Alluvial,Sprinkler,CROP005,Pearl Millet (Bajra)
+SEC00071,FARM0043,1,0.27,Black soil,Sprinkler,CROP023,Turmeric
+SEC00072,FARM0043,2,0.56,Black soil,Sprinkler,CROP010,Black Gram (Urad)
+SEC00073,FARM0044,1,0.86,Black soil,Sprinkler,CROP024,Banana
+SEC00074,FARM0044,2,1.17,Black soil,Sprinkler,CROP012,Groundnut
+SEC00075,FARM0045,1,1.27,Sandy loam,Flood,CROP025,Mango
+SEC00076,FARM0046,1,1.08,Alluvial,Drip,CROP024,Banana
+SEC00077,FARM0046,2,0.65,Alluvial,Drip,,
+SEC00078,FARM0046,3,0.9,Alluvial,Drip,CROP006,Barley
+SEC00079,FARM0047,1,0.53,Alluvial,Sprinkler,,
+SEC00080,FARM0048,1,2.15,Black soil,Sprinkler,,
+SEC00081,FARM0049,1,1.46,Clay loam,Flood,CROP001,Rice (Paddy)
+SEC00082,FARM0050,1,0.37,Sandy loam,Sprinkler,CROP013,Mustard
+SEC00083,FARM0051,1,1.63,Black soil,Sprinkler,CROP012,Groundnut
+SEC00084,FARM0052,1,0.28,Clay loam,Flood,CROP006,Barley
+SEC00085,FARM0052,2,0.52,Clay loam,Flood,CROP003,Maize
+SEC00086,FARM0053,1,0.35,Alluvial,Sprinkler,CROP007,Chickpea (Gram)
+SEC00087,FARM0054,1,2.11,Black soil,Rainfed,,
+SEC00088,FARM0055,1,0.42,Clay loam,Drip,,
+SEC00089,FARM0056,1,2.75,Black soil,Rainfed,CROP021,Tomato
+SEC00090,FARM0057,1,0.49,Alluvial,Rainfed,,
+SEC00091,FARM0058,1,0.29,Loam,Sprinkler,CROP008,Pigeon Pea (Tur)
+SEC00092,FARM0058,2,0.24,Loam,Sprinkler,CROP020,Onion
+SEC00093,FARM0059,1,0.54,Red soil,Drip,CROP007,Chickpea (Gram)
+SEC00094,FARM0059,2,0.45,Red soil,Drip,CROP017,Sugarcane
+SEC00095,FARM0060,1,1.2,Loam,Drip,CROP005,Pearl Millet (Bajra)
+SEC00096,FARM0061,1,2.04,Red soil,Rainfed,CROP007,Chickpea (Gram)
+SEC00097,FARM0062,1,1.09,Clay loam,Flood,CROP025,Mango
+SEC00098,FARM0063,1,0.45,Sandy loam,Drip,CROP013,Mustard
+SEC00099,FARM0063,2,0.44,Sandy loam,Drip,CROP018,Jute
+SEC00100,FARM0064,1,0.74,Sandy loam,Sprinkler,CROP010,Black Gram (Urad)
+SEC00101,FARM0064,2,0.65,Sandy loam,Sprinkler,CROP014,Sunflower
+SEC00102,FARM0065,1,1.16,Alluvial,Drip,CROP017,Sugarcane
+SEC00103,FARM0066,1,1.15,Clay loam,Sprinkler,CROP020,Onion
+SEC00104,FARM0067,1,0.29,Clay loam,Sprinkler,CROP020,Onion
+SEC00105,FARM0067,2,0.19,Clay loam,Sprinkler,CROP006,Barley
+SEC00106,FARM0067,3,0.17,Clay loam,Sprinkler,,
+SEC00107,FARM0068,1,1.37,Black soil,Flood,CROP012,Groundnut
+SEC00108,FARM0069,1,1.24,Loam,Flood,CROP015,Sesame
+SEC00109,FARM0070,1,0.47,Black soil,Flood,CROP005,Pearl Millet (Bajra)
+SEC00110,FARM0070,2,0.47,Black soil,Flood,CROP024,Banana
+SEC00111,FARM0071,1,3.01,Loam,Flood,CROP003,Maize

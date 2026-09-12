@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.web
+    container_name: agriprofit_web_prod
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://agriprofit_admin:agriprofit_secure_pass@postgres:5432/agriprofit
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - postgres
+      - redis
+      - ml
+
+  ml:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.ml
+    container_name: agriprofit_ml_prod
+    restart: always
+    environment:
+      - ML_PORT=8000
+
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: agriprofit_postgres_prod
+    restart: always
+    environment:
+      POSTGRES_USER: agriprofit_admin
+      POSTGRES_PASSWORD: agriprofit_secure_pass
+      POSTGRES_DB: agriprofit
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+    container_name: agriprofit_redis_prod
+    restart: always
+    volumes:
+      - redisdata_prod:/data
+
+  nginx:
+    image: nginx:alpine
+    container_name: agriprofit_nginx_prod
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+      - ml
+
+volumes:
+  pgdata_prod:
+  redisdata_prod:
+

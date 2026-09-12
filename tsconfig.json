@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["frontend/src/*"],
+      "@agriprofit/shared": ["packages/shared/types/index.ts"],
+      "@agriprofit/shared/types": ["packages/shared/types/index.ts"],
+      "@agriprofit/shared/*": ["packages/shared/*"],
+      "@agriprofit/api-client": ["packages/api-client/src/index.ts"],
+      "@agriprofit/ui": ["packages/ui/components/index.ts"],
+      "@agriprofit/ui/*": ["packages/ui/*"],
+      "@agriprofit/services/*": ["services/*"]
+    },
+    "types": ["node"],
+    "typeRoots": [
+      "./frontend/node_modules/@types",
+      "./node_modules/@types"
+    ],
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "frontend/src/**/*",
+    "services/**/*",
+    "packages/**/*",
+    "scripts/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    ".next",
+    "frontend/.next",
+    "dist",
+    "build",
+    "coverage",
+    ".turbo"
+  ]
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "query": "Mere wheat ke patte peele ho rahe hain, kya karu?",
+    "status": 200,
+    "success": true,
+    "replyPreview": "**Farm Context:** Aapka **Wheat (गेहूं)** khet (Bathinda, Punjab (Trans-Gangetic Plains)) me abhi **Crown Root Initiation (CRI) (22 DAS)** stage par h...",
+    "hasDiagnosisCard": true
+  },
+  {
+    "query": "What fertilizer should I give at CRI stage?",
+    "status": 200,
+    "success": true,
+    "replyPreview": "**ICAR Recommended Nutrient Schedule for Wheat at Crown Root Initiation (CRI) (22 DAS):**\n* **First Top-Dressing:** Apply **30–35 kg Urea per acre** j...",
+    "hasDiagnosisCard": false
+  },
+  {
+    "query": "Diagnose this diseased wheat leaf photo",
+    "status": 200,
+    "success": true,
+    "replyPreview": "🔬 **Computer Vision Scan Diagnostic Results:**\n\n**Active Field Analysis:** Main Field Plot (User: default-farmer) · **Wheat (गेहूं)** at **Crown Root...",
+    "hasDiagnosisCard": true
+  }
+]

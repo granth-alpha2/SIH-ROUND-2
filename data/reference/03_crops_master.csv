@@ -1,0 +1,26 @@
+crop_id,crop_name,category,season,duration_days,water_requirement_mm,soil_type_suitable,min_temp_c,max_temp_c,ideal_temp_min_c,ideal_temp_max_c,avg_yield_kg_per_ha,seed_cost_per_ha_inr,fertilizer_cost_per_ha_inr,labor_cost_per_ha_inr,irrigation_cost_per_ha_inr,other_cost_per_ha_inr,total_input_cost_per_ha_inr,msp_eligible,price_unit,fao_item_code
+CROP001,Rice (Paddy),Cereal,Kharif,130,1250,Clay loam,10,40,20,35,4200,4500,9000,18000,7000,3000,41500,True,Quintal,0027
+CROP002,Wheat,Cereal,Rabi,130,450,Loam,4,32,15,25,3600,4200,7500,10000,4500,2500,28700,True,Quintal,0015
+CROP003,Maize,Cereal,Kharif,100,550,Loam,10,35,21,27,3200,3800,6500,9000,3500,2200,25000,True,Quintal,0056
+CROP004,Sorghum (Jowar),Cereal,Kharif,110,450,Black soil,15,38,26,33,1400,1500,3500,7000,1500,1200,14700,True,Quintal,0083
+CROP005,Pearl Millet (Bajra),Cereal,Kharif,90,400,Sandy loam,15,42,25,33,1600,1200,3000,6000,1200,1000,12400,True,Quintal,0079
+CROP006,Barley,Cereal,Rabi,120,350,Loam,4,30,12,22,2800,3000,5000,8000,3000,1800,20800,True,Quintal,0044
+CROP007,Chickpea (Gram),Pulse,Rabi,100,350,Sandy loam,10,30,18,25,1200,3500,4000,8000,2000,1500,19000,True,Quintal,0191
+CROP008,Pigeon Pea (Tur),Pulse,Kharif,160,650,Loam,18,35,25,30,900,2800,3500,9000,1500,1500,18300,True,Quintal,0197
+CROP009,Green Gram (Moong),Pulse,Kharif,65,350,Sandy loam,20,38,28,32,600,2200,2500,6000,1200,1000,12900,True,Quintal,0193
+CROP010,Black Gram (Urad),Pulse,Kharif,70,350,Sandy loam,20,38,28,32,600,2200,2500,6000,1200,1000,12900,True,Quintal,0195
+CROP011,Soybean,Oilseed,Kharif,100,600,Black soil,18,32,24,28,1500,3200,4500,8000,2000,1800,19500,True,Quintal,0236
+CROP012,Groundnut,Oilseed,Kharif,110,550,Sandy loam,20,35,25,30,1900,4000,5000,9500,3000,2000,23500,True,Quintal,0242
+CROP013,Mustard,Oilseed,Rabi,120,350,Loam,5,30,15,25,1500,2200,4000,7000,2500,1500,17200,True,Quintal,0270
+CROP014,Sunflower,Oilseed,Rabi,100,500,Loam,15,34,20,28,1200,3500,4500,8000,2800,1800,20600,True,Quintal,0267
+CROP015,Sesame,Oilseed,Kharif,90,400,Sandy loam,22,38,26,32,500,2000,2500,6000,1500,1200,13200,True,Quintal,0289
+CROP016,Cotton,Cash Crop,Kharif,180,700,Black soil,15,40,25,32,550,5500,10000,20000,6000,4000,45500,True,Quintal,0328
+CROP017,Sugarcane,Cash Crop,Perennial,360,2000,Loam,18,38,25,32,80000,8000,18000,35000,15000,8000,84000,True,Tonne,0156
+CROP018,Jute,Cash Crop,Kharif,120,1200,Alluvial,20,38,25,32,2200,3000,4500,10000,4000,2000,23500,False,Quintal,0780
+CROP019,Potato,Vegetable,Rabi,100,500,Loam,10,28,15,22,22000,18000,15000,20000,8000,5000,66000,False,Quintal,0116
+CROP020,Onion,Vegetable,Rabi,120,450,Loam,10,32,13,25,18000,9000,10000,22000,7000,4000,52000,False,Quintal,0403
+CROP021,Tomato,Vegetable,Rabi,100,450,Loam,10,32,18,27,25000,6000,12000,25000,9000,6000,58000,False,Quintal,0388
+CROP022,Chili,Spice,Kharif,150,600,Loam,15,35,20,28,1800,7000,9000,25000,6000,5000,52000,False,Quintal,0689
+CROP023,Turmeric,Spice,Kharif,270,1400,Loam,18,35,20,30,5500,25000,15000,40000,12000,8000,100000,False,Quintal,0720
+CROP024,Banana,Fruit,Perennial,330,1800,Loam,15,35,25,30,40000,40000,25000,45000,20000,10000,140000,False,Tonne,0486
+CROP025,Mango,Fruit,Perennial,365,900,Loam,10,40,24,30,8000,0,8000,15000,5000,3000,31000,False,Tonne,0574

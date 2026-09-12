@@ -1,0 +1,49 @@
+{
+  "model_type": "RandomForestRegressor",
+  "model_version": "v2.0-rf-trained",
+  "n_estimators": 100,
+  "max_depth": 12,
+  "training_rows": 4900,
+  "validation_rows": 1400,
+  "test_rows": 700,
+  "features": [
+    "avg_temp_c",
+    "total_rainfall_mm",
+    "soil_ph",
+    "nitrogen_kg_per_ha",
+    "crop_name_enc",
+    "state_enc",
+    "irrigation_type_enc"
+  ],
+  "target": "actual_yield_kg_per_ha",
+  "metrics": [
+    {
+      "split": "TRAIN",
+      "mae_kg_per_ha": 428.2,
+      "rmse_kg_per_ha": 829.72,
+      "r2_score": 0.984
+    },
+    {
+      "split": "VALIDATION",
+      "mae_kg_per_ha": 690.77,
+      "rmse_kg_per_ha": 1467.11,
+      "r2_score": 0.9451
+    },
+    {
+      "split": "TEST",
+      "mae_kg_per_ha": 683.33,
+      "rmse_kg_per_ha": 1309.38,
+      "r2_score": 0.9601
+    }
+  ],
+  "generalization_gap_r2": 0.039,
+  "feature_importance": {
+    "crop_name_enc": 0.6182,
+    "avg_temp_c": 0.321,
+    "total_rainfall_mm": 0.0343,
+    "irrigation_type_enc": 0.0162,
+    "soil_ph": 0.0056,
+    "nitrogen_kg_per_ha": 0.0024,
+    "state_enc": 0.0024
+  }
+}

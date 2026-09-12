@@ -1,0 +1,67 @@
+{
+  "model_type": "Ensemble(Ridge + GradientBoostingRegressor)",
+  "model_version": "v2.0-ensemble-trained",
+  "n_estimators_gbr": 200,
+  "max_depth_gbr": 5,
+  "ensemble_weights": {
+    "ridge": 0.4999,
+    "gbr": 0.5001
+  },
+  "training_rows": 9900,
+  "validation_rows": 3600,
+  "test_rows": 6000,
+  "features": [
+    "price_lag1_inr",
+    "price_lag2_inr",
+    "price_lag3_inr",
+    "rainfall_anomaly_mm",
+    "trade_demand_index",
+    "month_sin",
+    "month_cos",
+    "price_momentum",
+    "log_lag1",
+    "log_lag2",
+    "log_lag3",
+    "crop_name_enc",
+    "state_enc"
+  ],
+  "target": "target_price_next_period_inr",
+  "metrics": [
+    {
+      "split": "TRAIN",
+      "mae_inr_per_q": 150.15,
+      "rmse_inr_per_q": 194.42,
+      "r2_score": 0.9769,
+      "mape_pct": 3.59
+    },
+    {
+      "split": "VALIDATION",
+      "mae_inr_per_q": 168.77,
+      "rmse_inr_per_q": 220.01,
+      "r2_score": 0.9721,
+      "mape_pct": 3.91
+    },
+    {
+      "split": "TEST",
+      "mae_inr_per_q": 167.63,
+      "rmse_inr_per_q": 219.36,
+      "r2_score": 0.9733,
+      "mape_pct": 3.79
+    }
+  ],
+  "feature_importance_gbr": {
+    "price_lag1_inr": 0.517,
+    "log_lag1": 0.3342,
+    "log_lag2": 0.0604,
+    "price_lag2_inr": 0.0477,
+    "month_cos": 0.0179,
+    "month_sin": 0.007,
+    "price_lag3_inr": 0.0058,
+    "log_lag3": 0.0034,
+    "price_momentum": 0.0031,
+    "crop_name_enc": 0.0019,
+    "trade_demand_index": 0.0008,
+    "rainfall_anomaly_mm": 0.0007,
+    "state_enc": 0.0001
+  }
+}

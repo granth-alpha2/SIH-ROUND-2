@@ -1,0 +1,16 @@
+{
+  "python.analysis.extraPaths": [
+    ".",
+    "./apps/ml",
+    "./apps/ml/src"
+  ],
+  "python.autoComplete.extraPaths": [
+    ".",
+    "./apps/ml",
+    "./apps/ml/src"
+  ],
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none"
+  },
+  "typescript.tsdk": "frontend/node_modules/typescript/lib"
+}

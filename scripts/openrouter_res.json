@@ -1,0 +1,63 @@
+[
+  {
+    "model": "openai/gpt-4o-mini",
+    "status": 402,
+    "data": {
+      "error": {
+        "message": "Insufficient credits. This account never purchased credits. Make sure your key is on the correct account or org, and if so, purchase more at https://openrouter.ai/settings/credits",
+        "code": 402,
+        "metadata": {
+          "limit_source": "openrouter_credits",
+          "remedy_hint": "Add credits at https://openrouter.ai/settings/credits, or lower max_tokens / prompt size to fit your remaining balance."
+        }
+      }
+    }
+  },
+  {
+    "model": "meta-llama/llama-3.3-70b-instruct:free",
+    "status": 404,
+    "data": {
+      "error": {
+        "message": "This model is unavailable for free. The paid version is available now - use this slug instead: meta-llama/llama-3.3-70b-instruct",
+        "code": 404
+      },
+      "user_id": "user_3ERLMyu3Z92f6OI6ICqnEaUNzHE"
+    }
+  },
+  {
+    "model": "google/gemini-2.0-flash-exp:free",
+    "status": 404,
+    "data": {
+      "error": {
+        "message": "No endpoints found for google/gemini-2.0-flash-exp:free.",
+        "code": 404
+      },
+      "user_id": "user_3ERLMyu3Z92f6OI6ICqnEaUNzHE"
+    }
+  },
+  {
+    "model": "mistralai/mistral-7b-instruct:free",
+    "status": 404,
+    "data": {
+      "error": {
+        "message": "No endpoints found for mistralai/mistral-7b-instruct:free.",
+        "code": 404
+      },
+      "user_id": "user_3ERLMyu3Z92f6OI6ICqnEaUNzHE"
+    }
+  },
+  {
+    "model": "deepseek/deepseek-chat",
+    "status": 402,
+    "data": {
+      "error": {
+        "message": "Insufficient credits. This account never purchased credits. Make sure your key is on the correct account or org, and if so, purchase more at https://openrouter.ai/settings/credits",
+        "code": 402,
+        "metadata": {
+          "limit_source": "openrouter_credits",
+          "remedy_hint": "Add credits at https://openrouter.ai/settings/credits, or lower max_tokens / prompt size to fit your remaining balance."
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,73 @@
+[
+  {
+    "model": "nvidia/nemotron-3.5-lightning:free",
+    "status": 200,
+    "content": "Here's a thinking process:\n\n1.  **Analyze User Input:**\n   - User says: \"Mere wheat ke patte peele ho rahe hain, kya karu?\" (The leaves of my wheat are turning yellow, what should I do?)\n   - Constraint: \"2 line me jawab dein\" (Answer in 2 lines)\n\n2.  **Identify the Problem:**\n   - Wheat leaves turning yellow (chlorosis) - could be due to nitrogen deficiency, waterlogging, disease, or nutrient imbalance.\n\n3.  **Formulate Advice (Agri context, concise):**\n   - Common cause: Nitrogen deficiency or improper water/moisture.\n   - Suggested quick fix: Apply"
+  },
+  {
+    "model": "google/gemma-4-31b-it:free",
+    "status": 429,
+    "content": null,
+    "error": {
+      "message": "Provider returned error",
+      "code": 429,
+      "metadata": {
+        "raw": "google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+        "provider_name": "Google AI Studio",
+        "is_byok": false,
+        "provider_error_code": "429",
+        "limit_source": "upstream_provider_shared_pool",
+        "remedy_hint": "Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing"
+      }
+    }
+  },
+  {
+    "model": "google/gemma-4-26b-a4b-it:free",
+    "status": 429,
+    "content": null,
+    "error": {
+      "message": "Provider returned error",
+      "code": 429,
+      "metadata": {
+        "raw": "google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+        "provider_name": "Google AI Studio",
+        "is_byok": false,
+        "provider_error_code": "429",
+        "limit_source": "upstream_provider_shared_pool",
+        "remedy_hint": "Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing"
+      }
+    }
+  },
+  {
+    "model": "z-ai/glm-5.2:free",
+    "status": 429,
+    "content": null,
+    "error": {
+      "message": "Provider returned error",
+      "code": 429,
+      "metadata": {
+        "raw": "z-ai/glm-5.2:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+        "provider_name": "Decart",
+        "is_byok": false,
+        "provider_error_code": "upstream_429",
+        "limit_source": "upstream_provider_shared_pool",
+        "remedy_hint": "Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing",
+        "retry_after_seconds": 5,
+        "retry_after_seconds_raw": 5,
+        "headers": {
+          "Retry-After": "5"
+        }
+      }
+    }
+  },
+  {
+    "model": "minimax/minimax-m2.7:free",
+    "status": 200,
+    "content": "Wheat ke patte peele hone ke karan ho sakte hain - nitrogen ki kami, over-watering ya fungus. Jaldi mein urea (nitrogen) daalein aur water drainage check karein."
+  },
+  {
+    "model": "liquid/lfm-2.5-2.6b:free",
+    "status": 200,
+    "content": null
+  }
+]

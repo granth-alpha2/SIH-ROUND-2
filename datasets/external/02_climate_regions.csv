@@ -1,0 +1,29 @@
+region_id,district_id,state,district,latitude,longitude,agro_climatic_zone,koppen_climate_class
+REG001,DIST001,Punjab,Ludhiana,30.901,75.8573,Trans-Gangetic Plains,Cwa
+REG002,DIST002,Punjab,Amritsar,31.634,74.8723,Trans-Gangetic Plains,Cwa
+REG003,DIST003,Punjab,Bathinda,30.211,74.9455,Trans-Gangetic Plains,Cwa
+REG004,DIST004,Haryana,Karnal,29.6857,76.9905,Trans-Gangetic Plains,Cwa
+REG005,DIST005,Haryana,Hisar,29.1492,75.7217,Trans-Gangetic Plains,Cwa
+REG006,DIST006,Uttar Pradesh,Meerut,28.9845,77.7064,Upper Gangetic Plains,Cwa
+REG007,DIST007,Uttar Pradesh,Lucknow,26.8467,80.9462,Upper Gangetic Plains,Cwa
+REG008,DIST008,Uttar Pradesh,Varanasi,25.3176,82.9739,Middle Gangetic Plains,Aw
+REG009,DIST009,Bihar,Patna,25.5941,85.1376,Middle Gangetic Plains,Aw
+REG010,DIST010,Bihar,Gaya,24.7955,84.9994,Middle Gangetic Plains,Aw
+REG011,DIST011,West Bengal,Bardhaman,23.2324,87.8615,Lower Gangetic Plains,Aw
+REG012,DIST012,West Bengal,Nadia,23.471,88.5565,Lower Gangetic Plains,Aw
+REG013,DIST013,Madhya Pradesh,Indore,22.7196,75.8577,Central Plateau & Hills,Aw
+REG014,DIST014,Madhya Pradesh,Bhopal,23.2599,77.4126,Central Plateau & Hills,Aw
+REG015,DIST015,Madhya Pradesh,Ujjain,23.1793,75.7849,Central Plateau & Hills,Aw
+REG016,DIST016,Maharashtra,Nashik,19.9975,73.7898,Western Plateau & Hills,BSh
+REG017,DIST017,Maharashtra,Pune,18.5204,73.8567,Western Plateau & Hills,BSh
+REG018,DIST018,Maharashtra,Nagpur,21.1458,79.0882,Western Plateau & Hills,BSh
+REG019,DIST019,Gujarat,Rajkot,22.3039,70.8022,Gujarat Plains & Hills,BSh
+REG020,DIST020,Gujarat,Ahmedabad,23.0225,72.5714,Gujarat Plains & Hills,BSh
+REG021,DIST021,Rajasthan,Jaipur,26.9124,75.7873,Western Dry Region,BWh
+REG022,DIST022,Rajasthan,Kota,25.2138,75.8648,Western Dry Region,BWh
+REG023,DIST023,Karnataka,Belagavi,15.8497,74.4977,Southern Plateau & Hills,Aw
+REG024,DIST024,Karnataka,Mysuru,12.2958,76.6394,Southern Plateau & Hills,Aw
+REG025,DIST025,Andhra Pradesh,Guntur,16.3067,80.4365,East Coast Plains,Aw
+REG026,DIST026,Andhra Pradesh,Krishna,16.6108,80.7214,East Coast Plains,Aw
+REG027,DIST027,Tamil Nadu,Thanjavur,10.787,79.1378,East Coast Plains,Aw
+REG028,DIST028,Tamil Nadu,Coimbatore,11.0168,76.9558,Southern Plateau & Hills,Aw

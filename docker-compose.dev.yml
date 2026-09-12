@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.web
+    container_name: agriprofit_web_dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://agriprofit_admin:agriprofit_secure_pass@postgres:5432/agriprofit
+      - REDIS_URL=redis://redis:6379
+      - ML_SERVICE_URL=http://ml:8000
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - postgres
+      - redis
+      - ml
+
+  ml:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: agriprofit_ml_dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml-service:/app
+
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: agriprofit_postgres_dev
+    environment:
+      POSTGRES_USER: agriprofit_admin
+      POSTGRES_PASSWORD: agriprofit_secure_pass
+      POSTGRES_DB: agriprofit
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+      - ./database/init_consolidated.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+    container_name: agriprofit_redis_dev
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata_dev:
+

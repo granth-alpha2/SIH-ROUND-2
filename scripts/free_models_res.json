@@ -1,0 +1,56 @@
+[
+  {
+    "model": "google/gemini-2.0-flash-lite-preview-02-05:free",
+    "status": 400,
+    "content": null,
+    "data": {
+      "message": "google/gemini-2.0-flash-lite-preview-02-05:free is not a valid model ID",
+      "code": 400
+    }
+  },
+  {
+    "model": "deepseek/deepseek-r1:free",
+    "status": 404,
+    "content": null,
+    "data": {
+      "message": "This model is unavailable for free. The paid version is available now - use this slug instead: deepseek/deepseek-r1",
+      "code": 404
+    }
+  },
+  {
+    "model": "meta-llama/llama-3.2-3b-instruct:free",
+    "status": 404,
+    "content": null,
+    "data": {
+      "message": "This model is unavailable for free. The paid version is available now - use this slug instead: meta-llama/llama-3.2-3b-instruct",
+      "code": 404
+    }
+  },
+  {
+    "model": "qwen/qwen-2.5-coder-32b-instruct:free",
+    "status": 404,
+    "content": null,
+    "data": {
+      "message": "This model is unavailable for free. The paid version is available now - use this slug instead: qwen/qwen-2.5-coder-32b-instruct",
+      "code": 404
+    }
+  },
+  {
+    "model": "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
+    "status": 404,
+    "content": null,
+    "data": {
+      "message": "No endpoints found for cognitivecomputations/dolphin3.0-r1-mistral-24b:free.",
+      "code": 404
+    }
+  },
+  {
+    "model": "google/gemini-2.0-pro-exp-02-05:free",
+    "status": 400,
+    "content": null,
+    "data": {
+      "message": "google/gemini-2.0-pro-exp-02-05:free is not a valid model ID",
+      "code": 400
+    }
+  }
+]

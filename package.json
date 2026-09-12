@@ -1,0 +1,23 @@
+{
+  "name": "agriprofit-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "dev": "node scripts/dev_runner.js",
+    "start": "node scripts/dev_runner.js",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:ml": "python -m uvicorn ml-service.app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "validate": "python scripts/validate_data.py",
+    "build": "npm --prefix frontend run build",
+    "typecheck": "npm --prefix frontend run tsc --noEmit",
+    "test": "npx --prefix frontend tsx tests/integration/test_farms.ts"
+  },
+
+  "workspaces": [
+    "frontend",
+    "apps/*",
+    "packages/*"
+  ]
+}
+

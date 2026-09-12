@@ -1,0 +1,87 @@
+version: "3.8"
+
+services:
+  # 1. AgriProfit Next.js Web App
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agriprofit_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - DATABASE_URL=postgresql://agriprofit_admin:agriprofit_secure_pass@postgres:5432/agriprofit
+      - POSTGIS_ENABLED=true
+      - REDIS_URL=redis://redis:6379
+      - ML_SERVICE_URL=http://ml:8000
+      - JWT_SECRET=production_super_secret_signing_key_change_me_before_deploying_in_prod
+      - SESSION_COOKIE_NAME=agriprofit_session
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      ml:
+        condition: service_started
+    networks:
+      - agriprofit_net
+
+  # 2. Managed PostgreSQL with PostGIS Spatial Extension
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: agriprofit_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: agriprofit_admin
+      POSTGRES_PASSWORD: agriprofit_secure_pass
+      POSTGRES_DB: agriprofit
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init_consolidated.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agriprofit_admin -d agriprofit"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agriprofit_net
+
+  # 3. Redis Cache for Session & Rate Limiting
+  redis:
+    image: redis:7-alpine
+    container_name: agriprofit_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - agriprofit_net
+
+  # 4. Machine Learning & Price/Yield Forecasting Microservice
+  ml:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: agriprofit_ml
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - agriprofit_net
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  agriprofit_net:
+    driver: bridge
+

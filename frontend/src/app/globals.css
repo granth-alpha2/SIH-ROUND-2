@@ -1,0 +1,868 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ==========================================================================
+   AGRIPROFIT DESIGN SYSTEM — CSS TOKENS & SURFACES
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DAY MODE (Clean, Modern, Trustworthy Agricultural SaaS)
+   -------------------------------------------------------------------------- */
+:root,
+html[data-theme="day"],
+html[data-mode="day"] {
+  --bg-canvas: #f8faf7;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #f1f5ef;
+  --bg-surface-accent: #eef7f0;
+  
+  --border-subtle: #e6ede4;
+  --border-default: #d7e3d4;
+  --border-strong: #b8ccb3;
+  --border-accent: #9ec2a8;
+  
+  --text-primary: #111e16;
+  --text-secondary: #425449;
+  --text-muted: #6b7f73;
+  --text-inverse: #ffffff;
+
+  --color-primary: #1f6b43;
+  --color-primary-hover: #175434;
+  --color-primary-light: #e8f5ec;
+  --color-primary-text: #134e2f;
+
+  --color-emerald: #10b981;
+  --color-emerald-bg: #ecfdf5;
+  --color-emerald-border: #a7f3d0;
+  --color-emerald-text: #065f46;
+
+  --color-amber: #f59e0b;
+  --color-amber-bg: #fffbeb;
+  --color-amber-border: #fde68a;
+  --color-amber-text: #92400e;
+
+  --color-sky: #0ea5e9;
+  --color-sky-bg: #f0f9ff;
+  --color-sky-border: #bae6fd;
+  --color-sky-text: #075985;
+
+  --color-rose: #f43f5e;
+  --color-rose-bg: #fff1f2;
+  --color-rose-border: #fecdd3;
+  --color-rose-text: #9f1239;
+
+  --shadow-subtle: 0 1px 3px 0 rgba(16, 24, 20, 0.04), 0 1px 2px -1px rgba(16, 24, 20, 0.04);
+  --shadow-card: 0 4px 12px -2px rgba(16, 24, 20, 0.05), 0 2px 6px -2px rgba(16, 24, 20, 0.03);
+  --shadow-elevated: 0 12px 28px -4px rgba(16, 24, 20, 0.08), 0 4px 12px -4px rgba(16, 24, 20, 0.04);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-full: 9999px;
+
+  /* Legacy variable mappings for backward compatibility */
+  --paper: var(--bg-canvas);
+  --cream: var(--bg-surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-muted);
+  --line: var(--border-default);
+  --green: var(--color-primary);
+  --lime: var(--color-primary-light);
+  --card-accent: var(--bg-surface-accent);
+  --card-accent-border: var(--border-accent);
+  --sidebar-bg: #ffffff;
+  --topbar-bg: rgba(255, 255, 255, 0.88);
+  --input-bg: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   2. DAY MODE + EYE CARE (High-Contrast Outdoor Sunlight & Glare Filter)
+   -------------------------------------------------------------------------- */
+html[data-theme="day-eyecare"],
+html[data-mode="day"][data-eyecare="true"] {
+  --bg-canvas: #f5eedb;
+  --bg-surface: #fcf9f0;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #ede2c5;
+  --bg-surface-accent: #e5d8b5;
+
+  --border-subtle: #d3c299;
+  --border-default: #b9a26e;
+  --border-strong: #907844;
+  --border-accent: #6f5927;
+
+  --text-primary: #151004;
+  --text-secondary: #33270f;
+  --text-muted: #52401f;
+  --text-inverse: #ffffff;
+
+  --color-primary: #1c5c2d;
+  --color-primary-hover: #134520;
+  --color-primary-light: #dfebd5;
+  --color-primary-text: #0f3d1b;
+
+  --color-emerald: #15803d;
+  --color-emerald-bg: #e6f4e2;
+  --color-emerald-border: #9ecf94;
+  --color-emerald-text: #0d4a22;
+
+  --color-amber: #b45309;
+  --color-amber-bg: #fef3c7;
+  --color-amber-border: #fcd34d;
+  --color-amber-text: #78350f;
+
+  --color-sky: #0369a1;
+  --color-sky-bg: #e0f2fe;
+  --color-sky-border: #7dd3fc;
+  --color-sky-text: #0c4a6e;
+
+  --color-rose: #be123c;
+  --color-rose-bg: #ffe4e6;
+  --color-rose-border: #fda4af;
+  --color-rose-text: #881337;
+
+  --shadow-subtle: 0 1px 3px 0 rgba(21, 16, 4, 0.08);
+  --shadow-card: 0 4px 14px -2px rgba(21, 16, 4, 0.12), 0 0 0 1px #b9a26e;
+  --shadow-elevated: 0 14px 30px -4px rgba(21, 16, 4, 0.16), 0 0 0 2px #907844;
+
+  /* Legacy mappings */
+  --paper: var(--bg-canvas);
+  --cream: var(--bg-surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-muted);
+  --line: var(--border-default);
+  --green: var(--color-primary);
+  --lime: var(--color-primary-light);
+  --card-accent: var(--bg-surface-accent);
+  --card-accent-border: var(--border-accent);
+  --sidebar-bg: #f9f4e8;
+  --topbar-bg: rgba(249, 244, 232, 0.95);
+  --input-bg: #fffefb;
+}
+
+/* --------------------------------------------------------------------------
+   3. NIGHT MODE (Deep Slate-Emerald OLED Theme — 100% Readability & Contrast)
+   -------------------------------------------------------------------------- */
+html[data-theme="night"],
+html[data-mode="night"] {
+  --bg-canvas: #090e0b;
+  --bg-surface: #111a14;
+  --bg-surface-elevated: #18241d;
+  --bg-surface-subtle: #142018;
+  --bg-surface-accent: #172d1f;
+
+  --border-subtle: #1e3024;
+  --border-default: #284232;
+  --border-strong: #3b5e48;
+  --border-accent: #497a5b;
+
+  --text-primary: #f0f7f2;
+  --text-secondary: #c2d6c8;
+  --text-muted: #8ba393;
+  --text-inverse: #090e0b;
+
+  --color-primary: #34d399;
+  --color-primary-hover: #10b981;
+  --color-primary-light: #102e1e;
+  --color-primary-text: #a7f3d0;
+
+  --color-emerald: #34d399;
+  --color-emerald-bg: #0d281a;
+  --color-emerald-border: #1a4d33;
+  --color-emerald-text: #6ee7b7;
+
+  --color-amber: #fbbf24;
+  --color-amber-bg: #2d2007;
+  --color-amber-border: #593f0b;
+  --color-amber-text: #fde68a;
+
+  --color-sky: #38bdf8;
+  --color-sky-bg: #08283a;
+  --color-sky-border: #134e6f;
+  --color-sky-text: #7dd3fc;
+
+  --color-rose: #fb7185;
+  --color-rose-bg: #340c16;
+  --color-rose-border: #68192d;
+  --color-rose-text: #fecdd3;
+
+  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 16px -2px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-elevated: 0 14px 32px -4px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  /* Legacy mappings */
+  --paper: var(--bg-canvas);
+  --cream: var(--bg-surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-muted);
+  --line: var(--border-default);
+  --green: var(--color-primary);
+  --lime: var(--color-primary-light);
+  --card-accent: var(--bg-surface-accent);
+  --card-accent-border: var(--border-accent);
+  --sidebar-bg: #0c1410;
+  --topbar-bg: rgba(12, 20, 16, 0.92);
+  --input-bg: #131e17;
+}
+
+/* --------------------------------------------------------------------------
+   4. NIGHT MODE + EYE CARE (Warm Candlelight & Deep Amber OLED)
+   -------------------------------------------------------------------------- */
+html[data-theme="night-eyecare"],
+html[data-mode="night"][data-eyecare="true"] {
+  --bg-canvas: #0e0c08;
+  --bg-surface: #17140e;
+  --bg-surface-elevated: #211c13;
+  --bg-surface-subtle: #1c1810;
+  --bg-surface-accent: #292112;
+
+  --border-subtle: #2d2415;
+  --border-default: #3d311b;
+  --border-strong: #574624;
+  --border-accent: #785f2f;
+
+  --text-primary: #f7edd3;
+  --text-secondary: #d4c59f;
+  --text-muted: #9e8f69;
+  --text-inverse: #0e0c08;
+
+  --color-primary: #eab308;
+  --color-primary-hover: #ca8a04;
+  --color-primary-light: #2b2207;
+  --color-primary-text: #fef08a;
+
+  --color-emerald: #a3e635;
+  --color-emerald-bg: #1c290a;
+  --color-emerald-border: #3b5514;
+  --color-emerald-text: #d9f99d;
+
+  --color-amber: #f59e0b;
+  --color-amber-bg: #2d1e05;
+  --color-amber-border: #5b3c0a;
+  --color-amber-text: #fde68a;
+
+  --color-sky: #38bdf8;
+  --color-sky-bg: #0a2333;
+  --color-sky-border: #144869;
+  --color-sky-text: #bae6fd;
+
+  --color-rose: #f87171;
+  --color-rose-bg: #320f0f;
+  --color-rose-border: #641d1d;
+  --color-rose-text: #fecaca;
+
+  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 4px 16px -2px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(247, 237, 211, 0.06);
+  --shadow-elevated: 0 14px 32px -4px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(247, 237, 211, 0.09);
+
+  /* Legacy mappings */
+  --paper: var(--bg-canvas);
+  --cream: var(--bg-surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-muted);
+  --line: var(--border-default);
+  --green: var(--color-primary);
+  --lime: var(--color-primary-light);
+  --card-accent: var(--bg-surface-accent);
+  --card-accent-border: var(--border-accent);
+  --sidebar-bg: #120f0a;
+  --topbar-bg: rgba(18, 15, 10, 0.92);
+  --input-bg: #1a160f;
+}
+
+/* ==========================================================================
+   GLOBAL BASE STYLES & ACCESSIBILITY RESET (GOVERNMENT & ELDERLY-CALIBRATED)
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+  font-size: 16px; /* Standard crisp 16px web baseline */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Font Size Scaling (Accessible & Proportional) */
+html[data-font-size="sm"] { font-size: 14.5px; }
+html[data-font-size="md"] { font-size: 16px; }
+html[data-font-size="lg"] { font-size: 17.5px; }
+html[data-font-size="xl"] { font-size: 19px; }
+
+/* High Contrast Mode */
+html[data-contrast="high"],
+html[data-theme="high-contrast"] {
+  --bg-canvas: #ffffff !important;
+  --bg-surface: #ffffff !important;
+  --bg-surface-elevated: #ffffff !important;
+  --bg-surface-subtle: #f0f0f0 !important;
+  --bg-surface-accent: #e5e5e5 !important;
+  --border-subtle: #000000 !important;
+  --border-default: #000000 !important;
+  --border-strong: #000000 !important;
+  --border-accent: #000000 !important;
+  --text-primary: #000000 !important;
+  --text-secondary: #000000 !important;
+  --text-muted: #111111 !important;
+  --color-primary: #0b4d75 !important;
+  --color-primary-hover: #083754 !important;
+  --color-primary-light: #e0f2fe !important;
+  --color-primary-text: #083754 !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-size: 0.9375rem; /* Clean 15px baseline */
+  line-height: 1.55;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Eye Care Mode — Warms color spectrum, eliminates harsh blue glare for eye comfort */
+html[data-eyecare="true"] {
+  --bg-canvas: #fbf7ee !important;
+  --bg-surface: #fffdf8 !important;
+  --bg-surface-elevated: #ffffff !important;
+  --bg-surface-subtle: #f4ecdc !important;
+  --border-default: #e6dcce !important;
+  --border-subtle: #f0e6d6 !important;
+  --border-strong: #c8ba9f !important;
+  --text-primary: #2d261e !important;
+  --text-secondary: #574c3e !important;
+  --text-muted: #7d705f !important;
+  filter: sepia(0.20) saturate(0.92) contrast(0.98);
+}
+
+html[data-mode="night"][data-eyecare="true"],
+html[data-theme="night-eyecare"] {
+  --bg-canvas: #12100d !important;
+  --bg-surface: #1c1813 !important;
+  --bg-surface-elevated: #26211a !important;
+  --bg-surface-subtle: #211c16 !important;
+  --border-default: #3d3427 !important;
+  --border-subtle: #2f271d !important;
+  --border-strong: #544736 !important;
+  --text-primary: #f2e3cb !important;
+  --text-secondary: #c9b99e !important;
+  --text-muted: #968872 !important;
+  filter: sepia(0.28) saturate(0.9) brightness(0.95);
+}
+
+/* Night / Dark Mode Component Overrides */
+html[data-mode="night"] {
+  color-scheme: dark;
+}
+
+html[data-mode="night"] body {
+  background-color: #0b1120 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-mode="night"] .bg-white {
+  background-color: #111827 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-mode="night"] .bg-slate-50,
+html[data-mode="night"] .bg-slate-100 {
+  background-color: #0f172a !important;
+}
+
+html[data-mode="night"] .bg-slate-900 {
+  background-color: #030712 !important;
+}
+
+html[data-mode="night"] .text-slate-900,
+html[data-mode="night"] .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html[data-mode="night"] .text-slate-700,
+html[data-mode="night"] .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html[data-mode="night"] .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html[data-mode="night"] .border-slate-200,
+html[data-mode="night"] .border-slate-300,
+html[data-mode="night"] .border-slate-150 {
+  border-color: #1e293b !important;
+}
+
+html[data-mode="night"] input,
+html[data-mode="night"] select,
+html[data-mode="night"] textarea {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html[data-mode="night"] .hover\:bg-slate-50:hover,
+html[data-mode="night"] .hover\:bg-slate-100:hover {
+  background-color: #1e293b !important;
+}
+
+/* Focus styles for keyboard accessibility */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2.5px solid #0ea5e9 !important;
+  outline-offset: 2px !important;
+}
+
+/* Skip to main content link */
+.skip-nav-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: #0b4d75;
+  color: #ffffff !important;
+  padding: 8px 16px;
+  font-weight: 700;
+  z-index: 99999;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transition: top 0.15s ease-in-out;
+}
+.skip-nav-link:focus {
+  top: 16px;
+}
+
+/* National Tricolor Bar */
+.gov-tricolor-bar {
+  height: 3.5px;
+  width: 100%;
+  background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%, #138808 100%);
+}
+
+/* Headings Typography — Plus Jakarta Sans for crisp, modern, authoritative dashboard feel */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+p {
+  color: inherit;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   AGRIPROFIT REUSABLE COMPONENT SYSTEM CLASSES (56px MIN TOUCH TARGET)
+   ========================================================================== */
+
+/* Cards & Panels */
+.agri-card,
+.panel,
+.stat-card {
+  background-color: var(--bg-surface);
+  border: 1.5px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.agri-card-elevated {
+  background-color: var(--bg-surface-elevated);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-elevated);
+}
+
+.agri-card-accent {
+  background-color: var(--bg-surface-accent);
+  border: 1.5px solid var(--border-accent);
+  border-radius: var(--radius-xl);
+}
+
+/* Accessible Buttons (Min 56px Tall Touch Targets) */
+.agri-btn-primary,
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  background-color: var(--color-primary);
+  color: var(--text-inverse) !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 14px 26px;
+  border-radius: var(--radius-lg);
+  border: 2px solid transparent;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.agri-btn-primary:hover,
+.primary-button:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+}
+
+.agri-btn-secondary,
+.outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  background-color: var(--bg-surface-subtle);
+  color: var(--text-primary) !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 14px 26px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-default);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.agri-btn-secondary:hover,
+.outline-button:hover {
+  background-color: var(--bg-surface-accent);
+  border-color: var(--border-strong);
+  color: var(--color-primary) !important;
+}
+
+/* Accessible Form Controls (Min 56px Height) */
+.agri-input,
+.agri-select,
+input[type="text"],
+input[type="number"],
+input[type="tel"],
+input[type="search"],
+select,
+textarea {
+  width: 100%;
+  min-height: 56px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  font-size: 18px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.agri-input:focus,
+.agri-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3.5px var(--color-primary-light);
+}
+
+::placeholder {
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+
+/* Badges & Status Chips (Enlarged) */
+.agri-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid transparent;
+}
+
+.agri-badge-emerald {
+  background-color: var(--color-emerald-bg);
+  border-color: var(--color-emerald-border);
+  color: var(--color-emerald-text);
+}
+
+.agri-badge-amber {
+  background-color: var(--color-amber-bg);
+  border-color: var(--color-amber-border);
+  color: var(--color-amber-text);
+}
+
+.agri-badge-sky {
+  background-color: var(--color-sky-bg);
+  border-color: var(--color-sky-border);
+  color: var(--color-sky-text);
+}
+
+.agri-badge-rose {
+  background-color: var(--color-rose-bg);
+  border-color: var(--color-rose-border);
+  color: var(--color-rose-text);
+}
+
+/* ==========================================================================
+   UNIVERSAL DARK MODE & EYE CARE CONTRAST OVERRIDES
+   ========================================================================== */
+
+html[data-mode="night"],
+html[data-theme="night"],
+html[data-theme="night-eyecare"] {
+  color-scheme: dark;
+}
+
+/* Automatic contrast correction for hardcoded Tailwind text utility classes */
+html[data-mode="night"] .text-gray-950,
+html[data-mode="night"] .text-gray-900,
+html[data-mode="night"] .text-gray-800,
+html[data-mode="night"] .text-gray-700,
+html[data-mode="night"] .text-slate-950,
+html[data-mode="night"] .text-slate-900,
+html[data-mode="night"] .text-slate-800,
+html[data-mode="night"] .text-slate-700,
+html[data-mode="night"] .text-zinc-900,
+html[data-mode="night"] .text-zinc-800,
+html[data-mode="night"] .text-black,
+html[data-theme="night-eyecare"] .text-gray-950,
+html[data-theme="night-eyecare"] .text-gray-900,
+html[data-theme="night-eyecare"] .text-gray-800,
+html[data-theme="night-eyecare"] .text-gray-700,
+html[data-theme="night-eyecare"] .text-slate-900,
+html[data-theme="night-eyecare"] .text-slate-800 {
+  color: var(--text-primary) !important;
+}
+
+html[data-mode="night"] .text-gray-600,
+html[data-mode="night"] .text-gray-500,
+html[data-mode="night"] .text-slate-600,
+html[data-mode="night"] .text-slate-500,
+html[data-theme="night-eyecare"] .text-gray-600,
+html[data-theme="night-eyecare"] .text-gray-500 {
+  color: var(--text-secondary) !important;
+}
+
+html[data-mode="night"] .text-gray-400,
+html[data-mode="night"] .text-slate-400,
+html[data-theme="night-eyecare"] .text-gray-400 {
+  color: var(--text-muted) !important;
+}
+
+/* Automatic surface correction for hardcoded white/light container utilities */
+html[data-mode="night"] .bg-white:not([role="tooltip"]):not(.theme-exempt),
+html[data-mode="night"] .bg-gray-50,
+html[data-mode="night"] .bg-slate-50,
+html[data-mode="night"] .bg-zinc-50,
+html[data-theme="night-eyecare"] .bg-white:not([role="tooltip"]):not(.theme-exempt),
+html[data-theme="night-eyecare"] .bg-gray-50,
+html[data-theme="night-eyecare"] .bg-slate-50 {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-default) !important;
+}
+
+html[data-mode="night"] .bg-gray-100,
+html[data-mode="night"] .bg-slate-100,
+html[data-theme="night-eyecare"] .bg-gray-100 {
+  background-color: var(--bg-surface-subtle) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-default) !important;
+}
+
+html[data-mode="night"] .border-gray-200,
+html[data-mode="night"] .border-gray-300,
+html[data-mode="night"] .border-slate-200,
+html[data-mode="night"] .border-slate-300,
+html[data-theme="night-eyecare"] .border-gray-200,
+html[data-theme="night-eyecare"] .border-gray-300 {
+  border-color: var(--border-default) !important;
+}
+
+/* ==========================================================================
+   APP SHELL & LAYOUT ARCHITECTURE
+   ========================================================================== */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-canvas);
+}
+
+.sidebar {
+  width: 280px;
+  flex: 0 0 280px;
+  background-color: var(--sidebar-bg);
+  border-right: 1.5px solid var(--border-subtle);
+  padding: 24px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 40;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 6px 10px;
+  margin-bottom: 20px;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #10b981 100%);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 700;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+}
+
+.profile-card {
+  background-color: var(--bg-surface-subtle);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.profile-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 2px solid var(--border-accent);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 17px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 54px;
+  padding: 12px 18px;
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  margin-bottom: 6px;
+}
+
+.nav-item:hover {
+  background-color: var(--bg-surface-subtle);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 800;
+  border: 2px solid var(--border-accent);
+}
+
+.nav-icon {
+  font-size: 22px;
+  width: 26px;
+  text-align: center;
+  opacity: 0.95;
+}
+
+.content-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  min-height: 70px;
+  padding: 0 32px;
+  background-color: var(--topbar-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.page-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+    flex: 0 0 220px;
+  }
+  .page-container {
+    padding: 24px 20px 40px;
+  }
+  .topbar {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .topbar {
+    min-height: 60px;
+    padding: 0 16px;
+  }
+  .page-container {
+    padding: 20px 16px 32px;
+  }
+}

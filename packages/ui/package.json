@@ -1,0 +1,8 @@
+{
+  "name": "@agriprofit/ui",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./components/index.ts",
+  "types": "./components/index.ts"
+}
+

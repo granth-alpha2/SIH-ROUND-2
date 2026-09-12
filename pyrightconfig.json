@@ -1,0 +1,11 @@
+{
+  "include": [
+    "apps/ml",
+    "scripts"
+  ],
+  "extraPaths": [
+    "apps/ml",
+    "apps/ml/src"
+  ]
+}
+

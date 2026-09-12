@@ -1,0 +1,1632 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0001",
+    "farmer_id": "FARM_USR0001",
+    "area_hectares": 1.04,
+    "state": "Punjab",
+    "district": "Bathinda"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       74.82463496097282,
+       30.303244960972815
+      ],
+      [
+       74.84503103902719,
+       30.303244960972815
+      ],
+      [
+       74.84503103902719,
+       30.323641039027184
+      ],
+      [
+       74.82463496097282,
+       30.323641039027184
+      ],
+      [
+       74.82463496097282,
+       30.303244960972815
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0002",
+    "farmer_id": "FARM_USR0002",
+    "area_hectares": 0.36,
+    "state": "Punjab",
+    "district": "Bathinda"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.941248,
+     30.283554
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0003",
+    "farmer_id": "FARM_USR0003",
+    "area_hectares": 0.59,
+    "state": "Gujarat",
+    "district": "Rajkot"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     70.755261,
+     22.194963
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0004",
+    "farmer_id": "FARM_USR0004",
+    "area_hectares": 0.65,
+    "state": "Punjab",
+    "district": "Amritsar"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.846771,
+     31.53365
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0005",
+    "farmer_id": "FARM_USR0005",
+    "area_hectares": 1.46,
+    "state": "Maharashtra",
+    "district": "Nagpur"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.17067,
+     21.130236
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0006",
+    "farmer_id": "FARM_USR0005",
+    "area_hectares": 3.69,
+    "state": "Maharashtra",
+    "district": "Nagpur"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.171664,
+     21.133989
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0007",
+    "farmer_id": "FARM_USR0006",
+    "area_hectares": 1.18,
+    "state": "Maharashtra",
+    "district": "Nagpur"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       79.1298132195088,
+       21.2511242195088
+      ],
+      [
+       79.1515387804912,
+       21.2511242195088
+      ],
+      [
+       79.1515387804912,
+       21.272849780491203
+      ],
+      [
+       79.1298132195088,
+       21.272849780491203
+      ],
+      [
+       79.1298132195088,
+       21.2511242195088
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0008",
+    "farmer_id": "FARM_USR0007",
+    "area_hectares": 0.39,
+    "state": "Madhya Pradesh",
+    "district": "Bhopal"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       77.4715280020016,
+       23.342683002001603
+      ],
+      [
+       77.4840179979984,
+       23.342683002001603
+      ],
+      [
+       77.4840179979984,
+       23.355172997998398
+      ],
+      [
+       77.4715280020016,
+       23.355172997998398
+      ],
+      [
+       77.4715280020016,
+       23.342683002001603
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0009",
+    "farmer_id": "FARM_USR0008",
+    "area_hectares": 1.18,
+    "state": "Andhra Pradesh",
+    "district": "Krishna"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       80.7581612195088,
+       16.494081219508796
+      ],
+      [
+       80.7798867804912,
+       16.494081219508796
+      ],
+      [
+       80.7798867804912,
+       16.5158067804912
+      ],
+      [
+       80.7581612195088,
+       16.5158067804912
+      ],
+      [
+       80.7581612195088,
+       16.494081219508796
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0010",
+    "farmer_id": "FARM_USR0008",
+    "area_hectares": 0.89,
+    "state": "Andhra Pradesh",
+    "district": "Krishna"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     80.699711,
+     16.704649
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0011",
+    "farmer_id": "FARM_USR0009",
+    "area_hectares": 1.98,
+    "state": "Madhya Pradesh",
+    "district": "Ujjain"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     75.853348,
+     23.209256
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0012",
+    "farmer_id": "FARM_USR0010",
+    "area_hectares": 2.17,
+    "state": "Madhya Pradesh",
+    "district": "Bhopal"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       77.37394608013734,
+       23.097312080137343
+      ],
+      [
+       77.40340791986266,
+       23.097312080137343
+      ],
+      [
+       77.40340791986266,
+       23.126773919862657
+      ],
+      [
+       77.37394608013734,
+       23.126773919862657
+      ],
+      [
+       77.37394608013734,
+       23.097312080137343
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0013",
+    "farmer_id": "FARM_USR0011",
+    "area_hectares": 6.57,
+    "state": "West Bengal",
+    "district": "Nadia"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     88.42315,
+     23.459941
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0014",
+    "farmer_id": "FARM_USR0012",
+    "area_hectares": 2.48,
+    "state": "Karnataka",
+    "district": "Belagavi"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.630243,
+     15.948236
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0015",
+    "farmer_id": "FARM_USR0013",
+    "area_hectares": 0.74,
+    "state": "Madhya Pradesh",
+    "district": "Indore"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       75.76822667473296,
+       22.599441674732958
+      ],
+      [
+       75.78543132526706,
+       22.599441674732958
+      ],
+      [
+       75.78543132526706,
+       22.61664632526704
+      ],
+      [
+       75.76822667473296,
+       22.61664632526704
+      ],
+      [
+       75.76822667473296,
+       22.599441674732958
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0016",
+    "farmer_id": "FARM_USR0014",
+    "area_hectares": 1.75,
+    "state": "Maharashtra",
+    "district": "Nashik"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.812259,
+     19.914724
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0017",
+    "farmer_id": "FARM_USR0015",
+    "area_hectares": 3.66,
+    "state": "Tamil Nadu",
+    "district": "Coimbatore"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       77.0213378735303,
+       10.898525873530291
+      ],
+      [
+       77.0596001264697,
+       10.898525873530291
+      ],
+      [
+       77.0596001264697,
+       10.93678812646971
+      ],
+      [
+       77.0213378735303,
+       10.93678812646971
+      ],
+      [
+       77.0213378735303,
+       10.898525873530291
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0018",
+    "farmer_id": "FARM_USR0016",
+    "area_hectares": 1.51,
+    "state": "Madhya Pradesh",
+    "district": "Bhopal"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.344878,
+     23.402442
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0019",
+    "farmer_id": "FARM_USR0017",
+    "area_hectares": 4.49,
+    "state": "Punjab",
+    "district": "Bathinda"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     75.05851,
+     30.11173
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0020",
+    "farmer_id": "FARM_USR0018",
+    "area_hectares": 0.98,
+    "state": "Bihar",
+    "district": "Patna"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     85.038083,
+     25.697704
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0021",
+    "farmer_id": "FARM_USR0019",
+    "area_hectares": 0.57,
+    "state": "Tamil Nadu",
+    "district": "Coimbatore"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.048151,
+     11.066291
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0022",
+    "farmer_id": "FARM_USR0020",
+    "area_hectares": 1.53,
+    "state": "Madhya Pradesh",
+    "district": "Indore"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     75.79216,
+     22.580259
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0023",
+    "farmer_id": "FARM_USR0021",
+    "area_hectares": 1.37,
+    "state": "Uttar Pradesh",
+    "district": "Meerut"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.56983,
+     29.076861
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0024",
+    "farmer_id": "FARM_USR0022",
+    "area_hectares": 1.0,
+    "state": "West Bengal",
+    "district": "Nadia"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       88.524616,
+       23.520008999999998
+      ],
+      [
+       88.544616,
+       23.520008999999998
+      ],
+      [
+       88.544616,
+       23.540009
+      ],
+      [
+       88.524616,
+       23.540009
+      ],
+      [
+       88.524616,
+       23.520008999999998
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0025",
+    "farmer_id": "FARM_USR0023",
+    "area_hectares": 2.11,
+    "state": "Bihar",
+    "district": "Patna"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       85.07248116095367,
+       25.469945160953664
+      ],
+      [
+       85.10153283904633,
+       25.469945160953664
+      ],
+      [
+       85.10153283904633,
+       25.498996839046335
+      ],
+      [
+       85.07248116095367,
+       25.498996839046335
+      ],
+      [
+       85.07248116095367,
+       25.469945160953664
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0026",
+    "farmer_id": "FARM_USR0024",
+    "area_hectares": 1.48,
+    "state": "Maharashtra",
+    "district": "Nashik"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.712281,
+     20.145267
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0027",
+    "farmer_id": "FARM_USR0025",
+    "area_hectares": 1.28,
+    "state": "Karnataka",
+    "district": "Belagavi"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.596892,
+     15.702874
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0028",
+    "farmer_id": "FARM_USR0026",
+    "area_hectares": 2.33,
+    "state": "Maharashtra",
+    "district": "Nagpur"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.19806,
+     21.227233
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0029",
+    "farmer_id": "FARM_USR0026",
+    "area_hectares": 0.88,
+    "state": "Maharashtra",
+    "district": "Nagpur"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.199988,
+     21.178684
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0030",
+    "farmer_id": "FARM_USR0027",
+    "area_hectares": 1.05,
+    "state": "Maharashtra",
+    "district": "Pune"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       73.70558504923405,
+       18.63336704923404
+      ],
+      [
+       73.72607895076597,
+       18.63336704923404
+      ],
+      [
+       73.72607895076597,
+       18.65386095076596
+      ],
+      [
+       73.70558504923405,
+       18.65386095076596
+      ],
+      [
+       73.70558504923405,
+       18.63336704923404
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0031",
+    "farmer_id": "FARM_USR0028",
+    "area_hectares": 0.63,
+    "state": "Uttar Pradesh",
+    "district": "Varanasi"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       82.83736474606681,
+       25.36143074606681
+      ],
+      [
+       82.8532392539332,
+       25.36143074606681
+      ],
+      [
+       82.8532392539332,
+       25.377305253933194
+      ],
+      [
+       82.83736474606681,
+       25.377305253933194
+      ],
+      [
+       82.83736474606681,
+       25.36143074606681
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0032",
+    "farmer_id": "FARM_USR0028",
+    "area_hectares": 0.37,
+    "state": "Uttar Pradesh",
+    "district": "Varanasi"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     82.980204,
+     25.222021
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0033",
+    "farmer_id": "FARM_USR0029",
+    "area_hectares": 0.82,
+    "state": "Maharashtra",
+    "district": "Nashik"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.734913,
+     20.007998
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0034",
+    "farmer_id": "FARM_USR0030",
+    "area_hectares": 1.91,
+    "state": "Gujarat",
+    "district": "Ahmedabad"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     72.527753,
+     22.930252
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0035",
+    "farmer_id": "FARM_USR0031",
+    "area_hectares": 1.11,
+    "state": "Haryana",
+    "district": "Karnal"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       76.89185034624715,
+       29.638677346247146
+      ],
+      [
+       76.91292165375286,
+       29.638677346247146
+      ],
+      [
+       76.91292165375286,
+       29.659748653752853
+      ],
+      [
+       76.89185034624715,
+       29.659748653752853
+      ],
+      [
+       76.89185034624715,
+       29.638677346247146
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0036",
+    "farmer_id": "FARM_USR0032",
+    "area_hectares": 0.76,
+    "state": "West Bengal",
+    "district": "Nadia"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     88.541824,
+     23.390801
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0037",
+    "farmer_id": "FARM_USR0033",
+    "area_hectares": 1.18,
+    "state": "Madhya Pradesh",
+    "district": "Bhopal"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       77.4022792195088,
+       23.1819322195088
+      ],
+      [
+       77.42400478049119,
+       23.1819322195088
+      ],
+      [
+       77.42400478049119,
+       23.203657780491202
+      ],
+      [
+       77.4022792195088,
+       23.203657780491202
+      ],
+      [
+       77.4022792195088,
+       23.1819322195088
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0038",
+    "farmer_id": "FARM_USR0034",
+    "area_hectares": 2.2,
+    "state": "Karnataka",
+    "district": "Mysuru"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     76.668086,
+     12.340838
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0039",
+    "farmer_id": "FARM_USR0035",
+    "area_hectares": 0.45,
+    "state": "Andhra Pradesh",
+    "district": "Krishna"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       80.5831917960675,
+       16.679677796067498
+      ],
+      [
+       80.5966082039325,
+       16.679677796067498
+      ],
+      [
+       80.5966082039325,
+       16.6930942039325
+      ],
+      [
+       80.5831917960675,
+       16.6930942039325
+      ],
+      [
+       80.5831917960675,
+       16.679677796067498
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0040",
+    "farmer_id": "FARM_USR0036",
+    "area_hectares": 2.3,
+    "state": "Maharashtra",
+    "district": "Nagpur"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.151815,
+     21.197511
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0041",
+    "farmer_id": "FARM_USR0037",
+    "area_hectares": 4.96,
+    "state": "Haryana",
+    "district": "Hisar"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     75.615779,
+     29.196135
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0042",
+    "farmer_id": "FARM_USR0038",
+    "area_hectares": 0.47,
+    "state": "Maharashtra",
+    "district": "Pune"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.00329,
+     18.382289
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0043",
+    "farmer_id": "FARM_USR0039",
+    "area_hectares": 0.83,
+    "state": "West Bengal",
+    "district": "Nadia"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     88.597451,
+     23.566623
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0044",
+    "farmer_id": "FARM_USR0039",
+    "area_hectares": 2.03,
+    "state": "West Bengal",
+    "district": "Nadia"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       88.46617019315123,
+       23.399048193151224
+      ],
+      [
+       88.49466580684877,
+       23.399048193151224
+      ],
+      [
+       88.49466580684877,
+       23.427543806848774
+      ],
+      [
+       88.46617019315123,
+       23.427543806848774
+      ],
+      [
+       88.46617019315123,
+       23.399048193151224
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0045",
+    "farmer_id": "FARM_USR0040",
+    "area_hectares": 1.27,
+    "state": "Maharashtra",
+    "district": "Pune"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.734271,
+     18.549215
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0046",
+    "farmer_id": "FARM_USR0041",
+    "area_hectares": 2.63,
+    "state": "Punjab",
+    "district": "Ludhiana"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       75.72249572525978,
+       30.86822672525977
+      ],
+      [
+       75.75493027474023,
+       30.86822672525977
+      ],
+      [
+       75.75493027474023,
+       30.900661274740227
+      ],
+      [
+       75.72249572525978,
+       30.900661274740227
+      ],
+      [
+       75.72249572525978,
+       30.86822672525977
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0047",
+    "farmer_id": "FARM_USR0042",
+    "area_hectares": 0.53,
+    "state": "West Bengal",
+    "district": "Bardhaman"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     87.956568,
+     23.287871
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0048",
+    "farmer_id": "FARM_USR0043",
+    "area_hectares": 2.15,
+    "state": "Bihar",
+    "district": "Patna"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     85.031304,
+     25.679726
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0049",
+    "farmer_id": "FARM_USR0043",
+    "area_hectares": 1.46,
+    "state": "Bihar",
+    "district": "Patna"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     85.161812,
+     25.692283
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0050",
+    "farmer_id": "FARM_USR0044",
+    "area_hectares": 0.37,
+    "state": "Gujarat",
+    "district": "Ahmedabad"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     72.498977,
+     23.061155
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0051",
+    "farmer_id": "FARM_USR0045",
+    "area_hectares": 1.63,
+    "state": "Karnataka",
+    "district": "Belagavi"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.474076,
+     15.953772
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0052",
+    "farmer_id": "FARM_USR0045",
+    "area_hectares": 0.8,
+    "state": "Karnataka",
+    "district": "Belagavi"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.573916,
+     15.792848
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0053",
+    "farmer_id": "FARM_USR0046",
+    "area_hectares": 0.35,
+    "state": "Haryana",
+    "district": "Karnal"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       76.97186392021689,
+       29.6925729202169
+      ],
+      [
+       76.9836960797831,
+       29.6925729202169
+      ],
+      [
+       76.9836960797831,
+       29.704405079783097
+      ],
+      [
+       76.97186392021689,
+       29.704405079783097
+      ],
+      [
+       76.97186392021689,
+       29.6925729202169
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0054",
+    "farmer_id": "FARM_USR0047",
+    "area_hectares": 2.11,
+    "state": "Rajasthan",
+    "district": "Kota"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     75.940856,
+     25.074382
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0055",
+    "farmer_id": "FARM_USR0048",
+    "area_hectares": 0.42,
+    "state": "Haryana",
+    "district": "Hisar"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     75.839944,
+     29.167722
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0056",
+    "farmer_id": "FARM_USR0048",
+    "area_hectares": 2.75,
+    "state": "Haryana",
+    "district": "Hisar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       75.58983087604823,
+       29.278182876048223
+      ],
+      [
+       75.62299712395178,
+       29.278182876048223
+      ],
+      [
+       75.62299712395178,
+       29.311349123951775
+      ],
+      [
+       75.58983087604823,
+       29.311349123951775
+      ],
+      [
+       75.58983087604823,
+       29.278182876048223
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0057",
+    "farmer_id": "FARM_USR0049",
+    "area_hectares": 0.49,
+    "state": "Tamil Nadu",
+    "district": "Thanjavur"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       79.200587,
+       10.645781
+      ],
+      [
+       79.21458700000001,
+       10.645781
+      ],
+      [
+       79.21458700000001,
+       10.659780999999999
+      ],
+      [
+       79.200587,
+       10.659780999999999
+      ],
+      [
+       79.200587,
+       10.645781
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0058",
+    "farmer_id": "FARM_USR0049",
+    "area_hectares": 0.53,
+    "state": "Tamil Nadu",
+    "district": "Thanjavur"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.085988,
+     10.89996
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0059",
+    "farmer_id": "FARM_USR0050",
+    "area_hectares": 0.99,
+    "state": "Uttar Pradesh",
+    "district": "Lucknow"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     80.989396,
+     26.963397
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0060",
+    "farmer_id": "FARM_USR0051",
+    "area_hectares": 1.2,
+    "state": "Madhya Pradesh",
+    "district": "Ujjain"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     75.925424,
+     23.102833
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0061",
+    "farmer_id": "FARM_USR0052",
+    "area_hectares": 2.04,
+    "state": "Haryana",
+    "district": "Karnal"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     76.88851,
+     29.65728
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0062",
+    "farmer_id": "FARM_USR0052",
+    "area_hectares": 1.09,
+    "state": "Haryana",
+    "district": "Karnal"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.073858,
+     29.585193
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0063",
+    "farmer_id": "FARM_USR0053",
+    "area_hectares": 0.89,
+    "state": "Andhra Pradesh",
+    "district": "Guntur"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       80.56548401886793,
+       16.187725018867944
+      ],
+      [
+       80.58435198113206,
+       16.187725018867944
+      ],
+      [
+       80.58435198113206,
+       16.206592981132054
+      ],
+      [
+       80.56548401886793,
+       16.206592981132054
+      ],
+      [
+       80.56548401886793,
+       16.187725018867944
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0064",
+    "farmer_id": "FARM_USR0054",
+    "area_hectares": 1.39,
+    "state": "Maharashtra",
+    "district": "Pune"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.814168,
+     18.649686
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0065",
+    "farmer_id": "FARM_USR0054",
+    "area_hectares": 1.16,
+    "state": "Maharashtra",
+    "district": "Pune"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.863812,
+     18.589826
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0066",
+    "farmer_id": "FARM_USR0055",
+    "area_hectares": 1.15,
+    "state": "Madhya Pradesh",
+    "district": "Bhopal"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.276704,
+     23.125727
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0067",
+    "farmer_id": "FARM_USR0056",
+    "area_hectares": 0.65,
+    "state": "Gujarat",
+    "district": "Ahmedabad"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     72.448788,
+     23.157028
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0068",
+    "farmer_id": "FARM_USR0057",
+    "area_hectares": 1.37,
+    "state": "Maharashtra",
+    "district": "Nagpur"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.167122,
+     21.060236
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0069",
+    "farmer_id": "FARM_USR0058",
+    "area_hectares": 1.24,
+    "state": "Bihar",
+    "district": "Patna"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     85.128514,
+     25.72554
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0070",
+    "farmer_id": "FARM_USR0059",
+    "area_hectares": 0.94,
+    "state": "Uttar Pradesh",
+    "district": "Lucknow"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     81.06372,
+     26.858417
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "farm_id": "FARM0071",
+    "farmer_id": "FARM_USR0060",
+    "area_hectares": 3.01,
+    "state": "Punjab",
+    "district": "Amritsar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       74.8877666484271,
+       31.713584648427105
+      ],
+      [
+       74.92246535157291,
+       31.713584648427105
+      ],
+      [
+       74.92246535157291,
+       31.748283351572898
+      ],
+      [
+       74.8877666484271,
+       31.748283351572898
+      ],
+      [
+       74.8877666484271,
+       31.713584648427105
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
