@@ -113,3 +113,4 @@ async def fetch_ncdex_live(symbol="KAPAS"):
 
 if __name__ == "__main__":
     asyncio.run(fetch_ncdex_live("KAPAS"))
+
