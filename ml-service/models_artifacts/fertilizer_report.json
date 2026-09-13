@@ -1,0 +1,24 @@
+{
+  "model_name": "AgriProfit Fertilizer Recommendation Engine",
+  "version": "1.0.0",
+  "date_trained": "2026-09-13T12:53:29.972075",
+  "training_dataset": "soil_fertilizer_training_data.csv",
+  "provenance_source": "ICAR-IISS & Soil Health Card Portal (DAC&FW, GoI)",
+  "total_records": 2250,
+  "train_samples": 1574,
+  "val_samples": 338,
+  "test_samples": 338,
+  "metrics": {
+    "priority_nutrient_accuracy": 0.9379,
+    "priority_nutrient_f1": 0.9236,
+    "dosage_r2_score": 0.743,
+    "dosage_mae_kg_acre": 7.12
+  },
+  "target_dosages": [
+    "rec_urea_kg_acre",
+    "rec_dap_kg_acre",
+    "rec_mop_kg_acre",
+    "rec_ssp_kg_acre",
+    "rec_zinc_sulphate_kg_acre"
+  ]
+}
