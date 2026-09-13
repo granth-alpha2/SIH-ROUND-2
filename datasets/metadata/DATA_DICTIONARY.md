@@ -5,7 +5,9 @@
 package is **SYNTHETIC** (algorithmically generated to match realistic Indian
 agricultural value ranges and to be internally consistent/referentially intact). It is
 a *seed / development / demo* dataset, **not** a scrape or copy of any government or
-commercial database. Reference tables (states/districts, agro-climatic zones,
+commercial database. Every record must carry a `data_origin` column with `LIVE` or
+`DEMO`, and training pipelines must default to `WHERE data_origin = 'LIVE'` to exclude
+demo records. Reference tables (states/districts, agro-climatic zones,
 approximate coordinates, crop agronomic ranges) are built from general public domain
 knowledge and should be checked against the authoritative sources listed per-table
 before production use. See `README.md` §11 for the real-source acquisition plan.

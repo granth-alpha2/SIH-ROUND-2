@@ -8,7 +8,25 @@ export type FarmRecord = {
   boundary: { lat: number; lng: number }[];
   createdAt: string;
   sections?: { crop: string; area: number }[];
-  preferences?: { water: string; risk: string };
+  preferences?: {
+    water?: string;
+    risk?: string;
+    crop?: string;
+    cropVariety?: string;
+    soilType?: string;
+    soilTestResults?: {
+      pH?: number;
+      organicCarbon?: string;
+      nitrogen?: number;
+      phosphorus?: number;
+      potassium?: number;
+    };
+    irrigation?: string;
+    expectedYieldQuintalsPerAcre?: number;
+    historicalYieldQuintalsPerAcre?: number;
+    harvestDate?: string;
+    cropLifecycleStage?: string;
+  };
 };
 
 type DbFarmRow = {

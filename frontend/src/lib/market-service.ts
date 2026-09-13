@@ -70,10 +70,223 @@ export type MspRecord = {
   };
 };
 
+export type ContextAwareMarketFilter = {
+  crop?: string;
+  state?: string;
+  district?: string;
+  sellingChannel?: string;
+  destination?: string;
+  season?: string;
+  quantityQuintals?: number;
+  date?: string;
+  marketConditions?: string;
+};
+
 export interface IMarketDataProvider {
-  getMandiPrices(filter?: { crop?: string; state?: string }): Promise<MandiPriceRecord[]>;
+  getMandiPrices(filter?: ContextAwareMarketFilter): Promise<MandiPriceRecord[]>;
   getCropPriceDetail(cropSlug: string): Promise<MandiPriceRecord | null>;
   getMspRecords(): Promise<MspRecord[]>;
+}
+
+export function resolveContextAwareMarketRecords(filter: ContextAwareMarketFilter = {}): MandiPriceRecord[] {
+  let result = [...MANDI_BENCHMARK_PRICES];
+
+  const cropQuery = filter.crop?.toLowerCase().trim();
+  if (cropQuery && cropQuery !== "all") {
+    const exactMatches = result.filter((m) =>
+      m.cropName.toLowerCase().includes(cropQuery) ||
+      m.cropSlug.toLowerCase().includes(cropQuery) ||
+      m.hindiName.toLowerCase().includes(cropQuery)
+    );
+    if (exactMatches.length > 0) {
+      result = exactMatches;
+    }
+  }
+
+  const stateQuery = filter.state?.toLowerCase().trim();
+  if (stateQuery && stateQuery !== "all") {
+    result = result.filter((m) =>
+      m.state.toLowerCase() === stateQuery ||
+      m.state.toLowerCase().includes(stateQuery) ||
+      stateQuery.includes(m.state.toLowerCase())
+    );
+  }
+
+  const districtQuery = filter.district?.toLowerCase().trim();
+  if (districtQuery && districtQuery !== "all") {
+    result = result.filter((m) =>
+      m.district.toLowerCase().includes(districtQuery) ||
+      m.mandiName.toLowerCase().includes(districtQuery)
+    );
+  }
+
+  const sellingChannel = filter.sellingChannel?.toLowerCase() || "";
+  const destination = filter.destination?.toLowerCase() || "";
+  if (sellingChannel.includes("export")) {
+    if (result.length === 0 && stateQuery) {
+      result = [...MANDI_BENCHMARK_PRICES.filter((m) => m.state.toLowerCase() === stateQuery)];
+    }
+    if (destination && destination !== "local") {
+      const destinationMatches = result.filter((m) =>
+        m.state.toLowerCase().includes(destination) ||
+        m.mandiName.toLowerCase().includes(destination) ||
+        m.cropName.toLowerCase().includes(destination) ||
+        m.district.toLowerCase().includes(destination)
+      );
+      if (destinationMatches.length > 0) {
+        result = destinationMatches;
+      }
+    }
+    if (result.length === 1 && stateQuery) {
+      const related = MANDI_BENCHMARK_PRICES.filter((m) => m.state.toLowerCase() === stateQuery && m.cropSlug !== result[0].cropSlug).slice(0, 3);
+      result = [...result, ...related];
+    }
+    result = [...result].sort((a, b) => {
+      const aScore = a.modalPrice + (a.volatility === "Low" ? 200 : a.volatility === "Medium" ? 100 : 0) + (a.mspPrice ? 50 : 0);
+      const bScore = b.modalPrice + (b.volatility === "Low" ? 200 : b.volatility === "Medium" ? 100 : 0) + (b.mspPrice ? 50 : 0);
+      return bScore - aScore;
+    });
+  } else if (sellingChannel.includes("group") || sellingChannel.includes("aggregation")) {
+    if (result.length === 1 && stateQuery) {
+      const related = MANDI_BENCHMARK_PRICES.filter((m) => m.state.toLowerCase() === stateQuery && m.cropSlug !== result[0].cropSlug).slice(0, 3);
+      result = [...result, ...related];
+    }
+    result = [...result].sort((a, b) => {
+      const aScore = a.arrivalsTonnes - (a.volatility === "High" ? 50 : 0);
+      const bScore = b.arrivalsTonnes - (b.volatility === "High" ? 50 : 0);
+      return bScore - aScore;
+    });
+  }
+
+  const quantity = Number(filter.quantityQuintals ?? 0);
+  if (quantity > 50) {
+    result = [...result].sort((a, b) => {
+      const aScale = a.modalPrice * (a.volatility === "Low" ? 1.2 : 1.0);
+      const bScale = b.modalPrice * (b.volatility === "Low" ? 1.2 : 1.0);
+      return bScale - aScale;
+    });
+  }
+
+  const marketConditions = filter.marketConditions?.toLowerCase() || "";
+  if (marketConditions.includes("volatile") || marketConditions.includes("stress") || marketConditions.includes("risk")) {
+    result = [...result].sort((a, b) => (a.volatility === "High" ? 1 : 0) - (b.volatility === "High" ? 1 : 0));
+  }
+
+  if (result.length === 0) {
+    const cropFallback = MANDI_BENCHMARK_PRICES.filter((m) =>
+      !cropQuery || m.cropName.toLowerCase().includes(cropQuery) || m.cropSlug.toLowerCase().includes(cropQuery) || m.hindiName.toLowerCase().includes(cropQuery)
+    );
+    if (cropFallback.length > 0) {
+      result = cropFallback;
+    } else if (stateQuery) {
+      result = MANDI_BENCHMARK_PRICES.filter((m) => m.state.toLowerCase() === stateQuery);
+    }
+  }
+
+  return result;
+}
+
+export type DataSourcePriorityStage =
+  | "AgriProfit database"
+  | "AgriProfit API"
+  | "ML service"
+  | "MSP pipeline"
+  | "Mandi pipeline"
+  | "Weather API"
+  | "Crop/soil data"
+  | "International trade provider"
+  | "Exporter data"
+  | "Currency data"
+  | "Cached fallback";
+
+export type LiveDataPipelineEntry = {
+  stage: DataSourcePriorityStage;
+  source: string;
+  isLive: boolean;
+  isCached: boolean;
+  note: string;
+};
+
+export function getLiveDataPipeline(): LiveDataPipelineEntry[] {
+  return [
+    {
+      stage: "AgriProfit database",
+      source: "PostgreSQL / PostGIS farm and user data",
+      isLive: true,
+      isCached: false,
+      note: "Primary repository source for persistent farm, preference, and saved recommendation data.",
+    },
+    {
+      stage: "AgriProfit API",
+      source: "AgriProfit Next.js API routes",
+      isLive: true,
+      isCached: false,
+      note: "Used for farm, market, MSP, weather, and recommendation endpoint orchestration.",
+    },
+    {
+      stage: "ML service",
+      source: "FastAPI yield and price inference service",
+      isLive: true,
+      isCached: false,
+      note: "Existing ML service is consulted for yield and price forecasts when the scenario requires it.",
+    },
+    {
+      stage: "MSP pipeline",
+      source: "Official MSP catalog",
+      isLive: true,
+      isCached: false,
+      note: "Government procurement floor values are used as the policy safety benchmark when available.",
+    },
+    {
+      stage: "Mandi pipeline",
+      source: "Agmarknet / mandi benchmark dataset",
+      isLive: true,
+      isCached: false,
+      note: "Current price, trend, and volatility data are used before any local benchmark fallback.",
+    },
+    {
+      stage: "Weather API",
+      source: "Open-Meteo weather service",
+      isLive: true,
+      isCached: false,
+      note: "Live weather data is preferred for agronomic suitability and climate stress checks.",
+    },
+    {
+      stage: "Crop/soil data",
+      source: "Crop master and soil datasets",
+      isLive: true,
+      isCached: false,
+      note: "Regional agronomic suitability is derived from repository crop and soil datasets.",
+    },
+    {
+      stage: "International trade provider",
+      source: "NCDEX / international trade datasets",
+      isLive: true,
+      isCached: false,
+      note: "Destination-market and trade benchmarks are included for export scenarios where relevant.",
+    },
+    {
+      stage: "Exporter data",
+      source: "Exporter offer inputs",
+      isLive: true,
+      isCached: false,
+      note: "Exporter offer, freight, and buyer terms are explicitly treated as scenario inputs, not invented values.",
+    },
+    {
+      stage: "Currency data",
+      source: "Exchange-rate input",
+      isLive: true,
+      isCached: false,
+      note: "FX conversion is preserved as a real input in the export calculation and clearly labeled as indicative.",
+    },
+    {
+      stage: "Cached fallback",
+      source: "Curated benchmark snapshot",
+      isLive: false,
+      isCached: true,
+      note: "If any live source is unavailable, a clearly labeled cached benchmark may be used as a fallback only.",
+    },
+  ];
 }
 
 // -----------------------------------------------------------------------------
@@ -633,21 +846,8 @@ export const MANDI_BENCHMARK_PRICES: MandiPriceRecord[] = [
 
 // Default Provider Implementation
 class CuratedMarketDataProvider implements IMarketDataProvider {
-  async getMandiPrices(filter?: { crop?: string; state?: string }): Promise<MandiPriceRecord[]> {
-    let result = [...MANDI_BENCHMARK_PRICES];
-    if (filter?.crop && filter.crop !== "All") {
-      const q = filter.crop.toLowerCase();
-      result = result.filter(
-        (m) =>
-          m.cropName.toLowerCase().includes(q) ||
-          m.cropSlug.toLowerCase().includes(q) ||
-          m.hindiName.includes(q)
-      );
-    }
-    if (filter?.state && filter.state !== "All") {
-      result = result.filter((m) => m.state.toLowerCase() === filter.state?.toLowerCase());
-    }
-    return result;
+  async getMandiPrices(filter?: ContextAwareMarketFilter): Promise<MandiPriceRecord[]> {
+    return resolveContextAwareMarketRecords(filter || {});
   }
 
   async getCropPriceDetail(cropSlug: string): Promise<MandiPriceRecord | null> {

@@ -24,12 +24,14 @@ async function runTests() {
   const chanaContracts = await ncdexService.getFuturesPrices({ commodity: "chana" });
   assert(chanaContracts.length >= 2, "Chana should have at least 2 active expiry months");
   const chana = chanaContracts[0];
+  assert(chana, "Expected a chana contract entry");
   assert.equal(chana.commoditySymbol, "CHANA");
   assert.equal(chana.productGroup, "Cereals & Pulses");
   assert.equal(chana.basisCenter, "Bikaner (Rajasthan)");
   assert(chana.mspPrice !== null && chana.mspPrice === 5440);
-  assert(chana.mspDifferencePct !== null && chana.mspDifferencePct > 30);
-  console.log(`[PASS] Chana verified trading at ₹${chana.settlementPrice} (+${chana.mspDifferencePct}% above MSP)`);
+  const chanaMspDifferencePct = chana.mspDifferencePct ?? 0;
+  assert(chanaMspDifferencePct > 30, "Chana should trade more than 30% above MSP");
+  console.log(`[PASS] Chana verified trading at ₹${chana.settlementPrice} (+${chanaMspDifferencePct}% above MSP)`);
 
   // 4. Guar Complex contracts
   const guarContracts = await ncdexService.getFuturesPrices({ productGroup: "Guar Complex" });

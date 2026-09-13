@@ -19,7 +19,7 @@
  */
 
 import { CROP_DATABASE, type CropRecord, type CropSeason } from "./crop-data";
-import { MANDI_BENCHMARK_PRICES, type MandiPriceRecord } from "./market-service";
+import { getLiveDataPipeline, MANDI_BENCHMARK_PRICES, type MandiPriceRecord } from "./market-service";
 import { simulateCropFinancials } from "./simulation-engine";
 
 export type RiskAppetite = "Conservative" | "Balanced" | "Growth";
@@ -78,6 +78,19 @@ export type FourPartStrategySummary = {
   growthDiversificationAllocation: { acres: number; percentage: number; primaryCrop: string; rationale: string };
 };
 
+export type ModelIntelligenceSummary = {
+  name: string;
+  modelType: string;
+  modelVersion: string;
+  purpose: string;
+  whyItWasUsed: string;
+  whyThisResult: string;
+  inputData: string[];
+  output: string;
+  confidence: string;
+  dataFreshness: string;
+};
+
 export type OptimizedPortfolio = {
   id: string;
   title: string;
@@ -109,6 +122,23 @@ export type OptimizedPortfolio = {
     datasetsUsed: string[];
     modelsUsed: string[];
     generatedAt: string;
+  };
+  aiModelSummary: {
+    title: string;
+    models: ModelIntelligenceSummary[];
+    dataSources: string[];
+    liveDataPipeline: Array<{
+      stage: string;
+      source: string;
+      isLive: boolean;
+      isCached: boolean;
+      note: string;
+    }>;
+    method: {
+      name: string;
+      modelType: string;
+      purpose: string;
+    };
   };
   generatedAt: string;
 };
@@ -679,6 +709,65 @@ export function optimizePortfolio(input: PortfolioConstraintInput): OptimizedPor
 
   const diversificationExplanation = `This 4-Part Strategic Farm Plan divides your ${totalLand} acres into: (1) Safety: ${allocations[0].cropName} (${allocations[0].allocatedAcres} ac) with MSP floor protection, (2) Stability: ${allocations[1].cropName} (${allocations[1].allocatedAcres} ac) for steady cash flow, (3) High Opportunity: ${allocations[2].cropName} (${allocations[2].allocatedAcres} ac) capturing market upside, and (4) Intelligent Rotation: ${allocations[3].cropName} (${allocations[3].allocatedAcres} ac) for nitrogen fixation and soil health. This balanced strategy reduces worst-case downside by ~68% compared to single-crop monoculture.`;
 
+  const liveDataPipeline = getLiveDataPipeline();
+
+  const aiModelSummary = {
+    title: "AI / ML INTELLIGENCE USED",
+    models: [
+      {
+        name: "Yield Prediction",
+        modelType: "Regression",
+        modelVersion: "AgriProfit Yield Model v1",
+        purpose: "Estimate expected crop production from farm, crop, soil and environmental conditions.",
+        whyItWasUsed: "Estimates expected production so the financial engine can calculate output, revenue, and break-even correctly.",
+        whyThisResult: "This result was used because the yield estimate directly shapes expected output per acre, which then drives the revenue and cost model for each crop plan.",
+        inputData: ["Farm acreage", "Crop type", "Soil pH", "Rainfall", "Temperature", "State", "Irrigation type"],
+        output: "Predicted yield in quintals per acre with model confidence interval when available",
+        confidence: "Forecast available; uncertainty is shown through the model-specific confidence interval or benchmark fallback range.",
+        dataFreshness: "Updated on-demand from the current farm and weather inputs",
+      },
+      {
+        name: "Price Forecast",
+        modelType: "Time-Series / Forecasting",
+        modelVersion: "AgriProfit Mandi Forecast v1",
+        purpose: "Estimate expected market price using historical and current market data.",
+        whyItWasUsed: "Estimates future selling price so revenue and scenario comparison reflect market conditions rather than a static benchmark.",
+        whyThisResult: "This result was used because price uncertainty changes the expected revenue stream; without it, the recommendation would not reflect future market dynamics.",
+        inputData: ["Crop name", "Recent price levels", "Rainfall anomaly", "Trade demand index", "State", "Month horizon"],
+        output: "Forecasted mandi price in INR per quintal with model interval or error metric when available",
+        confidence: "Forecast available; uncertainty is shown through the model-specific confidence interval or error metric when available.",
+        dataFreshness: "Current seasonal market and mandi snapshot",
+      },
+      {
+        name: "Profitability Engine",
+        modelType: "Explainable Cost / Break-Even Engine",
+        modelVersion: "Deterministic financial engine",
+        purpose: "Convert predictions into economics by comparing fixed cost, variable cost, revenue, break-even, and scenario profit.",
+        whyItWasUsed: "Converts prediction into economics, so the recommendation is based on net return and financial viability rather than only yield or price.",
+        whyThisResult: "This result was used because the final recommendation must balance agronomic fit, market opportunity, and downside protection in a transparent rule-based ranking.",
+        inputData: ["Crop characteristics", "MSP floor", "Weather suitability", "Soil fit", "Water availability", "Risk appetite", "Cost structure"],
+        output: "Break-even price, expected revenue, total cost, profit, ROI, and scenario comparisons",
+        confidence: "No percentage confidence assigned; deterministic logic is transparent and auditable.",
+        dataFreshness: "Calculated directly from the current scenario inputs",
+      },
+    ],
+    dataSources: [
+      "Farm Data",
+      "Soil Data",
+      "Weather API",
+      "Mandi Data",
+      "MSP Data",
+      "International Trade Data",
+      "Exporter Offers",
+    ],
+    liveDataPipeline,
+    method: {
+      name: "Market Decision Score",
+      modelType: "Explainable Deterministic Scoring",
+      purpose: "Compare MSP, mandi, direct-market and export selling scenarios.",
+    },
+  };
+
   let strategyTitle = `${risk} 4-Part Diversified Strategy (${allocations.map((a) => a.cropName.split(" ")[0]).join(" + ")})`;
   if (water === "Low" && risk === "Conservative") {
     strategyTitle = `MSP-Guaranteed Low-Water Resilience Strategy (${allocations.map((a) => a.cropName.split(" ")[0]).join(" + ")})`;
@@ -743,6 +832,7 @@ export function optimizePortfolio(input: PortfolioConstraintInput): OptimizedPor
       ],
       generatedAt: new Date().toISOString(),
     },
+    aiModelSummary,
     generatedAt: new Date().toISOString(),
   };
 }

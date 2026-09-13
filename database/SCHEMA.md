@@ -36,9 +36,11 @@ users 1---N assistant_conversations 1---N assistant_messages
 ## Data Provenance
 
 Provider-backed tables use `source_type` values such as `official`, `cached`,
-`estimated`, or `demo`. Application responses should expose this value and the
-relevant fetch/effective timestamp. Demo or estimated values must not be presented as
-live data.
+`estimated`, or `demo`. Every row must also carry `data_origin`, which is one of
+`LIVE` or `DEMO`. Application responses should expose both values and the relevant
+fetch/effective timestamp. Demo or estimated values must not be presented as live
+data. Training pipelines should filter with `WHERE data_origin = 'LIVE'` and exclude
+all `DEMO` records by default.
 
 ## Geospatial Storage
 

@@ -5,7 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AppShell from "../components/AppShell";
 import FarmParcelMap from "../components/FarmParcelMap";
-import { simulateCropFinancials } from "@/lib/simulation-engine";
+import { simulateCropFinancials, simulateExportScenario, simulateGroupSellingComparison } from "@/lib/simulation-engine";
+import {
+  buildCostSensitivityScenarios,
+  buildPriceSensitivityScenarios,
+  buildYieldSensitivityScenarios,
+  compareProfitabilityStrategies,
+} from "@/lib/profitability-service";
 import {
   optimizePortfolio,
   type OptimizedPortfolio,
@@ -122,6 +128,36 @@ export default function RecommendationDashboard() {
   const [simPrice, setSimPrice] = useState<number>(firstCrop?.expectedSellingPricePerQuintal || 2380);
   const [simYield, setSimYield] = useState<number>(firstCrop?.expectedYieldPerAcre || 14.5);
   const [simCost, setSimCost] = useState<number>(firstCrop?.costPerAcre || 11500);
+  const [whatIfPrice, setWhatIfPrice] = useState<number>(simPrice);
+  const [whatIfQuantity, setWhatIfQuantity] = useState<number>(simArea * simYield);
+  const [whatIfProductionCost, setWhatIfProductionCost] = useState<number>(simCost * simArea);
+  const [whatIfTransportCost, setWhatIfTransportCost] = useState<number>(2500);
+  const [whatIfInputCost, setWhatIfInputCost] = useState<number>(8000);
+  const [whatIfLaborCost, setWhatIfLaborCost] = useState<number>(5000);
+  const [whatIfExportCost, setWhatIfExportCost] = useState<number>(1200);
+  const [whatIfLogisticsCost, setWhatIfLogisticsCost] = useState<number>(1800);
+
+  const whatIfPreview = useMemo(() => {
+    const quantity = Math.max(0, whatIfQuantity);
+    const revenue = quantity * whatIfPrice;
+    const cost =
+      (whatIfProductionCost || 0) +
+      (whatIfTransportCost || 0) +
+      (whatIfInputCost || 0) +
+      (whatIfLaborCost || 0) +
+      (whatIfExportCost || 0) +
+      (whatIfLogisticsCost || 0);
+    const profit = revenue - cost;
+    const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+    const breakEven = cost > 0 && whatIfPrice > 0 ? cost / Math.max(1, whatIfPrice) : 0;
+    return {
+      revenue,
+      cost,
+      profit,
+      margin,
+      breakEven,
+    };
+  }, [whatIfPrice, whatIfQuantity, whatIfProductionCost, whatIfTransportCost, whatIfInputCost, whatIfLaborCost, whatIfExportCost, whatIfLogisticsCost]);
 
   // Background hydration: Loads boundary polygon & farm name asynchronously without blocking the UI
   useEffect(() => {
@@ -323,6 +359,168 @@ export default function RecommendationDashboard() {
     });
   }, [simArea, simPrice, simYield, simCost]);
 
+  const breakEvenTotalQuantity = useMemo(() => {
+    return Number((simArea * simResult.breakEvenYieldQuintalsPerAcre).toFixed(2));
+  }, [simArea, simResult.breakEvenYieldQuintalsPerAcre]);
+
+  const expectedQuantity = useMemo(() => {
+    return Number((simArea * simYield).toFixed(2));
+  }, [simArea, simYield]);
+
+  const priceSensitivityScenarios = useMemo(
+    () =>
+      buildPriceSensitivityScenarios({
+        expectedPricePerQuintal: simPrice,
+        quantityQuintals: expectedQuantity,
+        totalCost: simResult.totalEstimatedCost,
+        baseScenarioPrices: [
+          simPrice * 0.8,
+          simPrice * 0.9,
+          simPrice,
+          simPrice * 1.1,
+          simPrice * 1.2,
+        ],
+      }),
+    [expectedQuantity, simPrice, simResult.totalEstimatedCost]
+  );
+
+  const yieldSensitivityScenarios = useMemo(
+    () =>
+      buildYieldSensitivityScenarios({
+        expectedYieldQuintals: simYield,
+        sellingPricePerQuintal: simPrice,
+        totalCost: simResult.totalEstimatedCost,
+        baseScenarioYields: [
+          Math.max(0, simYield - 12),
+          Math.max(0, simYield - 6),
+          simYield,
+          simYield + 6,
+          simYield + 12,
+        ],
+      }),
+    [simPrice, simResult.totalEstimatedCost, simYield]
+  );
+
+  const costSensitivityScenarios = useMemo(
+    () =>
+      buildCostSensitivityScenarios({
+        expectedYieldQuintals: simYield,
+        sellingPricePerQuintal: simPrice,
+        baseTotalCost: simResult.totalEstimatedCost,
+        inputCost: simResult.totalEstimatedCost * 0.45,
+        laborCost: simResult.totalEstimatedCost * 0.3,
+        transportCost: simResult.totalEstimatedCost * 0.25,
+        baseScenarioLabels: [
+          { label: "Base", inputPct: 0, laborPct: 0, transportPct: 0 },
+          { label: "+10% input cost", inputPct: 0.1, laborPct: 0, transportPct: 0 },
+          { label: "+20% labor cost", inputPct: 0, laborPct: 0.2, transportPct: 0 },
+          { label: "+15% transport cost", inputPct: 0, laborPct: 0, transportPct: 0.15 },
+          { label: "+10% input + 20% labor + 15% transport", inputPct: 0.1, laborPct: 0.2, transportPct: 0.15 },
+        ],
+      }),
+    [simPrice, simResult.totalEstimatedCost, simYield]
+  );
+
+  const breakEvenStatus = useMemo(() => {
+    if (simResult.expectedNetProfit > 0 && simResult.roiPercentage >= 15) return "HIGH PROFIT POTENTIAL";
+    if (simResult.expectedNetProfit > 0) return "PROFITABLE";
+    if (Math.abs(simResult.expectedNetProfit) <= 2000) return "BREAK-EVEN";
+    return "LOSS RISK";
+  }, [simResult.expectedNetProfit, simResult.roiPercentage]);
+
+  const profitabilityComparison = useMemo(() => {
+    const primaryCrop = portfolio.allocations[0];
+    const quantityKg = (primaryCrop?.allocatedAcres ?? simArea) * (primaryCrop?.expectedYieldPerAcre ?? simYield) * 100;
+
+    return compareProfitabilityStrategies({
+      quantity: quantityKg,
+      quantityUnit: "kg",
+      fixedCost: (primaryCrop?.costPerAcre ?? simCost) * (primaryCrop?.allocatedAcres ?? simArea) * 0.2,
+      variableCostPerUnit: (primaryCrop?.costPerAcre ?? simCost) / Math.max(1, primaryCrop?.expectedYieldPerAcre ?? simYield),
+      variableCostUnit: "kg",
+      mspPricePerUnit: primaryCrop?.mspPrice ?? (primaryCrop?.expectedSellingPricePerQuintal ?? simPrice),
+      mspPriceUnit: "quintal",
+      directMarketPricePerUnit: primaryCrop?.expectedSellingPricePerQuintal ?? simPrice,
+      directMarketPriceUnit: "quintal",
+      directMarketExtraCostPerUnit: Math.max(0, (primaryCrop?.expectedSellingPricePerQuintal ?? simPrice) * 0.04),
+      directMarketExtraCostUnit: "quintal",
+      groupSellingPricePerUnit: (primaryCrop?.expectedSellingPricePerQuintal ?? simPrice) * 1.03,
+      groupSellingPriceUnit: "quintal",
+      groupAggregationCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 1000),
+      groupAggregationCostUnit: "quintal",
+      groupHandlingCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 1500),
+      groupHandlingCostUnit: "quintal",
+      groupStorageCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 2200),
+      groupStorageCostUnit: "quintal",
+      exportOfferPerUnit: ((primaryCrop?.expectedSellingPricePerQuintal ?? simPrice) * 0.96),
+      exportOfferUnit: "quintal",
+      exportPackagingCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 500),
+      exportPackagingCostUnit: "quintal",
+      exportDocumentationCost: ((primaryCrop?.costPerAcre ?? simCost) * 0.12),
+      exportLogisticsCost: ((primaryCrop?.costPerAcre ?? simCost) * 0.2),
+      exportTransportCost: ((primaryCrop?.costPerAcre ?? simCost) * 0.18),
+      exportChargesPct: 0.04,
+    });
+  }, [portfolio, simArea, simPrice, simYield, simCost]);
+
+  const groupSellingSummary = useMemo(() => {
+    const primaryCrop = portfolio.allocations[0];
+    const quantityPerFarmer = Math.max(6, (primaryCrop?.expectedYieldPerAcre ?? simYield) * (primaryCrop?.allocatedAcres ?? simArea) / 3);
+    const productionCostPerQuintal = Math.max(1200, (primaryCrop?.costPerAcre ?? simCost) / Math.max(1, primaryCrop?.expectedYieldPerAcre ?? simYield));
+    const aggregationCostPerQuintal = Math.max(20, (primaryCrop?.costPerAcre ?? simCost) / 1000);
+    const handlingCostPerQuintal = Math.max(15, (primaryCrop?.costPerAcre ?? simCost) / 1500);
+    const storageCostPerQuintal = Math.max(10, (primaryCrop?.costPerAcre ?? simCost) / 2200);
+    const transportSavingsPerQuintal = Math.max(10, (primaryCrop?.costPerAcre ?? simCost) / 3000);
+    const farmers = [
+      { name: "Farmer A", quantityQuintals: quantityPerFarmer, productionCostPerQuintal },
+      { name: "Farmer B", quantityQuintals: quantityPerFarmer * 1.2, productionCostPerQuintal },
+      { name: "Farmer C", quantityQuintals: quantityPerFarmer * 0.8, productionCostPerQuintal },
+    ];
+
+    return simulateGroupSellingComparison({
+      farmers,
+      groupSellingPricePerQuintal: (primaryCrop?.expectedSellingPricePerQuintal ?? simPrice) * 1.03,
+      aggregationCostPerQuintal,
+      handlingCostPerQuintal,
+      storageCostPerQuintal,
+      groupTransactionCost: (primaryCrop?.costPerAcre ?? simCost) * 0.08,
+      transportOptimizationSavingsPerQuintal: transportSavingsPerQuintal,
+    });
+  }, [portfolio, simArea, simPrice, simYield, simCost]);
+
+  const exportEconomics = useMemo(() => {
+    const primaryCrop = portfolio.allocations[0];
+    const quantityQuintals = Math.max(1, (primaryCrop?.allocatedAcres ?? simArea) * (primaryCrop?.expectedYieldPerAcre ?? simYield));
+    const localPricePerQuintal = primaryCrop?.expectedSellingPricePerQuintal ?? simPrice;
+    const exportResult = simulateExportScenario({
+      cropQuantityQuintals: quantityQuintals,
+      localPricePerQuintal,
+      internationalReferencePricePerKg: 0.63,
+      exporterOfferPerKg: 0.58,
+      packagingCostPerQuintal: 120,
+      handlingCostPerQuintal: 90,
+      documentationCost: 4200,
+      logisticsCost: 18000,
+      transportCost: 26000,
+      exporterChargesPct: 0.04,
+      exchangeRateInrPerUsd: 83.5,
+      exchangeRateTimestamp: new Date().toISOString(),
+    });
+
+    const grossRealization = Number((exportResult.cropQuantityKg * exportResult.exporterOffer.inrPerKg).toFixed(0));
+    const estimatedHandling = exportResult.handlingCost;
+    const estimatedLogistics = exportResult.logisticsCost + exportResult.transportCost;
+    const estimatedOtherCosts = exportResult.packagingCost + exportResult.documentationCost + exportResult.exporterCharges;
+
+    return {
+      ...exportResult,
+      grossRealization,
+      estimatedHandling,
+      estimatedLogistics,
+      estimatedOtherCosts,
+    };
+  }, [portfolio, simArea, simPrice, simYield, simCost]);
+
   function handleAcreChange(cropId: string, value: number) {
     setCustomAcres((prev) => ({
       ...prev,
@@ -454,6 +652,346 @@ export default function RecommendationDashboard() {
             <span>✓ Accept & View Farm Plan →</span>
           </button>
         </header>
+
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Break-even Dashboard</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">{simCropName.toUpperCase()}</h2>
+            </div>
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-bold ${
+                breakEvenStatus === "PROFITABLE"
+                  ? "bg-emerald-100 text-emerald-800"
+                  : breakEvenStatus === "HIGH PROFIT POTENTIAL"
+                    ? "bg-violet-100 text-violet-800"
+                    : breakEvenStatus === "BREAK-EVEN"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-red-100 text-red-800"
+              }`}
+            >
+              {breakEvenStatus}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Current Expected Selling Price</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(simPrice).toLocaleString("en-IN")}/q</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Break-even Price</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{simResult.breakEvenPricePerQuintal.toLocaleString("en-IN")}/q</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Expected Profit</p>
+              <p className="mt-3 text-2xl font-black text-emerald-700">₹{Math.round(simResult.expectedNetProfit).toLocaleString("en-IN")}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">ROI</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">{simResult.roiPercentage.toFixed(1)}%</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Break-even Quantity</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">{breakEvenTotalQuantity.toFixed(2)} q</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Expected Quantity</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">{expectedQuantity.toFixed(2)} q</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Total Cost</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(simResult.totalEstimatedCost).toLocaleString("en-IN")}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Expected Revenue</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(simResult.expectedGrossRevenue).toLocaleString("en-IN")}</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Profitability Status</p>
+                <p className="mt-1 text-lg font-bold text-slate-900">{breakEvenStatus}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Profit Margin</p>
+                <p className="mt-1 text-xl font-black text-slate-900">{((simResult.expectedNetProfit / Math.max(1, simResult.expectedGrossRevenue)) * 100).toFixed(1)}%</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Profitability</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">SELL AT MSP vs DIRECT MARKET vs GROUP SELLING vs EXPORT</h2>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Backend-calculated values only</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm text-slate-700">
+              <thead className="bg-slate-100 text-slate-700 uppercase tracking-[0.14em] text-[10px]">
+                <tr>
+                  <th className="px-4 py-3 font-bold">Strategy</th>
+                  <th className="px-4 py-3 font-bold">Expected Price</th>
+                  <th className="px-4 py-3 font-bold">Cost</th>
+                  <th className="px-4 py-3 font-bold">Revenue</th>
+                  <th className="px-4 py-3 font-bold">Profit</th>
+                  <th className="px-4 py-3 font-bold">Margin</th>
+                </tr>
+              </thead>
+              <tbody>
+                {profitabilityComparison.map((row) => (
+                  <tr key={row.strategy} className="border-t border-slate-200">
+                    <td className="px-4 py-3 font-semibold text-slate-900">{row.label}</td>
+                    <td className="px-4 py-3">₹{Math.round(row.expectedPrice).toLocaleString("en-IN")}/kg</td>
+                    <td className="px-4 py-3">₹{Math.round(row.cost).toLocaleString("en-IN")}</td>
+                    <td className="px-4 py-3">₹{Math.round(row.revenue).toLocaleString("en-IN")}</td>
+                    <td className={`px-4 py-3 font-bold ${row.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+                      ₹{Math.round(row.profit).toLocaleString("en-IN")}
+                    </td>
+                    <td className="px-4 py-3">{row.margin.toFixed(2)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Group Farming Economics</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">INDIVIDUAL vs GROUP SELLING</h2>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Assumption-based backend calculation</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Individual total cost</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(groupSellingSummary.individualTotalCost).toLocaleString("en-IN")}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Group total cost</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(groupSellingSummary.groupTotalCost).toLocaleString("en-IN")}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Transport savings</p>
+              <p className="mt-3 text-2xl font-black text-emerald-700">₹{Math.round(groupSellingSummary.transportSavings).toLocaleString("en-IN")}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Per farmer realization</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(groupSellingSummary.perFarmerRealization).toLocaleString("en-IN")}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Key group figures</p>
+              <div className="mt-3 space-y-2 text-sm text-slate-700">
+                <div className="flex justify-between gap-3"><span>Aggregation cost</span><strong className="text-slate-900">₹{Math.round(groupSellingSummary.aggregationCost).toLocaleString("en-IN")}</strong></div>
+                <div className="flex justify-between gap-3"><span>Handling cost</span><strong className="text-slate-900">₹{Math.round(groupSellingSummary.handlingCost).toLocaleString("en-IN")}</strong></div>
+                <div className="flex justify-between gap-3"><span>Expected group price</span><strong className="text-slate-900">₹{Math.round(groupSellingSummary.expectedSellingPrice).toLocaleString("en-IN")}/q</strong></div>
+                <div className="flex justify-between gap-3"><span>Total group revenue</span><strong className="text-slate-900">₹{Math.round(groupSellingSummary.groupRevenue).toLocaleString("en-IN")}</strong></div>
+                <div className="flex justify-between gap-3"><span>Group profit</span><strong className="text-emerald-700">₹{Math.round(groupSellingSummary.groupProfit).toLocaleString("en-IN")}</strong></div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Assumption labels</p>
+              <ul className="mt-3 space-y-2 text-sm text-slate-700 list-disc pl-5">
+                {groupSellingSummary.assumptions.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Export Economics</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1"># EXPORT ECONOMICS</h2>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">Indicative estimate only</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">International Reference</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(exportEconomics.internationalReferencePrice.inrPerKg).toLocaleString("en-IN")}/kg equivalent</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Exporter Offer</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(exportEconomics.exporterOffer.inrPerKg).toLocaleString("en-IN")}/kg</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Estimated Logistics</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(exportEconomics.estimatedLogistics).toLocaleString("en-IN")}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Estimated Handling</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(exportEconomics.estimatedHandling).toLocaleString("en-IN")}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Estimated Other Costs</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">₹{Math.round(exportEconomics.estimatedOtherCosts).toLocaleString("en-IN")}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Indicative Farmer Realization</p>
+              <p className="mt-3 text-2xl font-black text-emerald-700">₹{Math.round(exportEconomics.expectedFarmerRealization).toLocaleString("en-IN")}</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Export math summary</p>
+              <span className="px-2 py-1 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">Currency conversion: ₹{exportEconomics.currencyConversion.inrPerUsd}/USD</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 text-sm text-slate-700">
+              <div className="rounded-xl bg-white border border-slate-200 p-3"><span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Indicative gross realization</span><strong className="mt-2 block text-lg font-black text-slate-900">₹{Math.round(exportEconomics.grossRealization).toLocaleString("en-IN")}</strong></div>
+              <div className="rounded-xl bg-white border border-slate-200 p-3"><span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Estimated total export cost</span><strong className="mt-2 block text-lg font-black text-slate-900">₹{Math.round(exportEconomics.estimatedExportCosts).toLocaleString("en-IN")}</strong></div>
+              <div className="rounded-xl bg-white border border-slate-200 p-3"><span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Break-even export price</span><strong className="mt-2 block text-lg font-black text-slate-900">₹{Math.round(exportEconomics.exportBreakEven).toLocaleString("en-IN")}/q</strong></div>
+              <div className="rounded-xl bg-white border border-slate-200 p-3"><span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Expected profit</span><strong className="mt-2 block text-lg font-black text-emerald-700">₹{Math.round(exportEconomics.expectedExportProfit).toLocaleString("en-IN")}</strong></div>
+              <div className="rounded-xl bg-white border border-slate-200 p-3"><span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Risk range</span><strong className="mt-2 block text-lg font-black text-slate-900">₹{Math.round(exportEconomics.sensitivity.priceDown10Pct).toLocaleString("en-IN")} to ₹{Math.round(exportEconomics.sensitivity.logisticsUp15Pct).toLocaleString("en-IN")}</strong></div>
+              <div className="rounded-xl bg-white border border-slate-200 p-3"><span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Quantity</span><strong className="mt-2 block text-lg font-black text-slate-900">{exportEconomics.cropQuantityQuintals.toFixed(1)} q</strong></div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 pt-2">
+              {[{ label: "International Reference Price", meta: exportEconomics.referenceDataMeta }, { label: "Exporter Offer", meta: exportEconomics.exporterOfferMeta }, { label: "Historical Trade Data", meta: exportEconomics.historicalTradeDataMeta }].map((item) => (
+                <div key={item.label} className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{item.label}</span>
+                    <span className="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">{item.meta.category}</span>
+                  </div>
+                  <div className="mt-3 space-y-1">
+                    <p><span className="font-bold text-slate-900">Country:</span> {item.meta.country}</p>
+                    <p><span className="font-bold text-slate-900">Commodity:</span> {item.meta.commodity}</p>
+                    <p><span className="font-bold text-slate-900">Currency:</span> {item.meta.currency}</p>
+                    <p><span className="font-bold text-slate-900">Unit:</span> {item.meta.unit}</p>
+                    <p><span className="font-bold text-slate-900">Period:</span> {item.meta.period}</p>
+                    <p><span className="font-bold text-slate-900">Source:</span> {item.meta.source}</p>
+                    <p><span className="font-bold text-slate-900">Source type:</span> {item.meta.sourceType}</p>
+                    <p><span className="font-bold text-slate-900">Last updated:</span> {item.meta.lastUpdated}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-slate-600">{exportEconomics.exportRisk}</p>
+          </div>
+        </section>
+
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Models & Data Used</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">MODELS & DATA USED</h2>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Scenario-based model selection</span>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            {(portfolio.aiModelSummary?.models ?? []).map((model, index) => (
+              <article key={`${model.name}-${index}`} className="border border-slate-200 rounded-2xl bg-slate-50 p-4 space-y-3">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{model.modelType}</p>
+                  <h3 className="text-lg font-bold text-slate-900">{model.name}</h3>
+                  <p className="text-xs font-semibold text-slate-600">Model Version: {model.modelVersion}</p>
+                </div>
+
+                <div className="space-y-2 text-sm text-slate-700">
+                  <div>
+                    <p className="font-bold text-slate-900">Purpose</p>
+                    <p>{model.purpose}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-bold text-slate-900">Why it was used</p>
+                    <p>{model.whyItWasUsed}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-bold text-slate-900">Why this result?</p>
+                    <p>{model.whyThisResult}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-bold text-slate-900">Input Data</p>
+                    <p>{model.inputData.join(" • ")}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-bold text-slate-900">Output</p>
+                    <p>{model.output}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 rounded-xl bg-white border border-slate-200 px-3 py-2">
+                    <span className="font-bold text-slate-900">Confidence</span>
+                    <span className="font-bold text-emerald-700">{model.confidence}</span>
+                  </div>
+
+                  <div className="text-xs text-slate-600">
+                    <span className="font-bold text-slate-900">Data freshness:</span> {model.dataFreshness}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mb-3">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Data Sources</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(portfolio.aiModelSummary?.dataSources ?? []).map((source) => (
+                <span key={source} className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                  ✓ {source}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">WHY WAS THIS MODEL USED?</p>
+            <div className="mt-2 text-sm text-slate-700 space-y-1">
+              <p><span className="font-bold text-slate-900">Method:</span> {portfolio.aiModelSummary?.method?.name ?? "Explainable Deterministic Scoring"}</p>
+              <p><span className="font-bold text-slate-900">Model Type:</span> {portfolio.aiModelSummary?.method?.modelType ?? "Explainable Deterministic Scoring"}</p>
+              <p><span className="font-bold text-slate-900">Purpose:</span> {portfolio.aiModelSummary?.method?.purpose ?? "Compare MSP, mandi, direct-market and export selling scenarios."}</p>
+              <p><span className="font-bold text-slate-900">Why this result?</span> This score is used so the final recommendation remains explainable: it balances expected output, market price, MSP floor, weather, risk profile, and cost structure in a transparent and auditable decision framework.</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">LIVE DATA PIPELINE</p>
+              <span className="px-2 py-1 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">Repository priority: DB → API → ML → MSP → Mandi → Weather → Crop/Soil → Trade → Export → FX → Cached</span>
+            </div>
+            <div className="mt-3 space-y-2">
+              {(portfolio.aiModelSummary?.liveDataPipeline ?? []).map((item) => (
+                <div key={item.stage} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-3">
+                  <span className={`mt-0.5 px-2 py-1 rounded text-[10px] font-bold ${item.isCached ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"}`}>
+                    {item.isCached ? "Cached" : "Live"}
+                  </span>
+                  <div className="text-sm text-slate-700">
+                    <p className="font-bold text-slate-900">{item.stage}</p>
+                    <p>{item.source}</p>
+                    <p className="text-xs text-slate-600">{item.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* 1. Real-Time Farm Strategy & Land Division Studio */}
         <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-6">
@@ -1116,6 +1654,219 @@ export default function RecommendationDashboard() {
                     ₹{simResult.breakEvenPricePerQuintal}/q
                   </strong>
                 </div>
+              </div>
+            </section>
+
+            <section className="agri-card p-6 space-y-5">
+              <div className="border-b border-[var(--border-subtle)] pb-2">
+                <span className="agri-badge agri-badge-violet mb-1">What-If Simulator</span>
+                <h3 className="text-base font-bold font-['Space_Grotesk'] text-[var(--text-primary)]">
+                  # WHAT-IF SIMULATOR
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Frontend preview only. The authoritative calculation remains backend-backed in the profitability service.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Selling Price (₹/q)</label>
+                  <input type="number" value={whatIfPrice} onChange={(e) => setWhatIfPrice(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Quantity (q)</label>
+                  <input type="number" value={whatIfQuantity} onChange={(e) => setWhatIfQuantity(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Production Cost (₹)</label>
+                  <input type="number" value={whatIfProductionCost} onChange={(e) => setWhatIfProductionCost(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Transport Cost (₹)</label>
+                  <input type="number" value={whatIfTransportCost} onChange={(e) => setWhatIfTransportCost(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Input Cost (₹)</label>
+                  <input type="number" value={whatIfInputCost} onChange={(e) => setWhatIfInputCost(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Labor Cost (₹)</label>
+                  <input type="number" value={whatIfLaborCost} onChange={(e) => setWhatIfLaborCost(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Export Cost (₹)</label>
+                  <input type="number" value={whatIfExportCost} onChange={(e) => setWhatIfExportCost(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[var(--text-secondary)] block">Logistics Cost (₹)</label>
+                  <input type="number" value={whatIfLogisticsCost} onChange={(e) => setWhatIfLogisticsCost(Number(e.target.value) || 0)} className="agri-input font-bold" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Revenue</p>
+                  <p className="mt-2 text-xl font-black text-slate-900">₹{Math.round(whatIfPreview.revenue).toLocaleString("en-IN")}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Cost</p>
+                  <p className="mt-2 text-xl font-black text-slate-900">₹{Math.round(whatIfPreview.cost).toLocaleString("en-IN")}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Profit</p>
+                  <p className={`mt-2 text-xl font-black ${whatIfPreview.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+                    ₹{Math.round(whatIfPreview.profit).toLocaleString("en-IN")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Margin</p>
+                  <p className="mt-2 text-xl font-black text-slate-900">{whatIfPreview.margin.toFixed(1)}%</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Break-even</p>
+                  <p className="mt-2 text-xl font-black text-slate-900">{whatIfPreview.breakEven.toFixed(2)} q</p>
+                </div>
+              </div>
+            </section>
+
+            <section className="agri-card p-6 space-y-4">
+              <div className="border-b border-[var(--border-subtle)] pb-2">
+                <span className="agri-badge agri-badge-amber mb-1">Price Sensitivity</span>
+                <h3 className="text-base font-bold font-['Space_Grotesk'] text-[var(--text-primary)]">
+                  What happens if market price changes?
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Expected Price: ₹{Math.round(simPrice).toLocaleString("en-IN")}/q. Based on current reference/forecast data for {simCropName}.
+                </p>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-left text-sm text-slate-700">
+                  <thead className="bg-slate-100 text-slate-700 uppercase tracking-[0.14em] text-[10px]">
+                    <tr>
+                      <th className="px-4 py-3 font-bold">Scenario</th>
+                      <th className="px-4 py-3 font-bold">Revenue</th>
+                      <th className="px-4 py-3 font-bold">Profit</th>
+                      <th className="px-4 py-3 font-bold">Margin</th>
+                      <th className="px-4 py-3 font-bold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {priceSensitivityScenarios.map((scenario) => (
+                      <tr key={scenario.price} className="border-t border-slate-200">
+                        <td className="px-4 py-3 font-semibold text-slate-900">₹{Math.round(scenario.price).toLocaleString("en-IN")}/q</td>
+                        <td className="px-4 py-3">₹{Math.round(scenario.revenue).toLocaleString("en-IN")}</td>
+                        <td className={`px-4 py-3 font-bold ${scenario.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+                          ₹{Math.round(scenario.profit).toLocaleString("en-IN")}
+                        </td>
+                        <td className="px-4 py-3">{scenario.margin.toFixed(1)}%</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+                            scenario.status === "HIGH PROFIT POTENTIAL" ? "bg-violet-100 text-violet-800" :
+                            scenario.status === "PROFITABLE" ? "bg-emerald-100 text-emerald-800" :
+                            scenario.status === "BREAK-EVEN" ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"
+                          }`}>
+                            {scenario.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="agri-card p-6 space-y-4">
+              <div className="border-b border-[var(--border-subtle)] pb-2">
+                <span className="agri-badge agri-badge-cyan mb-1">Yield Sensitivity</span>
+                <h3 className="text-base font-bold font-['Space_Grotesk'] text-[var(--text-primary)]">
+                  What happens if yield changes?
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Expected: {expectedQuantity.toFixed(0)} q. Yield prediction uncertainty is reflected in the scenarios below.
+                </p>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-left text-sm text-slate-700">
+                  <thead className="bg-slate-100 text-slate-700 uppercase tracking-[0.14em] text-[10px]">
+                    <tr>
+                      <th className="px-4 py-3 font-bold">Scenario</th>
+                      <th className="px-4 py-3 font-bold">Revenue</th>
+                      <th className="px-4 py-3 font-bold">Profit</th>
+                      <th className="px-4 py-3 font-bold">Margin</th>
+                      <th className="px-4 py-3 font-bold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {yieldSensitivityScenarios.map((scenario) => (
+                      <tr key={scenario.yieldQuintals} className="border-t border-slate-200">
+                        <td className="px-4 py-3 font-semibold text-slate-900">{scenario.yieldQuintals.toFixed(0)} q</td>
+                        <td className="px-4 py-3">₹{Math.round(scenario.revenue).toLocaleString("en-IN")}</td>
+                        <td className={`px-4 py-3 font-bold ${scenario.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+                          ₹{Math.round(scenario.profit).toLocaleString("en-IN")}
+                        </td>
+                        <td className="px-4 py-3">{scenario.margin.toFixed(1)}%</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+                            scenario.status === "HIGH PROFIT POTENTIAL" ? "bg-violet-100 text-violet-800" :
+                            scenario.status === "PROFITABLE" ? "bg-emerald-100 text-emerald-800" :
+                            scenario.status === "BREAK-EVEN" ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"
+                          }`}>
+                            {scenario.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="agri-card p-6 space-y-4">
+              <div className="border-b border-[var(--border-subtle)] pb-2">
+                <span className="agri-badge agri-badge-rose mb-1">Cost Sensitivity</span>
+                <h3 className="text-base font-bold font-['Space_Grotesk'] text-[var(--text-primary)]">
+                  How do cost increases affect break-even and returns?
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Based on current input, labor, and transport assumptions for {simCropName}.
+                </p>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-left text-sm text-slate-700">
+                  <thead className="bg-slate-100 text-slate-700 uppercase tracking-[0.14em] text-[10px]">
+                    <tr>
+                      <th className="px-4 py-3 font-bold">Scenario</th>
+                      <th className="px-4 py-3 font-bold">New Break-even</th>
+                      <th className="px-4 py-3 font-bold">New Profit</th>
+                      <th className="px-4 py-3 font-bold">New Margin</th>
+                      <th className="px-4 py-3 font-bold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {costSensitivityScenarios.map((scenario) => (
+                      <tr key={scenario.label} className="border-t border-slate-200">
+                        <td className="px-4 py-3 font-semibold text-slate-900">{scenario.label}</td>
+                        <td className="px-4 py-3">₹{Math.round(scenario.breakEvenPrice).toLocaleString("en-IN")}/q</td>
+                        <td className={`px-4 py-3 font-bold ${scenario.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+                          ₹{Math.round(scenario.profit).toLocaleString("en-IN")}
+                        </td>
+                        <td className="px-4 py-3">{scenario.margin.toFixed(1)}%</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+                            scenario.status === "HIGH PROFIT POTENTIAL" ? "bg-violet-100 text-violet-800" :
+                            scenario.status === "PROFITABLE" ? "bg-emerald-100 text-emerald-800" :
+                            scenario.status === "BREAK-EVEN" ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"
+                          }`}>
+                            {scenario.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </section>
 

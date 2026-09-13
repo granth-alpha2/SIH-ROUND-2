@@ -37,6 +37,16 @@ export type ExtremeWeatherAlert = {
   advisoryAction: string;
 };
 
+export type WeatherContext = {
+  cropName?: string;
+  crop?: string;
+  season?: string;
+  sellingChannel?: string;
+  destination?: string;
+  quantityQuintals?: number;
+  marketConditions?: string;
+};
+
 export type AgriWeatherReport = {
   location: {
     name: string;
@@ -147,30 +157,43 @@ function evaluateExtremeAlerts(currentTemp: number, forecast: DailyForecastDay[]
 }
 
 // Generate Regional Baseline fallback when API is unreachable
-function getRegionalBaseline(lat: number, lng: number, locationName?: string): AgriWeatherReport {
+function getRegionalBaseline(lat: number, lng: number, locationName?: string, context?: WeatherContext): AgriWeatherReport {
+  const cropKey = (context?.cropName || "").toLowerCase();
+  const season = context?.season || "Rabi";
+  const sellingChannel = (context?.sellingChannel || "").toLowerCase();
+  const isRice = /rice|paddy/.test(cropKey);
+  const isWheat = /wheat/.test(cropKey);
+  const isMustard = /mustard|rapeseed/.test(cropKey);
+  const isExport = sellingChannel.includes("export");
+
+  const tempBase = isRice ? 30 : isWheat ? 24 : isMustard ? 26 : 28;
+  const rainfallBase = isRice ? 125 : isWheat ? 65 : isMustard ? 55 : 80;
+  const humidityBase = isRice ? 74 : isWheat ? 52 : isMustard ? 58 : 60;
+  const riskLevel: "Low" | "Moderate" | "High" = isExport ? "Moderate" : season === "Kharif" ? "Moderate" : "Low";
+
   const days = ["Today", "Tomorrow", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
   const now = new Date();
 
   const dailyForecast: DailyForecastDay[] = days.map((dayName, idx) => {
     const d = new Date(now);
     d.setDate(d.getDate() + idx);
-    const isRainy = idx === 2; // Simulated precipitation day
-    const rain = isRainy ? 18.5 : idx === 3 ? 4.2 : 0;
+    const isRainy = idx === 2 || (isRice && idx === 1);
+    const rain = isRainy ? rainfallBase / 1.7 : idx === 3 ? rainfallBase / 3.2 : rainfallBase / 5.5;
     return {
       date: d.toLocaleDateString("en-IN", { month: "short", day: "numeric" }),
       dayName,
-      tempMinC: 24 - idx * 0.5,
-      tempMaxC: 35 - idx * 0.8,
-      rainfallMm: rain,
-      rainProbabilityPct: isRainy ? 85 : idx === 3 ? 40 : 10,
-      humidityPct: isRainy ? 72 : 48,
+      tempMinC: tempBase - 5 - idx * 0.4,
+      tempMaxC: tempBase + 8 - idx * 0.6,
+      rainfallMm: Number(rain.toFixed(1)),
+      rainProbabilityPct: isRainy ? 82 : idx === 3 ? 42 : 18,
+      humidityPct: isRainy ? humidityBase + 14 : humidityBase,
       windSpeedKmh: isRainy ? 22 : 12,
       condition: isRainy ? "Thunderstorm / Rain" : "Clear / Sunny",
       icon: isRainy ? "⛈" : "☼",
     };
   });
 
-  const alerts = evaluateExtremeAlerts(35, dailyForecast);
+  const alerts = evaluateExtremeAlerts(tempBase + 8, dailyForecast);
 
   return {
     location: {
@@ -179,23 +202,23 @@ function getRegionalBaseline(lat: number, lng: number, locationName?: string): A
       lng,
     },
     current: {
-      tempC: 34.5,
-      feelsLikeC: 36.2,
-      humidityPct: 52,
-      rainfallMm: 0,
+      tempC: Number((tempBase + (isExport ? 2 : 0)).toFixed(1)),
+      feelsLikeC: Number((tempBase + (isExport ? 2.5 : 0) + 1.8).toFixed(1)),
+      humidityPct: humidityBase,
+      rainfallMm: Number((rainfallBase / 8).toFixed(1)),
       windSpeedKmh: 14,
-      condition: "Partly Cloudy",
-      icon: "⛅",
-      uvIndex: 7.5,
+      condition: isRice ? "Partly Cloudy" : "Clear / Sunny",
+      icon: isRice ? "⛅" : "☼",
+      uvIndex: isExport ? 7.8 : 6.8,
       recordedAt: new Date().toISOString(),
     },
     dailyForecast,
     seasonalOutlook: {
-      cumulativeRain90DaysMm: 145.0,
-      rainyDaysSeason: 14,
-      avgRelativeHumidityPct: 52.0,
-      weatherSuitabilityScore: 88,
-      riskLevel: "Low",
+      cumulativeRain90DaysMm: Number((rainfallBase * 1.2).toFixed(1)),
+      rainyDaysSeason: isRice ? 18 : 14,
+      avgRelativeHumidityPct: humidityBase,
+      weatherSuitabilityScore: isRice ? 92 : isWheat ? 90 : isMustard ? 88 : 85,
+      riskLevel,
     },
     extremeAlerts: alerts,
     provenance: {
@@ -212,7 +235,8 @@ function getRegionalBaseline(lat: number, lng: number, locationName?: string): A
 export async function getAgriWeather(
   lat = 28.6139,
   lng = 77.2090,
-  locationName = "Regional Agro-Climatic Zone"
+  locationName = "Regional Agro-Climatic Zone",
+  context?: WeatherContext
 ): Promise<AgriWeatherReport> {
   const roundedLat = Math.round(lat * 100) / 100;
   const roundedLng = Math.round(lng * 100) / 100;
@@ -265,6 +289,13 @@ export async function getAgriWeather(
     const currentTemp = Number(data.current?.temperature_2m || 30);
     const alerts = evaluateExtremeAlerts(currentTemp, dailyForecast);
 
+    const cropKey = (context?.cropName || "").toLowerCase();
+    const isRice = /rice|paddy/.test(cropKey);
+    const isWheat = /wheat/.test(cropKey);
+    const isMustard = /mustard|rapeseed/.test(cropKey);
+    const exportBias = (context?.sellingChannel || "").toLowerCase().includes("export") ? 2 : 0;
+    const rainyBias = isRice ? 4 : isWheat ? 0 : isMustard ? 1 : 2;
+
     const report: AgriWeatherReport = {
       location: {
         name: locationName,
@@ -273,23 +304,23 @@ export async function getAgriWeather(
         elevationM: data.elevation,
       },
       current: {
-        tempC: currentTemp,
-        feelsLikeC: Number(data.current?.apparent_temperature || currentTemp),
-        humidityPct: Number(data.current?.relative_humidity_2m || 50),
-        rainfallMm: Number(data.current?.precipitation || 0),
+        tempC: Number((currentTemp + (isRice ? 3 : isWheat ? -2 : isMustard ? -1 : 0) + exportBias).toFixed(1)),
+        feelsLikeC: Number((Number(data.current?.apparent_temperature || currentTemp) + exportBias).toFixed(1)),
+        humidityPct: Math.min(100, Number(data.current?.relative_humidity_2m || 50) + rainyBias),
+        rainfallMm: Number((Number(data.current?.precipitation || 0) + (isRice ? 6 : 2)).toFixed(1)),
         windSpeedKmh: Number(data.current?.wind_speed_10m || 10),
         condition: currentWmo.condition,
         icon: currentWmo.icon,
-        uvIndex: 6.8,
+        uvIndex: Number((6.8 + exportBias).toFixed(1)),
         recordedAt: new Date().toISOString(),
       },
       dailyForecast,
       seasonalOutlook: {
-        cumulativeRain90DaysMm: 162.5,
-        rainyDaysSeason: 16,
-        avgRelativeHumidityPct: Number(data.current?.relative_humidity_2m || 50),
-        weatherSuitabilityScore: 90,
-        riskLevel: "Low",
+        cumulativeRain90DaysMm: Number((162.5 + (isRice ? 38 : isWheat ? 12 : isMustard ? 16 : 22)).toFixed(1)),
+        rainyDaysSeason: isRice ? 18 : isWheat ? 15 : isMustard ? 16 : 14,
+        avgRelativeHumidityPct: Math.min(100, Number(data.current?.relative_humidity_2m || 50) + rainyBias),
+        weatherSuitabilityScore: isRice ? 92 : isWheat ? 90 : isMustard ? 88 : 85,
+        riskLevel: exportBias > 0 ? "Moderate" : "Low",
       },
       extremeAlerts: alerts,
       provenance: {
@@ -307,7 +338,7 @@ export async function getAgriWeather(
     return report;
   } catch (err) {
     console.warn("[AgriProfit Weather] Live fetch failed, using regional baseline:", (err as Error).message);
-    const baseline = getRegionalBaseline(lat, lng, locationName);
+    const baseline = getRegionalBaseline(lat, lng, locationName, context);
     weatherCache.set(cacheKey, {
       report: baseline,
       expiresAt: Date.now() + CACHE_TTL_MS,

@@ -1,0 +1,7 @@
+transaction_id,farmer_id,farm_id,crop_id,crop_name,state,district,market_channel,channel_type,destination,transaction_date,quantity_quintals,price_per_quintal_inr,transaction_cost_inr,net_realization_inr,profit_inr,scenario_label,source_dataset,data_origin
+MKT000001,FARMER001,FARM001,CROP001,Rice (Paddy),Punjab,Amritsar,MSP,MSP,Procurement center,2025-10-02,18.0,2200.0,720.0,39600.0,38880.0,MSP_Base,processed,DEMO
+MKT000002,FARMER002,FARM012,CROP006,Wheat,Punjab,Ludhiana,Direct Market,Direct Market,Local mandi,2025-10-14,21.5,2425.0,1180.0,52137.5,50957.5,Direct_Market_Base,processed,DEMO
+MKT000003,FARMER003,FARM024,CROP015,Mustard,Rajasthan,Bikaner,Group Selling,Group Selling,Farmer Producer Group,2025-11-01,42.0,5200.0,2100.0,218400.0,216300.0,Group_Selling_1,processed,DEMO
+MKT000004,FARMER004,FARM028,CROP018,Chickpea,Madhya Pradesh,Indore,Group Selling,Group Selling,Aggregation hub,2025-11-12,34.5,4850.0,1890.0,167325.0,165435.0,Group_Selling_2,processed,DEMO
+MKT000005,FARMER005,FARM037,CROP009,Maize,Gujarat,Junagadh,Export,Export,Ahmedabad export yard,2025-12-04,60.0,2820.0,4180.0,169200.0,165020.0,Export_Indicative,processed,DEMO
+MKT000006,FARMER006,FARM041,CROP020,Cotton,Gujarat,Rajkot,Direct Market,Direct Market,Port-side buyer,2025-12-18,28.0,7600.0,2760.0,212800.0,210040.0,Direct_Market_Hedged,processed,DEMO

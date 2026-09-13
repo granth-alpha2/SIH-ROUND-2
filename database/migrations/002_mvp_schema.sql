@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS crop_parameters (
   risk_notes TEXT,
   disease_pest_notes TEXT,
   source_type TEXT NOT NULL DEFAULT 'estimated' CHECK (source_type IN ('official', 'estimated', 'demo')),
+  data_origin TEXT NOT NULL DEFAULT 'DEMO' CHECK (data_origin IN ('LIVE', 'DEMO')),
   source_reference TEXT,
   effective_from DATE,
   effective_to DATE,
@@ -127,6 +128,7 @@ CREATE TABLE IF NOT EXISTS market_prices (
   unit TEXT NOT NULL,
   recorded_at TIMESTAMPTZ NOT NULL,
   source_type TEXT NOT NULL CHECK (source_type IN ('official', 'estimated', 'demo', 'cached')),
+  data_origin TEXT NOT NULL DEFAULT 'DEMO' CHECK (data_origin IN ('LIVE', 'DEMO')),
   source_reference TEXT,
   fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -140,6 +142,7 @@ CREATE TABLE IF NOT EXISTS msp_records (
   effective_from DATE NOT NULL,
   effective_to DATE,
   source_type TEXT NOT NULL DEFAULT 'official' CHECK (source_type IN ('official', 'estimated', 'demo')),
+  data_origin TEXT NOT NULL DEFAULT 'DEMO' CHECK (data_origin IN ('LIVE', 'DEMO')),
   source_reference TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (crop_id, season, effective_from)

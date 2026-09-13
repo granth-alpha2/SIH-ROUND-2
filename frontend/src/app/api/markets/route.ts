@@ -6,13 +6,30 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const crop = searchParams.get("crop") || undefined;
   const state = searchParams.get("state") || undefined;
+  const district = searchParams.get("district") || undefined;
+  const sellingChannel = searchParams.get("sellingChannel") || searchParams.get("channel") || undefined;
+  const destination = searchParams.get("destination") || undefined;
+  const season = searchParams.get("season") || undefined;
+  const date = searchParams.get("date") || undefined;
+  const quantityQuintals = Number(searchParams.get("quantityQuintals") || 0) || undefined;
+  const marketConditions = searchParams.get("marketConditions") || undefined;
   const provider = searchParams.get("provider") || undefined;
   const includeNcdex = searchParams.get("includeNcdex") === "true" || provider === "ncdex" || provider === "all";
   const productGroup = searchParams.get("productGroup") || undefined;
   const symbol = searchParams.get("symbol") || "KAPAS";
 
   try {
-    const prices = await marketService.getMandiPrices({ crop, state });
+    const prices = await marketService.getMandiPrices({
+      crop,
+      state,
+      district,
+      sellingChannel,
+      destination,
+      season,
+      quantityQuintals,
+      date,
+      marketConditions,
+    });
 
     let ncdexPayload = undefined;
     if (includeNcdex) {

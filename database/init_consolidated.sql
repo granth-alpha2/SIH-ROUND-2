@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS crop_parameters (
   risk_notes TEXT,
   disease_pest_notes TEXT,
   source_type TEXT NOT NULL DEFAULT 'estimated' CHECK (source_type IN ('official', 'estimated', 'demo')),
+  data_origin TEXT NOT NULL DEFAULT 'DEMO' CHECK (data_origin IN ('LIVE', 'DEMO')),
   source_reference TEXT,
   effective_from DATE,
   effective_to DATE,
@@ -125,6 +126,7 @@ CREATE TABLE IF NOT EXISTS weather_observations (
   extreme_weather JSONB NOT NULL DEFAULT '{}'::jsonb,
   provider TEXT NOT NULL,
   source_type TEXT NOT NULL DEFAULT 'official' CHECK (source_type IN ('official', 'estimated', 'demo', 'cached')),
+  data_origin TEXT NOT NULL DEFAULT 'DEMO' CHECK (data_origin IN ('LIVE', 'DEMO')),
   fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (latitude, longitude, observed_at, provider)
 );
@@ -143,6 +145,7 @@ CREATE TABLE IF NOT EXISTS market_prices (
   arrivals_tonnes NUMERIC(12, 2) CHECK (arrivals_tonnes IS NULL OR arrivals_tonnes >= 0),
   unit TEXT NOT NULL DEFAULT 'quintal',
   source_type TEXT NOT NULL DEFAULT 'official' CHECK (source_type IN ('official', 'estimated', 'demo', 'cached')),
+  data_origin TEXT NOT NULL DEFAULT 'DEMO' CHECK (data_origin IN ('LIVE', 'DEMO')),
   source_reference TEXT,
   fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (crop_id, state, district, market_center, price_date),
@@ -161,6 +164,7 @@ CREATE TABLE IF NOT EXISTS msp_records (
   procuring_agency TEXT,
   effective_date DATE NOT NULL,
   source_type TEXT NOT NULL DEFAULT 'official' CHECK (source_type IN ('official', 'estimated', 'demo')),
+  data_origin TEXT NOT NULL DEFAULT 'DEMO' CHECK (data_origin IN ('LIVE', 'DEMO')),
   source_reference TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (crop_id, season, marketing_year)
