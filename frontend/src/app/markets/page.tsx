@@ -829,7 +829,7 @@ export default function MarketsPage() {
                             {c.mspPrice ? (
                               <div className="leading-tight">
                                 <span className="font-semibold text-slate-700">MSP: ₹{c.mspPrice}</span>
-                                {c.mspDifferencePct !== null && (
+                                {c.mspDifferencePct !== null && c.mspDifferencePct !== undefined && (
                                   <span
                                     className={`block font-black text-[11px] ${
                                       c.mspDifferencePct >= 0 ? "text-emerald-700" : "text-rose-600"

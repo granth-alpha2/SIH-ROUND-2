@@ -73,3 +73,30 @@ AgriProfit is an AI-powered agricultural decision-support platform designed for 
 ### D. Reverse Proxy & Infrastructure (`infrastructure/` & `nginx.conf`)
 * **Nginx:** Routes `/` to Next.js (`:3000`) and `/ml/` to FastAPI (`:8000`).
 * **Docker Compose:** Multi-container orchestration (`docker-compose.prod.yml`).
+
+---
+
+## 3. Secondary Marketplace & Direct Farm-to-Market Module
+
+### A. Dual Channels
+1. **Mode A — MSP Government Procurement:**
+   - Farmer connects with verified Government Procurement Officers (FCI, PUNGRAIN, HAFED, NAFED).
+   - Price locked automatically from CACP statutory dataset (`OFFICIAL_MSP_CATALOG`).
+   - Generates cryptographically secure 12-digit numeric one-time transaction code.
+   - Verified on-site at procurement terminal using 12-digit code + Biometric Verification Adapter (`DemoBiometricProvider`).
+   - Weighed quantity determines final realization (`Actual Weight × Locked MSP`).
+   - Generates tamper-evident digital receipt and demo DBT/PFMS payment record.
+2. **Mode B — Direct Farm-to-Market & Group Selling:**
+   - Farmer lists crop produce independently with custom asking price and quality grade.
+   - Price intelligence engine displays transparent comparison against MSP floor, APMC mandi modal, and ML forecasted price.
+   - Private wholesale buyers negotiate via platform-mediated counter-offers and multi-item Request Baskets.
+   - Group Selling aggregates smallholder yields (e.g. 12q + 18q + 15q = 45q) with explainable compatibility scoring (0-100).
+3. **Export Gateway:**
+   - Farmers/Groups connect to registered Indian Exporters (not foreign buyers directly).
+   - International reference prices from FAOSTAT / UN Comtrade across 10 destination countries.
+   - Transparent cost calculation: `International Price - Logistics - Exporter Margin = Net Realization`.
+
+### B. Biometric Verification Adapter Architecture
+- Interface: `IBiometricProvider` with methods `verify()`, `getProviderReference()`, `getVerificationStatus()`.
+- Implementation: `DemoBiometricProvider` (UIDAI Iris Emulation v1.2).
+- Privacy: Never captures or stores raw iris scans, templates, or images. Only records cryptographic reference IDs, timestamps, and verification status. Clearly labeled as "Biometric Verification — Demo".

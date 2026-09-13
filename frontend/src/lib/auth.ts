@@ -5,7 +5,14 @@
  * Node.js 18+, and browser environments with zero external dependencies.
  */
 
-export type UserRole = "farmer" | "fpo_admin" | "platform_admin";
+export type UserRole =
+  | "farmer"
+  | "fpo_admin"
+  | "platform_admin"
+  | "government_buyer"
+  | "private_buyer"
+  | "exporter"
+  | "admin";
 
 export type UserSession = {
   sub: string; // User ID

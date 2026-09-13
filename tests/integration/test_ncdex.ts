@@ -28,8 +28,9 @@ async function runTests() {
   assert.equal(chana.productGroup, "Cereals & Pulses");
   assert.equal(chana.basisCenter, "Bikaner (Rajasthan)");
   assert(chana.mspPrice !== null && chana.mspPrice === 5440);
-  assert(chana.mspDifferencePct !== null && chana.mspDifferencePct > 30);
-  console.log(`[PASS] Chana verified trading at ₹${chana.settlementPrice} (+${chana.mspDifferencePct}% above MSP)`);
+  const diffPct = chana.mspDifferencePct ?? 0;
+  assert(diffPct > 30);
+  console.log(`[PASS] Chana verified trading at ₹${chana.settlementPrice} (+${diffPct}% above MSP)`);
 
   // 4. Guar Complex contracts
   const guarContracts = await ncdexService.getFuturesPrices({ productGroup: "Guar Complex" });

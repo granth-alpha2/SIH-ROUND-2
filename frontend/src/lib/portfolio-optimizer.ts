@@ -26,11 +26,11 @@ export type RiskAppetite = "Conservative" | "Balanced" | "Growth";
 export type ResourceLevel = "Low" | "Medium" | "High";
 
 export type StrategyAllocationRole =
-
   | "Part 1: Safety (Downside Floor)"
   | "Part 2: Stability & Profit (Dependable Income)"
   | "Part 3: High-Profit Opportunity (Upside Capture)"
-  | "Part 4: Intelligent Growth & Diversity (Soil & Rotation)";
+  | "Part 4: Intelligent Growth & Diversity (Soil & Rotation)"
+  | "Part 5: Seasonal & Short-Duration Window (Fast Cash)";
 
 export type AllocatedCropItem = {
   cropId: string;

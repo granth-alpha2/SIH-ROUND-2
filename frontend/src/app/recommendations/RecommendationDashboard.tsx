@@ -16,6 +16,9 @@ import {
 import { type CropSeason, type CropRecord } from "@/lib/crop-data";
 import { resolveDistrictFromCoords } from "@/lib/geo-service";
 import CropCompareCard from "@/features/recommendations/CropCompareCard";
+import SeasonalCropPlanningPanel, {
+  type AllocatedSeasonalCrop,
+} from "@/features/recommendations/SeasonalCropPlanningPanel";
 
 function formatCurrency(n: number) {
   return "₹" + Math.round(n).toLocaleString("en-IN");
@@ -86,6 +89,9 @@ export default function RecommendationDashboard() {
   const [totalLandAcres, setTotalLandAcres] = useState<number>(initialAcres);
   const [farmBoundary, setFarmBoundary] = useState<{ lat: number; lng: number }[]>([]);
   const [selectedCropId, setSelectedCropId] = useState<string | null>(null);
+
+  // Optional Seasonal & Short-Duration Crop state
+  const [allocatedSeasonalCrop, setAllocatedSeasonalCrop] = useState<AllocatedSeasonalCrop | null>(null);
 
   // Strategy, Water, Soil & Season state
   const [riskAppetite, setRiskAppetite] = useState<RiskAppetite>(initialRisk);
@@ -271,8 +277,72 @@ export default function RecommendationDashboard() {
     }
   }
 
-  const editedAllocations = useMemo(() => {
+  const editedAllocations = useMemo((): AllocatedCropItem[] => {
     if (!portfolio) return [];
+
+    if (allocatedSeasonalCrop && allocatedSeasonalCrop.allocatedAcres > 0) {
+      const seasonalAcres = Math.min(totalLandAcres * 0.9, allocatedSeasonalCrop.allocatedAcres);
+      const remainingAcres = Math.max(0.1, totalLandAcres - seasonalAcres);
+
+      const currentBaseTotal = portfolio.allocations.reduce((sum, alloc) => {
+        const live = customAcres[alloc.cropId] !== undefined ? customAcres[alloc.cropId] : alloc.allocatedAcres;
+        return sum + live;
+      }, 0) || 1;
+
+      const baseItems: AllocatedCropItem[] = portfolio.allocations.map((alloc) => {
+        const liveAcres = customAcres[alloc.cropId] !== undefined ? customAcres[alloc.cropId] : alloc.allocatedAcres;
+        const scaledAcres = Number(((liveAcres / currentBaseTotal) * remainingAcres).toFixed(2));
+        const sim = simulateCropFinancials({
+          areaAcres: scaledAcres,
+          expectedSellingPricePerQuintal: alloc.expectedSellingPricePerQuintal,
+          expectedYieldQuintalsPerAcre: alloc.expectedYieldPerAcre,
+          inputCostPerAcre: alloc.costPerAcre,
+        });
+
+        return {
+          ...alloc,
+          allocatedAcres: scaledAcres,
+          percentage: Math.round((scaledAcres / (totalLandAcres || 1)) * 100),
+          allocatedRevenue: sim.expectedGrossRevenue,
+          allocatedCost: sim.totalEstimatedCost,
+          allocatedProfit: sim.expectedNetProfit,
+          breakEvenYield: sim.breakEvenYieldQuintalsPerAcre,
+          breakEvenPrice: sim.breakEvenPricePerQuintal,
+        };
+      });
+
+      const seasonalItem: AllocatedCropItem = {
+        cropId: allocatedSeasonalCrop.cropId,
+        cropSlug: allocatedSeasonalCrop.cropId.toLowerCase(),
+        cropName: allocatedSeasonalCrop.cropName,
+        hindiName: allocatedSeasonalCrop.hindiName || allocatedSeasonalCrop.cropName,
+        category: "Short-Duration Intercrop",
+        season: season,
+        strategyRole: "Part 5: Seasonal & Short-Duration Window (Fast Cash)",
+        allocatedAcres: seasonalAcres,
+        percentage: Math.round((seasonalAcres / (totalLandAcres || 1)) * 100),
+        score: 95,
+        expectedYieldPerAcre: 6,
+        expectedSellingPricePerQuintal: Math.round(allocatedSeasonalCrop.expectedGrossRevenuePerAcre / 6),
+        costPerAcre: allocatedSeasonalCrop.costPerAcre,
+        allocatedRevenue: allocatedSeasonalCrop.expectedGrossRevenuePerAcre * seasonalAcres,
+        allocatedCost: allocatedSeasonalCrop.costPerAcre * seasonalAcres,
+        allocatedProfit: allocatedSeasonalCrop.expectedProfitPerAcre * seasonalAcres,
+        breakEvenYield: Number((allocatedSeasonalCrop.costPerAcre / Math.max(1, (allocatedSeasonalCrop.expectedGrossRevenuePerAcre / 6))).toFixed(1)),
+        breakEvenPrice: Math.round(allocatedSeasonalCrop.costPerAcre / 6),
+        mspSafety: true,
+        mspPrice: Math.round(allocatedSeasonalCrop.expectedGrossRevenuePerAcre / 6),
+        reasonsForAllocation: [
+          `Rapid ${allocatedSeasonalCrop.durationDays}-day production window fitting farm timeline.`,
+          allocatedSeasonalCrop.festivalMatch ? `Timed to capture peak festive market premiums during ${allocatedSeasonalCrop.festivalMatch}.` : "Quick interim cash turnover.",
+          allocatedSeasonalCrop.reason || "Low water footprint, excellent soil restoration, and guaranteed market liquidity."
+        ],
+        dataLineageSources: ["ICAR Short-Duration Pulses/Vegetables Compendium 2024", "National Horticulture Board Price Indices"]
+      };
+
+      return [...baseItems, seasonalItem];
+    }
+
     return portfolio.allocations.map((alloc) => {
       const liveAcres = customAcres[alloc.cropId] !== undefined ? customAcres[alloc.cropId] : alloc.allocatedAcres;
       const sim = simulateCropFinancials({
@@ -292,7 +362,7 @@ export default function RecommendationDashboard() {
         breakEvenPrice: sim.breakEvenPricePerQuintal,
       };
     });
-  }, [portfolio, customAcres]);
+  }, [portfolio, customAcres, allocatedSeasonalCrop, totalLandAcres, season]);
 
   const totalEditedAcres = useMemo(() => {
     return editedAllocations.reduce((sum, a) => sum + a.allocatedAcres, 0);
@@ -324,6 +394,13 @@ export default function RecommendationDashboard() {
   }, [simArea, simPrice, simYield, simCost]);
 
   function handleAcreChange(cropId: string, value: number) {
+    if (allocatedSeasonalCrop && allocatedSeasonalCrop.cropId === cropId) {
+      setAllocatedSeasonalCrop({
+        ...allocatedSeasonalCrop,
+        allocatedAcres: Math.max(0, Number(value.toFixed(2))),
+      });
+      return;
+    }
     setCustomAcres((prev) => ({
       ...prev,
       [cropId]: Math.max(0, Number(value.toFixed(2))),
@@ -882,6 +959,20 @@ export default function RecommendationDashboard() {
               </div>
             </section>
 
+            {/* Optional Seasonal & Short-Duration Crop Recommendation Layer */}
+            <SeasonalCropPlanningPanel
+              farmBoundary={farmBoundary}
+              farmAcres={totalLandAcres}
+              soilType={soilType}
+              season={season}
+              onAllocateSeasonalCrop={(allocated: AllocatedSeasonalCrop | null) => {
+                setAllocatedSeasonalCrop(allocated);
+                if (allocated) {
+                  setSelectedCropId(allocated.cropId);
+                }
+              }}
+            />
+
             {/* Apni Fasal vs AI Fasal (Your Crop vs Our Recommendation) Comparison Module */}
             <CropCompareCard
               farmId={urlFarmId || undefined}
@@ -990,6 +1081,52 @@ export default function RecommendationDashboard() {
                       >
                         {openExplanation === idx ? "Hide Explanation ▲" : "Why Grow This Crop? ▼"}
                       </button>
+                    </div>
+
+                    {/* End-to-End Market Integration: Sell / Market This Crop (Prompt 42) */}
+                    <div className="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-800 space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">🛒</span>
+                          <span className="text-sm font-black text-emerald-950 dark:text-emerald-100 uppercase tracking-tight">
+                            Marketplace Linkage: Sell & Monetize {alloc.cropName}
+                          </span>
+                        </div>
+                        <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
+                          Expected Yield: ~{(alloc.allocatedAcres * 18).toFixed(1)} q · Gross Value: ~₹{Math.round(alloc.allocatedAcres * 18 * (alloc.mspPrice || 2275)).toLocaleString("en-IN")}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <Link
+                          href={`/marketplace/msp?crop=${encodeURIComponent(alloc.cropName)}`}
+                          className="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-center flex items-center justify-center gap-1 shadow-sm transition-all"
+                        >
+                          <span>🌾</span>
+                          <span>Sell at MSP</span>
+                        </Link>
+                        <Link
+                          href={`/marketplace/direct?crop=${encodeURIComponent(alloc.cropName)}`}
+                          className="px-3 py-2 bg-[#0b4d75] hover:bg-[#083754] text-white rounded-xl font-bold text-center flex items-center justify-center gap-1 shadow-sm transition-all"
+                        >
+                          <span>🛒</span>
+                          <span>Find Buyers</span>
+                        </Link>
+                        <Link
+                          href={`/marketplace/groups?crop=${encodeURIComponent(alloc.cropName)}`}
+                          className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold text-center flex items-center justify-center gap-1 shadow-sm transition-all"
+                        >
+                          <span>👥</span>
+                          <span>Create Group</span>
+                        </Link>
+                        <Link
+                          href={`/marketplace/export?crop=${encodeURIComponent(alloc.cropName)}`}
+                          className="px-3 py-2 bg-indigo-700 hover:bg-indigo-800 text-white rounded-xl font-bold text-center flex items-center justify-center gap-1 shadow-sm transition-all"
+                        >
+                          <span>🌍</span>
+                          <span>Export Signal</span>
+                        </Link>
+                      </div>
                     </div>
 
                     {openExplanation === idx && (

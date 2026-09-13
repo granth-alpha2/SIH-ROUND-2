@@ -9,8 +9,9 @@ import { DISTRICT_MASTER } from "@/lib/geo-service";
 const TOP_NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "My Farm", href: "/farms" },
+  { label: "Marketplace", href: "/marketplace" },
   { label: "Crop Information", href: "/crops" },
-  { label: "Market", href: "/markets" },
+  { label: "APMC Market", href: "/markets" },
   { label: "Weather", href: "/weather" },
   { label: "Government Schemes", href: "/schemes" },
   { label: "Agricultural Knowledge", href: "/knowledge" },
@@ -238,12 +239,25 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
     }
   }
 
-  const isDefaultName = !user?.name || user.name.startsWith("Farmer (") || user.name.includes("(+91");
-  const displayName = isDefaultName
-    ? user?.phone
-      ? `Farmer (+91 ${user.phone.slice(-4)})`
-      : "Farmer Portal Account"
-    : user?.name || "Farmer Portal Account";
+  const isGovt = user?.role === "government_buyer";
+  const isBuyer = user?.role === "private_buyer";
+  const isExporter = user?.role === "exporter";
+
+  let displayName = user?.name || "Farmer Account";
+  if (isGovt) {
+    displayName = user?.name || "Officer S. Sharma (FCI)";
+  } else if (isBuyer) {
+    displayName = user?.name || "AgroCorp Buyer";
+  } else if (isExporter) {
+    displayName = user?.name || "APEDA Exporter";
+  } else {
+    const isDefaultName = !user?.name || user.name.startsWith("Farmer (") || user.name.includes("(+91");
+    displayName = isDefaultName
+      ? user?.phone
+        ? `Farmer (+91 ${user.phone.slice(-4)})`
+        : "Farmer Portal Account"
+      : user?.name || "Farmer Portal Account";
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
@@ -397,17 +411,25 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
               className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800"
               title="Edit account profile"
             >
-              <span className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-xs">
-                👤
+              <span className={`w-7 h-7 rounded-full font-black flex items-center justify-center text-xs ${
+                isGovt
+                  ? "bg-sky-100 text-sky-900"
+                  : isBuyer
+                  ? "bg-amber-100 text-amber-900"
+                  : isExporter
+                  ? "bg-indigo-100 text-indigo-900"
+                  : "bg-emerald-100 text-emerald-800"
+              }`}>
+                {isGovt ? "🏛️" : isBuyer ? "🏢" : isExporter ? "🚢" : "👤"}
               </span>
-              <span className="hidden sm:inline-block max-w-[130px] truncate">{displayName}</span>
+              <span className="hidden sm:inline-block max-w-[150px] truncate">{displayName}</span>
             </button>
 
             {/* Logout Button */}
             <button
               type="button"
               onClick={handleLogout}
-              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold"
+              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold cursor-pointer"
               title="Sign Out"
             >
               <span className="hidden sm:inline">Sign out</span>
@@ -426,6 +448,30 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           </div>
         </div>
       </div>
+
+      {/* Role-Specific Workstation Banner for Government Officers */}
+      {isGovt && (
+        <div className="bg-[#0b4d75] text-white py-2 px-4 sm:px-6 border-b border-[#083754]">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-amber-400 text-slate-950 font-black rounded text-[10px] uppercase tracking-wider">
+                🏛️ Official Mandi Workstation
+              </span>
+              <span className="font-semibold text-slate-100">
+                FCI / Civil Supplies Gate Terminal Active · Logged in as <strong>{displayName}</strong>
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/marketplace/government"
+                className="px-3 py-1 bg-white hover:bg-amber-300 text-slate-950 rounded-lg font-black text-xs transition-colors shadow-sm"
+              >
+                Open Verification Queue & Weighbridge →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 5. Main Desktop Navigation Bar (Strict Government Specification - NEVER hidden on desktop) */}
       <nav className="bg-[#0b4d75] text-white border-b border-[#083754] hidden lg:block sticky top-0 z-40 shadow-sm" aria-label="Main Navigation">
@@ -558,10 +604,10 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           <span>Farm</span>
         </Link>
         <Link
-          href="/markets"
-          className={`flex flex-col items-center text-[11px] font-bold ${pathname.startsWith("/markets") ? "text-emerald-700" : "text-slate-600"}`}
+          href="/marketplace"
+          className={`flex flex-col items-center text-[11px] font-bold ${pathname.startsWith("/marketplace") ? "text-emerald-700" : "text-slate-600"}`}
         >
-          <span className="text-base">📊</span>
+          <span className="text-base">🏬</span>
           <span>Market</span>
         </Link>
         <Link

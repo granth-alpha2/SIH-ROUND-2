@@ -48,7 +48,39 @@ export const DISTRICT_MASTER = [
   { districtId: "DIST026", state: "Andhra Pradesh", stateCode: "AP", district: "Guntur", lat: 16.3067, lng: 80.4365, zone: "East Coast Plains and Hills" },
   { districtId: "DIST027", state: "Telangana", stateCode: "TS", district: "Warangal", lat: 17.9689, lng: 79.5941, zone: "Southern Plateau and Hills" },
   { districtId: "DIST028", state: "Bihar", stateCode: "BR", district: "Patna", lat: 25.5941, lng: 85.1376, zone: "Middle Gangetic Plains" },
+  { districtId: "DIST029", state: "Tamil Nadu", stateCode: "TN", district: "Coimbatore", lat: 11.0168, lng: 76.9558, zone: "Southern Plateau and Hills" },
+  { districtId: "DIST030", state: "Tamil Nadu", stateCode: "TN", district: "Thanjavur", lat: 10.787, lng: 79.1378, zone: "East Coast Plains and Hills" },
+  { districtId: "DIST031", state: "Kerala", stateCode: "KL", district: "Palakkad", lat: 10.7867, lng: 76.6548, zone: "West Coast Plains and Ghats" },
+  { districtId: "DIST032", state: "West Bengal", stateCode: "WB", district: "Burdwan", lat: 23.2324, lng: 87.8615, zone: "Lower Gangetic Plains" },
+  { districtId: "DIST033", state: "Odisha", stateCode: "OD", district: "Cuttack", lat: 20.4625, lng: 85.883, zone: "East Coast Plains and Hills" },
+  { districtId: "DIST034", state: "Assam", stateCode: "AS", district: "Kamrup", lat: 26.1445, lng: 91.7362, zone: "Eastern Himalayan" },
+  { districtId: "DIST035", state: "Himachal Pradesh", stateCode: "HP", district: "Kangra", lat: 32.0998, lng: 76.2691, zone: "Western Himalayan" },
 ];
+
+export type GeoRegion = "North" | "South" | "East" | "West" | "Central" | "NorthEast";
+
+export function getRegionFromState(state: string): GeoRegion {
+  const s = state.toLowerCase();
+  if (["punjab", "haryana", "uttar pradesh", "rajasthan", "himachal pradesh", "delhi", "uttarakhand", "jammu & kashmir"].some((k) => s.includes(k))) {
+    return "North";
+  }
+  if (["tamil nadu", "kerala", "karnataka", "andhra pradesh", "telangana"].some((k) => s.includes(k))) {
+    return "South";
+  }
+  if (["bihar", "west bengal", "odisha", "jharkhand"].some((k) => s.includes(k))) {
+    return "East";
+  }
+  if (["maharashtra", "gujarat", "goa"].some((k) => s.includes(k))) {
+    return "West";
+  }
+  if (["madhya pradesh", "chhattisgarh"].some((k) => s.includes(k))) {
+    return "Central";
+  }
+  if (["assam", "meghalaya", "tripura", "manipur", "mizoram", "nagaland", "arunachal pradesh", "sikkim"].some((k) => s.includes(k))) {
+    return "NorthEast";
+  }
+  return "North";
+}
 
 /**
  * Calculates Great-Circle distance between two coordinates using Haversine formula (km)

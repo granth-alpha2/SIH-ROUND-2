@@ -88,7 +88,7 @@ export default function FarmMapPicker({
     initialFarm?.center || defaultCenter
   );
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyDopuSyP6PayeOHQ2UJhEDVCFrj0nQBEX8";
 
   const handleAreaUpdate = useCallback(
     (acres: number, points: { lat: number; lng: number }[], centerPoint?: { lat: number; lng: number }) => {

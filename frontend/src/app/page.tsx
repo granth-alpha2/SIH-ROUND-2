@@ -342,6 +342,72 @@ export default function Home() {
           </p>
         </section>
 
+        {/* 5. My Marketplace Summary Widget (Prompt 43) */}
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-150 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🏬</span>
+                <h2 className="text-xl font-bold text-slate-900">
+                  My Marketplace & Selling Pipeline
+                </h2>
+              </div>
+              <p className="text-xs text-slate-500">
+                Live status of government MSP requests, private buyer offers, cooperative groups, and demo payments
+              </p>
+            </div>
+            <Link
+              href="/marketplace"
+              className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+            >
+              <span>Explore Marketplace →</span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Estimated Active Value</span>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-800">
+                ₹1,42,500
+              </div>
+              <p className="text-[11px] text-emerald-700 font-semibold">Across active harvest allocations</p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Direct Listings</span>
+              <div className="text-2xl sm:text-3xl font-black text-slate-900">
+                3 <span className="text-sm font-semibold text-slate-500">Active</span>
+              </div>
+              <p className="text-[11px] text-slate-600">Wheat, Mustard & Tomato</p>
+            </div>
+
+            <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Pending MSP Requests</span>
+              <div className="text-2xl sm:text-3xl font-black text-amber-800">
+                1 <span className="text-sm font-semibold text-slate-500">Pending</span>
+              </div>
+              <p className="text-[11px] text-amber-700 font-semibold">Wheat (35 quintals @ ₹2,275)</p>
+            </div>
+
+            <div className="p-4 bg-indigo-50/70 border border-indigo-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Cooperative & Export</span>
+              <div className="text-2xl sm:text-3xl font-black text-indigo-800">
+                2 <span className="text-sm font-semibold text-slate-500">Opportunities</span>
+              </div>
+              <p className="text-[11px] text-indigo-700 font-semibold">Wheat group pool + UAE exporter</p>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <span className="text-slate-600 font-medium">
+              🌾 Quick MSP Selling: Need statutory floor protection? Submit an application to Doraha / Ludhiana FCI silos.
+            </span>
+            <Link href="/marketplace/msp" className="text-emerald-700 font-bold hover:underline">
+              Submit MSP Application →
+            </Link>
+          </div>
+        </section>
+
         {/* 5. Source Provenance Modal */}
         {showSourceModal && (
           <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
