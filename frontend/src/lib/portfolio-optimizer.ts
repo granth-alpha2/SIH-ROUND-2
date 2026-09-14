@@ -21,6 +21,8 @@
 import { CROP_DATABASE, type CropRecord, type CropSeason } from "./crop-data";
 import { MANDI_BENCHMARK_PRICES, type MandiPriceRecord } from "./market-service";
 import { simulateCropFinancials } from "./simulation-engine";
+import { SoilLayerRecord, calculateSoilCropCompatibility } from "./soil-service";
+
 
 export type RiskAppetite = "Conservative" | "Balanced" | "Growth";
 export type ResourceLevel = "Low" | "Medium" | "High";
@@ -127,7 +129,9 @@ export type PortfolioConstraintInput = {
   locationState?: string;
   soilPh?: number;
   avgTempC?: number;
+  soilLayers?: SoilLayerRecord[];
 };
+
 
 
 /**
@@ -310,8 +314,17 @@ function evaluateCropWeatherScore(
 function evaluateCropSoilScore(
   crop: CropRecord,
   userSoilType: string = "Alluvial",
-  soilPh: number = 7.2
+  soilPh: number = 7.2,
+  soilLayers?: SoilLayerRecord[]
 ): { score: number; rationale: string } {
+  if (soilLayers && soilLayers.length > 0) {
+    const comp = calculateSoilCropCompatibility(soilLayers, crop.slug);
+    return {
+      score: comp.overallSoilScore,
+      rationale: comp.explanation,
+    };
+  }
+
   let score = 65;
   let rationale = `Moderate adaptability to ${userSoilType} soil`;
   const soilLower = userSoilType.toLowerCase();
@@ -338,6 +351,7 @@ function evaluateCropSoilScore(
     rationale,
   };
 }
+
 
 function evaluateCropMarketScore(
   crop: CropRecord,
@@ -464,8 +478,9 @@ export function optimizePortfolio(input: PortfolioConstraintInput): OptimizedPor
   const scoredCandidates = eligibleCrops.map((crop) => {
     const mandi = MANDI_BENCHMARK_PRICES.find((m) => m.cropSlug === crop.slug || m.cropId === crop.id);
     const weatherEval = evaluateCropWeatherScore(crop, water, avgTempC);
-    const soilEval = evaluateCropSoilScore(crop, userSoil, soilPh);
+    const soilEval = evaluateCropSoilScore(crop, userSoil, soilPh, input.soilLayers);
     const marketEval = evaluateCropMarketScore(crop, mandi);
+
     const mspEval = evaluateCropMspSafety(crop);
     const profitEval = evaluateCropProfitability(crop, marketEval.modalPrice);
 
