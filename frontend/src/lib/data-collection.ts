@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { createHash } from "crypto";
 
 export type DataCollectionEventType = "recommendation" | "market" | "farm" | "yield" | "export";
 
@@ -63,10 +64,6 @@ async function ensureTable(pool: Pool) {
   } catch (error) {
     console.warn("[DataCollection] Table check warning:", error);
   }
-}
-
-function isFiniteNumber(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value);
 }
 
 function sanitizeString(value: unknown, fallback?: string): string | undefined {
@@ -291,8 +288,8 @@ export function serializeForCsv(rows: DataCollectionValidationResult[]): string 
   const headers = [
     "id",
     "event_type",
-    "farmer_id",
-    "farm_id",
+    "farmer_ref",
+    "farm_ref",
     "crop",
     "state",
     "district",
@@ -309,13 +306,32 @@ export function serializeForCsv(rows: DataCollectionValidationResult[]): string 
     return `"${text.replace(/"/g, '""')}"`;
   };
 
+  const pseudonymize = (value: string | undefined) => {
+    if (!value) return "";
+    const salt = process.env.DATA_EXPORT_PSEUDONYM_SALT || "agriprofit-export-pseudonym-v1";
+    return createHash("sha256").update(`${salt}:${value}`).digest("hex").slice(0, 20);
+  };
+
+  const sensitiveKey = /(phone|mobile|password|secret|token|api[_-]?key|authorization|credential|biometric|aadhaar|pan|government[_-]?id|otp)/i;
+  const sanitizePayload = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(sanitizePayload);
+    if (value && typeof value === "object") {
+      return Object.fromEntries(
+        Object.entries(value).filter(([key]) => !sensitiveKey.test(key)).map(([key, nested]) => [key, sanitizePayload(nested)])
+      );
+    }
+    return typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null
+      ? value
+      : undefined;
+  };
+
   const lines = [headers.join(",")];
   for (const row of rows) {
     lines.push([
       row.id,
       row.eventType,
-      row.farmerId,
-      row.farmId ?? "",
+      pseudonymize(row.farmerId),
+      pseudonymize(row.farmId),
       row.crop ?? "",
       row.state ?? "",
       row.district ?? "",
@@ -324,7 +340,7 @@ export function serializeForCsv(rows: DataCollectionValidationResult[]): string 
       row.sellingChannel ?? "",
       row.destination ?? "",
       row.createdAt,
-      JSON.stringify(row.payload),
+      JSON.stringify(sanitizePayload(row.payload)),
     ].map(escapeCell).join(","));
   }
 

@@ -142,6 +142,54 @@ export default function AdminDashboardPage() {
               </div>
             </section>
 
+            <section className="agri-card p-6 space-y-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border-subtle)] pb-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">DATA ACCUMULATION DEMO</p>
+                  <h2 className="mt-1 text-xl font-bold font-['Space_Grotesk'] text-[var(--text-primary)]">Marketplace Data Collected</h2>
+                </div>
+                <span className="agri-badge agri-badge-sky">Aggregated telemetry only</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Marketplace Data Collected</p><p className="mt-2 text-2xl font-black text-slate-900">{metrics.accumulation.marketplaceDataCollected}</p></div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Observations</p><p className="mt-2 text-2xl font-black text-slate-900">{metrics.accumulation.observations}</p></div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Actual Transactions</p><p className="mt-2 text-2xl font-black text-emerald-700">{metrics.accumulation.actualTransactions}</p></div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Predictions</p><p className="mt-2 text-2xl font-black text-slate-900">{metrics.accumulation.predictions}</p></div>
+              </div>
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+                <p><strong>Dataset last updated:</strong> {metrics.accumulation.datasetLastUpdated ? new Date(metrics.accumulation.datasetLastUpdated).toLocaleString("en-IN") : "No persisted records yet"}</p>
+                <p className="mt-1"><strong>Model governance:</strong> {metrics.accumulation.retrainingStatus}</p>
+                <p className="mt-1 text-xs">Farmer 1 and Farmer 2 records accumulate as observations and outcomes; collection alone does not change a deployed model.</p>
+              </div>
+            </section>
+
+            <section className="agri-card p-6 space-y-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border-subtle)] pb-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">ADMIN ML / DATA TELEMETRY</p>
+                  <h2 className="mt-1 text-xl font-bold font-['Space_Grotesk'] text-[var(--text-primary)]">Models, datasets &amp; evaluation</h2>
+                </div>
+                <span className="agri-badge agri-badge-sky">Aggregated, no farmer-level records</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Prediction count</p><p className="mt-2 text-2xl font-black text-slate-900">{metrics.mlData.predictionCount}</p></div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Actual observations</p><p className="mt-2 text-2xl font-black text-emerald-700">{metrics.mlData.actualObservationCount}</p></div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Dataset size</p><p className="mt-2 text-2xl font-black text-slate-900">{metrics.mlData.datasetSize}</p></div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Model health</p><p className="mt-2 text-lg font-black text-slate-900">{metrics.mlData.modelHealth}</p></div>
+              </div>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3 text-sm text-slate-700">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p><strong>LIVE records:</strong> {metrics.mlData.liveRecords}</p><p className="mt-1"><strong>DEMO records:</strong> {metrics.mlData.demoRecords}</p></div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p><strong>Data freshness:</strong> {metrics.mlData.dataFreshness ? new Date(metrics.mlData.dataFreshness).toLocaleString("en-IN") : "No persisted timestamp"}</p><p className="mt-1"><strong>Last dataset export:</strong> {metrics.mlData.lastDatasetExport ? new Date(metrics.mlData.lastDatasetExport).toLocaleString("en-IN") : "No completed export"}</p></div>
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-950"><strong>Governance:</strong> data collection does not automatically improve deployed models. Retraining requires controlled dataset review, evaluation, approval, and versioned deployment.</div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-100 text-slate-700 font-bold"><tr><th className="p-3">Model</th><th className="p-3">Version</th><th className="p-3">Type</th><th className="p-3">Last evaluation</th><th className="p-3">Valid metrics</th></tr></thead>
+                  <tbody className="divide-y divide-slate-200">{metrics.mlData.models.map((model) => <tr key={`${model.name}-${model.version}`}><td className="p-3 font-bold">{model.name}</td><td className="p-3">{model.version}</td><td className="p-3">{model.modelType}</td><td className="p-3">{model.lastEvaluation ? new Date(model.lastEvaluation).toLocaleString("en-IN") : "Not available"}</td><td className="p-3">{Object.entries(model.metrics).length ? Object.entries(model.metrics).map(([key, value]) => `${key}: ${value}`).join(" · ") : "Not available"}</td></tr>)}</tbody>
+                </table>
+              </div>
+            </section>
+
             {/* Data Quality & Source Provenance Matrix */}
             <section className="agri-card p-6 space-y-4">
               <div className="flex justify-between items-center flex-wrap gap-2 border-b border-[var(--border-subtle)] pb-3">

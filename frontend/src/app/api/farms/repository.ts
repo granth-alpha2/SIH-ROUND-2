@@ -2,6 +2,7 @@ import { Pool } from "pg";
 
 export type FarmRecord = {
   id: string;
+  ownerId?: string;
   name: string;
   areaAcres: number;
   center: { lat: number; lng: number };
@@ -31,6 +32,7 @@ export type FarmRecord = {
 
 type DbFarmRow = {
   id: string;
+  owner_id: string | null;
   name: string;
   area_acres: string | number;
   center_lat: string | number;
@@ -58,10 +60,11 @@ export async function saveFarm(farm: FarmRecord): Promise<FarmRecord> {
   }
   const closedBoundary = [...farm.boundary, farm.boundary[0]].map((p) => `${p.lng} ${p.lat}`).join(",");
   await pool.query(
-    `INSERT INTO farms (id, name, area_acres, center_lat, center_lng, boundary, sections, preferences)
-     VALUES ($1, $2, $3, $4, $5, ST_GeogFromText($6), $7, $8)`,
+    `INSERT INTO farms (id, owner_id, name, area_acres, center_lat, center_lng, boundary, sections, preferences)
+     VALUES ($1, $2, $3, $4, $5, $6, ST_GeogFromText($7), $8, $9)`,
     [
       farm.id,
+      farm.ownerId,
       farm.name,
       farm.areaAcres,
       farm.center.lat,
@@ -74,14 +77,19 @@ export async function saveFarm(farm: FarmRecord): Promise<FarmRecord> {
   return farm;
 }
 
-export async function listFarms(): Promise<FarmRecord[]> {
+export async function listFarms(ownerId?: string): Promise<FarmRecord[]> {
   const pool = getPool();
-  if (!pool) return memoryFarms;
+  if (!pool) return memoryFarms.filter((farm) => !ownerId || farm.ownerId === ownerId);
   const result = await pool.query<DbFarmRow>(
-    `SELECT id, name, area_acres, center_lat, center_lng, sections, preferences, ST_AsGeoJSON(boundary::geometry)::json AS boundary, created_at FROM farms ORDER BY created_at DESC`
+    `SELECT id, owner_id, name, area_acres, center_lat, center_lng, sections, preferences, ST_AsGeoJSON(boundary::geometry)::json AS boundary, created_at
+     FROM farms
+     WHERE ($1::uuid IS NULL OR owner_id = $1::uuid)
+     ORDER BY created_at DESC`,
+    [ownerId ?? null]
   );
   return result.rows.map((row) => ({
     id: row.id,
+    ownerId: row.owner_id ?? undefined,
     name: row.name,
     areaAcres: Number(row.area_acres),
     center: { lat: Number(row.center_lat), lng: Number(row.center_lng) },
@@ -99,13 +107,14 @@ export async function getFarm(id: string): Promise<FarmRecord | null> {
     return found || null;
   }
   const result = await pool.query<DbFarmRow>(
-    `SELECT id, name, area_acres, center_lat, center_lng, sections, preferences, ST_AsGeoJSON(boundary::geometry)::json AS boundary, created_at FROM farms WHERE id = $1`,
+    `SELECT id, owner_id, name, area_acres, center_lat, center_lng, sections, preferences, ST_AsGeoJSON(boundary::geometry)::json AS boundary, created_at FROM farms WHERE id = $1`,
     [id]
   );
   if (result.rows.length === 0) return null;
   const row = result.rows[0];
   return {
     id: row.id,
+    ownerId: row.owner_id ?? undefined,
     name: row.name,
     areaAcres: Number(row.area_acres),
     center: { lat: Number(row.center_lat), lng: Number(row.center_lng) },

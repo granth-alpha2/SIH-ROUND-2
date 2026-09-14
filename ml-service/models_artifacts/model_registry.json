@@ -22,8 +22,29 @@
     "training_dataset": "ICAR crop yield dataset (7,000 rows)",
     "training_period": "Not explicitly recorded in artifact",
     "evaluation_metric": "R\u00b2 = 0.9601 on held-out test split",
-    "last_updated": "2026-09-13T09:22:59.042164+00:00",
-    "status": "trained"
+    "last_updated": "2026-09-14T15:54:51.611206+00:00",
+    "status": "trained",
+    "retraining_policy": {
+      "auto_retrain_on_farmer_submission": false,
+      "data_origin_filter": "LIVE",
+      "quality_gate_required": true,
+      "trigger": "manual_approval_or_scheduled_batch",
+      "pipeline": [
+        "REAL FARM DATA",
+        "VALIDATION",
+        "DATABASE",
+        "DATASET EXPORT",
+        "DATA QUALITY CHECK",
+        "TRAINING DATASET",
+        "MODEL TRAINING",
+        "MODEL EVALUATION",
+        "MODEL VERSION",
+        "MODEL REGISTRY",
+        "DEPLOYMENT",
+        "INFERENCE"
+      ],
+      "notes": "Production models are not retrained automatically on every farmer submission. The system prepares a controlled retraining queue with validation, data-quality checks, and model evaluation before any deployment."
+    }
   },
   {
     "model_id": "price_forecast_ensemble_v2_0",
@@ -55,7 +76,28 @@
     "training_dataset": "APMC/mandi time-series dataset (19,500 rows)",
     "training_period": "Not explicitly recorded in artifact",
     "evaluation_metric": "R\u00b2 = 0.9733 on held-out test split; MAPE = 3.79%",
-    "last_updated": "2026-09-13T09:22:59.042180+00:00",
-    "status": "trained"
+    "last_updated": "2026-09-14T15:54:51.611217+00:00",
+    "status": "trained",
+    "retraining_policy": {
+      "auto_retrain_on_farmer_submission": false,
+      "data_origin_filter": "LIVE",
+      "quality_gate_required": true,
+      "trigger": "manual_approval_or_scheduled_batch",
+      "pipeline": [
+        "REAL FARM DATA",
+        "VALIDATION",
+        "DATABASE",
+        "DATASET EXPORT",
+        "DATA QUALITY CHECK",
+        "TRAINING DATASET",
+        "MODEL TRAINING",
+        "MODEL EVALUATION",
+        "MODEL VERSION",
+        "MODEL REGISTRY",
+        "DEPLOYMENT",
+        "INFERENCE"
+      ],
+      "notes": "Production models are not retrained automatically on every farmer submission. The system prepares a controlled retraining queue with validation, data-quality checks, and model evaluation before any deployment."
+    }
   }
 ]

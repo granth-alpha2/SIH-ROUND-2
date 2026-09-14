@@ -18,6 +18,8 @@ def forecast_crop_price(req: PriceForecastRequest):
             trade_demand_index=req.trade_demand_index,
             state=req.state,
             month=req.month,
+            actual_price_inr_per_quintal=req.actual_price_inr_per_quintal,
+            observed_price_inr_per_quintal=req.observed_price_inr_per_quintal,
         )
         return result
     except Exception as e:

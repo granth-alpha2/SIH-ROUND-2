@@ -41,7 +41,7 @@ export type CropScoreOutput = {
   };
   risks: string[];
   explanation: string;
-  confidence: number; // 0.0 - 1.0
+  confidence: string;
 };
 
 export type RecommendationPortfolio = {
@@ -332,8 +332,9 @@ export function scoreSingleCrop(
   };
 
   const explanation = generateCropExplanation(crop, finalScore, factors, activeMandi);
-  const baseConfidence = mlYieldOverride ? 0.88 : 0.78;
-  const confidence = Number((baseConfidence + (finalScore / 100) * 0.10).toFixed(2));
+  const confidence = mlYieldOverride
+    ? "Model-backed yield input is available; no synthetic percentage confidence is assigned."
+    : "Rule-based score with benchmark inputs; no percentage confidence is assigned.";
 
   return {
     cropId: crop.id,

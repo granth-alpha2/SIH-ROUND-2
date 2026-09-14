@@ -16,6 +16,36 @@ Phase-2 ML models (yield & price forecasting).
 > crop agronomic ranges) are built from general public-domain knowledge and should be
 > validated against the cited authoritative sources.
 
+## Data Governance for Profitability and ML
+
+Marketplace records support MSP reference/floor, direct-market, group-selling,
+and indicative export scenarios. Cost, break-even, revenue, margin, ROI, and
+sensitivity outputs are deterministic calculations over explicitly labeled
+inputs. Export records retain currency, exchange-rate timestamp, international
+reference period, exporter offer source, and cost assumptions.
+
+Predicted yield/price values and actual observed/transaction outcomes are separate
+fields. `LIVE` and `DEMO` records remain distinguishable; all seed data in this
+package is synthetic development data and cannot support production model claims.
+CSV exports use pseudonymous farmer/farm references and exclude contact,
+authentication, biometric, and government-credential fields.
+
+The accumulation pipeline is:
+
+```text
+farmer observation or prediction
+  -> validation and provenance tagging
+  -> data_collection_events / model_predictions
+  -> completed marketplace transaction
+  -> actual_outcomes
+  -> governed dataset export
+  -> quality checks and time-based evaluation
+  -> model registry approval and versioned deployment
+```
+
+Adding observations does not automatically improve a model. Retraining requires
+data review, LIVE/DEMO filtering, feature validation, evaluation metrics,
+approval, and rollback-capable deployment.
 ---
 
 ## 1. Package Contents

@@ -77,3 +77,43 @@ $$\text{Gross Revenue} = \text{Area (ac)} \times \text{Yield (q/ac)} \times \tex
 $$\text{Net Profit} = \text{Gross Revenue} - (\text{Area (ac)} \times \text{Cost per Acre (₹)})$$
 $$\text{Break-Even Yield} = \frac{\text{Cost per Acre}}{\text{Selling Price per Quintal}}$$
 
+## 5. Transparency and Model Selection
+
+ML models are called only through the typed FastAPI client contracts:
+`/predict/yield` and `/predict/price`. Request features are prepared explicitly,
+responses are schema-validated, model versions are displayed, and non-2xx or
+malformed responses return an unavailable signal rather than a fabricated value.
+
+The platform distinguishes:
+
+* **ML model:** trained yield or price inference with model version and metrics.
+* **Rule-based engine:** explainable portfolio/risk scoring rules.
+* **Deterministic calculation:** cost, break-even, revenue, profit, margin, ROI,
+  group economics, export economics, and sensitivity formulas.
+* **External/API data:** weather, mandi, MSP, trade, FX, and exporter inputs with
+  source and freshness metadata.
+
+MSP, direct market, group selling, and export are scenario comparisons, not ML
+predictions. Predicted values remain separate from observed/actual yield, price,
+revenue, cost, and profit fields for feedback evaluation.
+
+## 6. Collection and Future Retraining
+
+Validated observations enter `data_collection_events`; model outputs enter
+`model_predictions`; completed marketplace transactions enter `actual_outcomes`.
+Dataset exports are pseudonymized and remove private identity/authentication data.
+LIVE and DEMO records remain separated in provenance metadata.
+
+The future retraining pipeline is governed rather than automatic:
+
+```text
+collect -> validate -> provenance/LIVE-DEMO filter -> export
+    -> feature checks -> time-based train/validation/test evaluation
+    -> metric and drift review -> model registry version
+    -> approval -> deployment -> monitored inference
+```
+
+Collecting more farmer records does not imply that model quality improved.
+Improvement may be claimed only after controlled retraining, evaluation against a
+held-out dataset, approval, and deployment of a new registered version.
+

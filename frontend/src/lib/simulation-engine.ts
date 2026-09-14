@@ -221,7 +221,7 @@ export type ExportScenarioResult = {
     lastUpdated: string;
   };
   exporterOfferMeta: {
-    category: "LIVE / RECENT DATA";
+    category: "RECENT / INDICATIVE DATA";
     country: string;
     commodity: string;
     currency: string;
@@ -297,14 +297,14 @@ export function simulateExportScenario(input: ExportScenarioInput): ExportScenar
   };
 
   const exporterOfferMeta = {
-    category: "LIVE / RECENT DATA" as const,
+    category: "RECENT / INDICATIVE DATA" as const,
     country: "UAE",
     commodity: "Onion",
     currency: "INR",
     unit: "kg",
     period: `2026-${periodLabel.slice(5)}`,
     source: "Exporter desk / buyer term sheet",
-    sourceType: "Live / recent data",
+    sourceType: "Recent / indicative data",
     lastUpdated: new Date(periodStamp).toISOString().slice(0, 10),
   };
 

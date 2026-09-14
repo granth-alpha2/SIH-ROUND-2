@@ -12,7 +12,18 @@ export type ProfitabilityInput = {
   totalCost?: number;
 };
 
-export type ProfitabilitySnapshot = {
+export type ProfitabilityOutcomeFeedback = {
+  predictedRevenue: number;
+  actualRevenue: number | null;
+  predictedProfit: number;
+  actualProfit: number | null;
+  predictedQuantity: number;
+  actualQuantity: number | null;
+  predictedPrice: number;
+  actualPrice: number | null;
+};
+
+export type ProfitabilitySnapshot = ProfitabilityOutcomeFeedback & {
   quantity: number;
   quantityInKg: number;
   fixedCost: number;
@@ -149,6 +160,14 @@ export function calculateProfitabilitySnapshot(input: ProfitabilityInput): Profi
   const roi = totalCost > 0 ? Number(((profit / totalCost) * 100).toFixed(2)) : 0;
 
   return {
+    predictedRevenue: revenue,
+    actualRevenue: null,
+    predictedProfit: profit > 0 ? profit : 0,
+    actualProfit: null,
+    predictedQuantity: quantityInKg,
+    actualQuantity: null,
+    predictedPrice: sellingPricePerKg,
+    actualPrice: null,
     quantity: input.quantity,
     quantityInKg,
     fixedCost,
@@ -161,6 +180,24 @@ export function calculateProfitabilitySnapshot(input: ProfitabilityInput): Profi
     breakEvenPrice,
     profitMargin,
     roi,
+  };
+}
+
+export function recordCompletedProfitabilityOutcome(
+  predicted: ProfitabilitySnapshot,
+  actual: {
+    revenue?: number | null;
+    profit?: number | null;
+    quantity?: number | null;
+    price?: number | null;
+  }
+): ProfitabilitySnapshot {
+  return {
+    ...predicted,
+    actualRevenue: actual.revenue ?? null,
+    actualProfit: actual.profit ?? null,
+    actualQuantity: actual.quantity ?? null,
+    actualPrice: actual.price ?? null,
   };
 }
 

@@ -55,10 +55,13 @@ class PriceForecaster:
         trade_demand_index: float = 55.0,
         state: str = "Punjab",
         month: int | None = None,
+        actual_price_inr_per_quintal: float | None = None,
+        observed_price_inr_per_quintal: float | None = None,
     ) -> dict:
         if month is None:
             month = datetime.datetime.now().month
 
+        actual_value = actual_price_inr_per_quintal if actual_price_inr_per_quintal is not None else observed_price_inr_per_quintal
         slug_lower = crop_slug.lower().strip()
         base_price = current_price_inr if current_price_inr is not None \
             else _BENCHMARK_PRICES.get(slug_lower, 2200.0)
@@ -70,14 +73,14 @@ class PriceForecaster:
             return self._forecast_trained(
                 crop_slug, base_price, lag2, lag3,
                 months_ahead, month, rainfall_anomaly_mm,
-                trade_demand_index, state
+                trade_demand_index, state, actual_value
             )
-        return self._forecast_fallback(crop_slug, base_price, months_ahead)
+        return self._forecast_fallback(crop_slug, base_price, months_ahead, actual_value)
 
     def _forecast_trained(
         self, crop_slug, base_price, lag2, lag3,
         months_ahead, current_month, rainfall_anomaly,
-        demand_index, state
+        demand_index, state, actual_value: float | None = None
     ) -> dict:
         import numpy as np
 
@@ -154,6 +157,8 @@ class PriceForecaster:
             "current_modal_price_inr_per_q": base_price,
             "forecasted_price_inr_per_quintal": predicted_price,
             "forecast_price_inr_per_q": predicted_price,
+            "actual_price_inr_per_quintal": actual_value,
+            "observed_price_inr_per_quintal": actual_value,
             "forecast_horizon_months": months_ahead,
             "forecast_month": future_month,
             "forecast_series_inr_per_q": series,
@@ -170,7 +175,7 @@ class PriceForecaster:
             },
         }
 
-    def _forecast_fallback(self, crop_slug, base_price, months_ahead) -> dict:
+    def _forecast_fallback(self, crop_slug, base_price, months_ahead, actual_value: float | None = None) -> dict:
         monthly_growth = 0.008
         future = round(base_price * ((1 + monthly_growth) ** months_ahead), 2)
         change = round(((future - base_price) / base_price) * 100, 2)
@@ -182,6 +187,8 @@ class PriceForecaster:
             "current_modal_price_inr_per_q": base_price,
             "forecasted_price_inr_per_quintal": future,
             "forecast_price_inr_per_q": future,
+            "actual_price_inr_per_quintal": actual_value,
+            "observed_price_inr_per_quintal": actual_value,
             "forecast_horizon_months": months_ahead,
             "forecast_series_inr_per_q": series,
             "price_change_pct": change,

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { SESSION_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { getRequestUser } from "@/lib/request-auth";
 import {
   getFarmerNotifications,
   createFarmerNotification,
@@ -10,13 +9,9 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type") || undefined;
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  let userId = "default-farmer";
-  if (token) {
-    const user = await verifyJWT(token);
-    if (user?.sub) userId = user.sub;
-  }
+  const user = await getRequestUser();
+  if (!user) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required." } }, { status: 401 });
+  const userId = user.sub;
 
   try {
     const data = await getFarmerNotifications(userId, type);
@@ -34,13 +29,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  let userId = "default-farmer";
-  if (token) {
-    const user = await verifyJWT(token);
-    if (user?.sub) userId = user.sub;
-  }
+  const user = await getRequestUser();
+  if (!user) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required." } }, { status: 401 });
+  const userId = user.sub;
 
   const body = await request.json().catch(() => null);
   if (!body || !body.title || !body.body || !body.type) {

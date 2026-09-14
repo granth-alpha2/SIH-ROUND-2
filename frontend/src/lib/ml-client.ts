@@ -59,6 +59,47 @@ const ML_BASE_URL = (
   "http://127.0.0.1:8000"
 ).replace(/\/$/, "");
 
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function isNumberArray(value: unknown): value is number[] {
+  return Array.isArray(value) && value.every(isFiniteNumber);
+}
+
+function parseYieldResult(value: unknown): MLYieldResult | null {
+  if (!value || typeof value !== "object") return null;
+  const result = value as Record<string, unknown>;
+  if (
+    typeof result.crop !== "string" ||
+    typeof result.crop_slug !== "string" ||
+    !isFiniteNumber(result.predicted_yield_q_per_acre) ||
+    !isFiniteNumber(result.predicted_yield_q_per_ha) ||
+    !isNumberArray(result.confidence_interval_q_per_acre) ||
+    typeof result.model_version !== "string" ||
+    typeof result.is_ml_predicted !== "boolean"
+  ) return null;
+  return result as unknown as MLYieldResult;
+}
+
+function parsePriceResult(value: unknown): MLPriceResult | null {
+  if (!value || typeof value !== "object") return null;
+  const result = value as Record<string, unknown>;
+  if (
+    typeof result.crop !== "string" ||
+    typeof result.crop_slug !== "string" ||
+    !isFiniteNumber(result.current_price_inr_per_quintal) ||
+    !isFiniteNumber(result.forecasted_price_inr_per_quintal) ||
+    !isFiniteNumber(result.forecast_horizon_months) ||
+    !isFiniteNumber(result.price_change_pct) ||
+    typeof result.price_trend !== "string" ||
+    !isNumberArray(result.confidence_interval) ||
+    typeof result.model_version !== "string" ||
+    typeof result.is_ml_forecast !== "boolean"
+  ) return null;
+  return result as unknown as MLPriceResult;
+}
+
 /**
  * Check if the FastAPI ML microservice is online
  */
@@ -101,7 +142,7 @@ export async function predictYieldWithML(
     });
 
     if (res.ok) {
-      return (await res.json()) as MLYieldResult;
+      return parseYieldResult(await res.json());
     }
   } catch {
     // Graceful fallback to deterministic ICAR benchmark
@@ -134,7 +175,7 @@ export async function forecastPriceWithML(
     });
 
     if (res.ok) {
-      return (await res.json()) as MLPriceResult;
+      return parsePriceResult(await res.json());
     }
   } catch {
     // Graceful fallback to static mandi benchmark

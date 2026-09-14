@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { listFarms, saveFarm, type FarmRecord } from "./repository";
+import { getRequestUser, isAdminRole } from "@/lib/request-auth";
 
 export async function POST(request: Request) {
+  const user = await getRequestUser();
+  if (!user) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required." } }, { status: 401 });
   const body = await request.json().catch(() => null);
   const areaAcres = Number(body?.areaAcres);
   const center = body?.center;
@@ -13,6 +16,7 @@ export async function POST(request: Request) {
 
   const farm: FarmRecord = {
     id: crypto.randomUUID(),
+    ownerId: user.sub,
     name: typeof body.name === "string" && body.name.trim() ? body.name.trim() : "My farm",
     areaAcres: Number(areaAcres.toFixed(2)),
     center: { lat: Number(center.lat), lng: Number(center.lng) },
@@ -35,10 +39,12 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  const user = await getRequestUser();
+  if (!user) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required." } }, { status: 401 });
   try {
     return NextResponse.json({
       success: true,
-      farms: await listFarms(),
+      farms: await listFarms(isAdminRole(user.role) ? undefined : user.sub),
       isPersistent: Boolean(process.env.DATABASE_URL),
       storageMode: process.env.DATABASE_URL ? "DATABASE_POSTGIS" : "IN_MEMORY",
     });

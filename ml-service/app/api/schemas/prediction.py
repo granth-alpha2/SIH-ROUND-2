@@ -10,6 +10,8 @@ class YieldPredictionRequest(BaseModel):
     avg_temp_c: float = Field(24.0, example=24.5, description="Average temperature in Celsius")
     state: str = Field("Punjab", example="Punjab", description="State name")
     irrigation_type: str = Field("Rainfed", example="Sprinkler", description="Drip, Flood, Sprinkler, or Rainfed")
+    actual_yield_q_per_acre: Optional[float] = Field(None, example=33.7, description="Observed or actual harvest yield; kept separate from predicted value for evaluation.")
+    observed_yield_q_per_acre: Optional[float] = Field(None, example=33.7, description="Alias for actual yield; stored separately from predicted output.")
 
 
 class YieldPredictionResponse(BaseModel):
@@ -17,6 +19,9 @@ class YieldPredictionResponse(BaseModel):
     crop_slug: str
     predicted_yield_q_per_acre: float
     predicted_yield_q_per_ha: float
+    actual_yield_q_per_acre: Optional[float] = None
+    observed_yield_q_per_acre: Optional[float] = None
+    actual_yield_kg_per_ha: Optional[float] = None
     confidence_interval_q_per_acre: List[float]
     model_version: str
     is_ml_predicted: bool
@@ -34,6 +39,8 @@ class PriceForecastRequest(BaseModel):
     trade_demand_index: float = Field(55.0, example=60.0, description="0-100 demand index")
     state: str = Field("Punjab", example="Punjab", description="State name")
     month: Optional[int] = Field(None, example=9, ge=1, le=12, description="Current month (1-12)")
+    actual_price_inr_per_quintal: Optional[float] = Field(None, example=2425.0, description="Observed actual selling price; never overwrites the forecasted value.")
+    observed_price_inr_per_quintal: Optional[float] = Field(None, example=2425.0, description="Alias for actual selling price; kept separate from predicted value.")
 
 
 class PriceForecastResponse(BaseModel):
@@ -41,6 +48,8 @@ class PriceForecastResponse(BaseModel):
     crop_slug: str
     current_price_inr_per_quintal: float
     forecasted_price_inr_per_quintal: float
+    actual_price_inr_per_quintal: Optional[float] = None
+    observed_price_inr_per_quintal: Optional[float] = None
     forecast_horizon_months: int
     price_change_pct: float
     price_trend: str

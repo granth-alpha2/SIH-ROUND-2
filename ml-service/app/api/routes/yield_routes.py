@@ -16,6 +16,8 @@ def predict_crop_yield(req: YieldPredictionRequest):
             avg_temp_c=req.avg_temp_c,
             state=req.state,
             irrigation_type=req.irrigation_type,
+            actual_yield_q_per_acre=req.actual_yield_q_per_acre,
+            observed_yield_q_per_acre=req.observed_yield_q_per_acre,
         )
         return result
     except Exception as e:

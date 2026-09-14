@@ -33,6 +33,8 @@ export type SystemMetrics = {
   recommendationsGenerated: number;
   activeNotificationsSent: number;
   aiAssistantQueriesProcessed: number;
+  accumulation: AccumulationTelemetry;
+  mlData: MlDataTelemetry;
   systemUptimeHours: number;
   dataQualityMatrix: DataFeedQuality[];
   apiHealthChecks: ApiHealthMetric[];
@@ -48,16 +50,108 @@ import { getFarmerCount } from "@/lib/farmer-repository";
 import { listFarms } from "@/app/api/farms/repository";
 import { CROP_DATABASE } from "@/lib/crop-data";
 import { checkMlServiceHealth } from "@/lib/ml-client";
+import { Pool } from "pg";
+
+type AccumulationTelemetry = {
+  marketplaceDataCollected: number;
+  observations: number;
+  actualTransactions: number;
+  predictions: number;
+  datasetLastUpdated: string | null;
+  retrainingStatus: string;
+};
+
+type MlDataTelemetry = {
+  models: Array<{ name: string; version: string; modelType: string; lastEvaluation: string | null; metrics: Record<string, number> }>;
+  predictionCount: number;
+  actualObservationCount: number;
+  datasetSize: number;
+  liveRecords: number;
+  demoRecords: number;
+  dataFreshness: string | null;
+  lastDatasetExport: string | null;
+  modelHealth: string;
+};
+
+const globalStore = globalThis as typeof globalThis & { agriprofitAdminPool?: Pool };
+
+function getAdminPool(): Pool | null {
+  if (!process.env.DATABASE_URL) return null;
+  return globalStore.agriprofitAdminPool ?? (globalStore.agriprofitAdminPool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3 }));
+}
+
+async function getAccumulationTelemetry(): Promise<AccumulationTelemetry> {
+  const pool = getAdminPool();
+  if (!pool) return { marketplaceDataCollected: 0, observations: 0, actualTransactions: 0, predictions: 0, datasetLastUpdated: null, retrainingStatus: "Collection does not retrain or improve models automatically." };
+  try {
+    const result = await pool.query<{ observations: string; actual_transactions: string; predictions: string; last_updated: Date | null }>(`
+      SELECT (SELECT COUNT(*) FROM data_collection_events) AS observations,
+             (SELECT COUNT(*) FROM actual_outcomes) AS actual_transactions,
+             (SELECT COUNT(*) FROM model_predictions) AS predictions,
+             GREATEST((SELECT MAX(created_at) FROM data_collection_events), (SELECT MAX(created_at) FROM actual_outcomes), (SELECT MAX(predicted_at) FROM model_predictions)) AS last_updated`);
+    const row = result.rows[0];
+    const observations = Number(row?.observations ?? 0);
+    const actualTransactions = Number(row?.actual_transactions ?? 0);
+    const predictions = Number(row?.predictions ?? 0);
+    return { marketplaceDataCollected: observations + actualTransactions + predictions, observations, actualTransactions, predictions, datasetLastUpdated: row?.last_updated ? new Date(row.last_updated).toISOString() : null, retrainingStatus: "Collection does not retrain or improve models automatically. Controlled retraining and evaluation are required." };
+  } catch {
+    return { marketplaceDataCollected: 0, observations: 0, actualTransactions: 0, predictions: 0, datasetLastUpdated: null, retrainingStatus: "Accumulation telemetry unavailable; no model improvement is inferred." };
+  }
+}
+
+async function getMlDataTelemetry(): Promise<MlDataTelemetry> {
+  const fallback: MlDataTelemetry = { models: [], predictionCount: 0, actualObservationCount: 0, datasetSize: 0, liveRecords: 0, demoRecords: 0, dataFreshness: null, lastDatasetExport: null, modelHealth: "Unavailable" };
+  const pool = getAdminPool();
+  let counts = { predictions: 0, observations: 0, datasetSize: 0, liveRecords: 0, demoRecords: 0, dataFreshness: null as Date | null, lastExport: null as Date | null };
+  if (pool) try {
+    const result = await pool.query<{ predictions: string; observations: string; dataset_size: string; live_records: string; demo_records: string; data_freshness: Date | null; last_export: Date | null }>(`
+      SELECT (SELECT COUNT(*) FROM model_predictions) AS predictions,
+             (SELECT COUNT(*) FROM actual_outcomes) AS observations,
+             (SELECT COUNT(*) FROM data_collection_events) + (SELECT COUNT(*) FROM model_predictions) + (SELECT COUNT(*) FROM actual_outcomes) AS dataset_size,
+             (SELECT COUNT(*) FROM data_collection_events WHERE data_origin = 'LIVE') AS live_records,
+             (SELECT COUNT(*) FROM data_collection_events WHERE data_origin = 'DEMO') AS demo_records,
+             (SELECT MAX(created_at) FROM data_collection_events) AS data_freshness,
+             (SELECT MAX(created_at) FROM dataset_exports WHERE status = 'completed') AS last_export`);
+    const row = result.rows[0];
+    counts = { predictions: Number(row?.predictions ?? 0), observations: Number(row?.observations ?? 0), datasetSize: Number(row?.dataset_size ?? 0), liveRecords: Number(row?.live_records ?? 0), demoRecords: Number(row?.demo_records ?? 0), dataFreshness: row?.data_freshness ?? null, lastExport: row?.last_export ?? null };
+  } catch { /* Database counters remain unavailable while ML metadata can still load. */ }
+  try {
+    let models: MlDataTelemetry["models"] = [];
+    let modelHealth = "Metadata unavailable";
+    try {
+      const baseUrl = (process.env.ML_SERVICE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
+      const response = await fetch(`${baseUrl}/models/info`, { cache: "no-store" });
+      if (response.ok) {
+        const payload = await response.json();
+        models = [payload?.yield_model, payload?.price_model].filter(Boolean).map((model: Record<string, unknown>) => ({
+          name: String(model.model_name ?? model.name ?? "Registered model"),
+          version: String(model.version ?? model.model_version ?? "Unversioned"),
+          modelType: String(model.model_type ?? "ML_MODEL"),
+          lastEvaluation: typeof model.last_evaluated === "string" ? model.last_evaluated : null,
+          metrics: typeof model.model_performance?.metrics === "object" && model.model_performance.metrics ? model.model_performance.metrics as Record<string, number> : {},
+        }));
+        modelHealth = "Healthy";
+      }
+    } catch {
+      modelHealth = "Unavailable";
+    }
+    return { models, predictionCount: counts.predictions, actualObservationCount: counts.observations, datasetSize: counts.datasetSize, liveRecords: counts.liveRecords, demoRecords: counts.demoRecords, dataFreshness: counts.dataFreshness ? new Date(counts.dataFreshness).toISOString() : null, lastDatasetExport: counts.lastExport ? new Date(counts.lastExport).toISOString() : null, modelHealth };
+  } catch {
+    return fallback;
+  }
+}
 
 export async function getSystemAdminMetrics(): Promise<SystemMetrics> {
   const now = new Date();
   const makeTime = (minutesAgo: number) =>
     new Date(now.getTime() - minutesAgo * 60 * 1000).toISOString();
 
-  const [farmerCount, farms, mlHealth] = await Promise.all([
+  const [farmerCount, farms, mlHealth, accumulation, mlData] = await Promise.all([
     getFarmerCount().catch(() => 0),
     listFarms().catch(() => []),
     checkMlServiceHealth().catch(() => ({ online: false })),
+    getAccumulationTelemetry(),
+    getMlDataTelemetry(),
   ]);
 
   const totalFarms = farms.length;
@@ -165,6 +259,8 @@ export async function getSystemAdminMetrics(): Promise<SystemMetrics> {
     recommendationsGenerated: 12,
     activeNotificationsSent: 4,
     aiAssistantQueriesProcessed: 8,
+    accumulation,
+    mlData,
     systemUptimeHours: Math.round((process.uptime() / 3600) * 10) / 10,
     dataQualityMatrix,
     apiHealthChecks,

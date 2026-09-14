@@ -49,17 +49,22 @@ class YieldPredictionModel:
         avg_temp_c: float = 24.0,
         state: str = "Punjab",
         irrigation_type: str = "Rainfed",
+        actual_yield_q_per_acre: float | None = None,
+        observed_yield_q_per_acre: float | None = None,
     ) -> dict:
+        actual_value = actual_yield_q_per_acre if actual_yield_q_per_acre is not None else observed_yield_q_per_acre
         if self._artifact is not None:
             return self._predict_trained(
                 crop_slug, rainfall_mm, soil_ph,
-                nitrogen_kg_per_ha, avg_temp_c, state, irrigation_type
+                nitrogen_kg_per_ha, avg_temp_c, state, irrigation_type,
+                actual_value
             )
-        return self._predict_fallback(crop_slug, rainfall_mm, soil_ph)
+        return self._predict_fallback(crop_slug, rainfall_mm, soil_ph, actual_value)
 
     def _predict_trained(
         self, crop_slug, rainfall_mm, soil_ph,
-        nitrogen_kg_per_ha, avg_temp_c, state, irrigation_type
+        nitrogen_kg_per_ha, avg_temp_c, state, irrigation_type,
+        actual_value: float | None = None,
     ) -> dict:
         import numpy as np
 
@@ -118,6 +123,9 @@ class YieldPredictionModel:
             "predicted_yield_quintals_per_acre": q_per_acre,
             "predicted_yield_q_per_ha": q_per_ha,
             "predicted_yield_kg_per_ha": pred_kg_ha,
+            "actual_yield_q_per_acre": actual_value,
+            "observed_yield_q_per_acre": actual_value,
+            "actual_yield_kg_per_ha": round(actual_value * 100.0, 2) if actual_value is not None else None,
             "confidence_interval_q_per_acre": [ci_lower, ci_upper],
             "model_version": self._model_version,
             "is_ml_predicted": True,
@@ -125,7 +133,7 @@ class YieldPredictionModel:
             "features_used": feature_values,
         }
 
-    def _predict_fallback(self, crop_slug, rainfall_mm, soil_ph) -> dict:
+    def _predict_fallback(self, crop_slug, rainfall_mm, soil_ph, actual_value: float | None = None) -> dict:
         base = _BENCHMARK_YIELDS.get(crop_slug.lower().strip(), 12.0)
         mult = 1.0
         if rainfall_mm < 100:
@@ -143,6 +151,9 @@ class YieldPredictionModel:
             "predicted_yield_quintals_per_acre": est_acre,
             "predicted_yield_q_per_ha": round(est_acre * 2.47105, 2),
             "predicted_yield_kg_per_ha": round(est_acre * 247.105, 2),
+            "actual_yield_q_per_acre": actual_value,
+            "observed_yield_q_per_acre": actual_value,
+            "actual_yield_kg_per_ha": round(actual_value * 100.0, 2) if actual_value is not None else None,
             "confidence_interval_q_per_acre": [round(est_acre * 0.82, 2), round(est_acre * 1.18, 2)],
             "model_version": "v1.0-benchmark-fallback",
             "is_ml_predicted": False,

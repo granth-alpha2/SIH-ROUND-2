@@ -49,3 +49,26 @@ INFERENCE
 7. Approved models are registered with a version and metadata.
 8. Deployment only occurs after registry update and operational approval.
 9. Inference continues using the deployed model version until the next approved release.
+
+## Provenance and transparency contract
+
+Every prediction carries its model version and model type. Yield and price
+predictions are never overwritten by actual observations. Actual outcomes are
+recorded separately after a completed marketplace transaction so error analysis
+can compare prediction versus reality.
+
+The model registry records model name/key, version, purpose, artifact/source
+metadata, evaluation metrics, and active status. Admin telemetry exposes only
+aggregate counts, model health, versions, valid metrics, dataset freshness, and
+last export time; it does not expose farmer-level private data.
+
+CSV exports are generated from persisted records, use pseudonymous farmer/farm
+references, and remove phone numbers, credentials, tokens, OTPs, biometric data,
+and government identifiers. `LIVE` and `DEMO` records remain distinguishable.
+
+## Demo limitation
+
+The SIH demo uses synthetic, benchmark, and indicative market/export values in
+some flows. These values demonstrate the calculation and governance path only;
+they are not guaranteed procurement prices, buyer commitments, live international
+quotes, or evidence that a model improves merely because records accumulated.

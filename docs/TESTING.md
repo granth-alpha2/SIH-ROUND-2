@@ -30,6 +30,8 @@ npx --prefix frontend tsx tests/integration/test_markets.ts
 npx --prefix frontend tsx tests/integration/test_weather.ts
 npx --prefix frontend tsx tests/integration/test_assistant.ts
 npx --prefix frontend tsx tests/integration/test_auth.ts
+npx --prefix frontend tsx tests/integration/test_profitability_contracts.ts
+npx --prefix frontend tsx tests/integration/test_ml_client.ts
 
 # Run Python ML test suite
 pytest ml-service/tests/

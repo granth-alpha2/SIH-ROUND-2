@@ -73,3 +73,46 @@ AgriProfit is an AI-powered agricultural decision-support platform designed for 
 ### D. Reverse Proxy & Infrastructure (`infrastructure/` & `nginx.conf`)
 * **Nginx:** Routes `/` to Next.js (`:3000`) and `/ml/` to FastAPI (`:8000`).
 * **Docker Compose:** Multi-container orchestration (`docker-compose.prod.yml`).
+
+## 3. Profitability Decision Architecture
+
+The marketplace-to-profitability path reuses existing farm, crop, weather, MSP,
+market, and ML services. The deterministic cost engine normalizes units and
+combines fixed, variable, production, transport, logistics, handling, and export
+costs. The break-even engine calculates the price and quantity needed to cover
+those costs. The scenario engine compares MSP, direct market, group selling, and
+export outcomes, including price, yield, and cost sensitivity.
+
+Recommendations rank calculated scenario profit and explain realization, cost,
+demand, break-even, and risk factors. ML output, rule-based scoring,
+deterministic calculations, and external data are labeled separately. Failed or
+malformed ML responses produce an explicit unavailable signal, never a fabricated
+prediction.
+
+## 4. Model Registry and Transparency
+
+The FastAPI service exposes model versions and valid evaluation metrics through
+`/health` and `/models/info`. Model metadata includes type, version, purpose,
+source/artifact information, and evaluation results. Predictions and actual
+outcomes are stored separately. New observations do not automatically retrain or
+improve a deployed model; future retraining requires governed export, LIVE/DEMO
+filtering, quality checks, time-based evaluation, approval, version registration,
+and controlled deployment.
+
+## 5. Marketplace Economics
+
+Group economics models pooled quantity, buyer demand, shared transport savings,
+aggregation/handling/storage costs, realization, break-even, profit, and farmer
+outcomes. Export economics models international reference data, trade period,
+currency conversion, exporter offer, logistics, documentation, transport,
+indicative realization, break-even, profit, and execution risk. External inputs
+must expose source and freshness or reference-period metadata.
+
+## 6. Security, Privacy, and Demo Limits
+
+Private APIs authenticate sessions, authorize roles, and validate farm ownership.
+Admin views expose aggregate telemetry only. CSV exports pseudonymize farmer/farm
+references and remove phone numbers, credentials, tokens, OTPs, biometrics, and
+government identifiers. Several demo paths use synthetic or benchmark values;
+they are not guaranteed bids, procurement outcomes, live quotes, or evidence of
+production model improvement.

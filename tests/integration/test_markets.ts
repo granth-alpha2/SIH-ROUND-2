@@ -27,6 +27,7 @@ import {
   calculateProfitabilitySnapshot,
   compareProfitabilityStrategies,
   normalizeWeight,
+  recordCompletedProfitabilityOutcome,
   toCanonicalWeight,
 } from "../../frontend/src/lib/profitability-service";
 import { prefillRecommendationContext } from "../../frontend/src/lib/farm-context";
@@ -112,7 +113,23 @@ async function runTests() {
   assert(profitability.breakEvenPrice === 19.8, "Break-even price includes variable cost and fixed cost per unit");
   assert(profitability.profitMargin === 16.67, "Profit margin is computed as a percentage");
   assert(profitability.roi === 20, "ROI is calculated correctly");
+  assert(profitability.predictedRevenue === 6000, "Predicted revenue is stored for feedback evaluation");
+  assert(profitability.predictedProfit === 1000, "Predicted profit is stored for feedback evaluation");
+  assert(profitability.predictedQuantity === 250, "Predicted quantity is stored in canonical weight units");
+  assert(profitability.predictedPrice === 24, "Predicted price is stored in per-kg units");
   assert(toCanonicalWeight(1, "quintal") === 100, "Canonical mass conversion is explicit and reusable");
+
+  const realizedOutcome = {
+    revenue: 6200,
+    profit: 1100,
+    quantity: 250,
+    price: 24.8,
+  };
+  const recordedOutcome = recordCompletedProfitabilityOutcome(profitability, realizedOutcome);
+  assert(recordedOutcome.actualRevenue === 6200, "Actual revenue is stored after the completed transaction");
+  assert(recordedOutcome.actualProfit === 1100, "Actual profit is stored after the completed transaction");
+  assert(recordedOutcome.actualQuantity === 250, "Actual quantity is stored after the completed transaction");
+  assert(recordedOutcome.actualPrice === 24.8, "Actual price is stored after the completed transaction");
 
   const strategyComparison = compareProfitabilityStrategies({
     quantity: 250,

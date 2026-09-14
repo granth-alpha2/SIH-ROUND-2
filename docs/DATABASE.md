@@ -62,3 +62,29 @@ CREATE TABLE farms (
 CREATE INDEX idx_farms_boundary ON farms USING GIST(boundary);
 ```
 
+## 3. Profitability, Model, and Audit Entities
+
+Migration `006_profitability_and_model_audit.sql` adds only missing persistence
+entities. Existing farms, users, crops, market prices, MSP, weather, and forecast
+tables remain the source entities. The new layer contains:
+
+* `profitability_analyses`, `profitability_scenarios`, `profitability_costs`,
+  `profitability_results`, and `profitability_sensitivity`;
+* `model_registry` and `model_predictions`;
+* `actual_outcomes`, with predicted and realized values kept separate;
+* `dataset_exports` and validated `data_collection_events`.
+
+Migration `007_audit_events.sql` adds append-only audit records for analysis,
+model, market, scenario, result, outcome, and export actions. Audit rows contain
+event, actor, timestamp, analysis ID, model version, source, and non-sensitive
+metadata only. Owner/RBAC checks protect private profitability and outcome data.
+
+## 4. Data Governance and Retraining
+
+Provider data carries source type, `LIVE`/`DEMO` origin, and effective/fetch time.
+CSV generation pseudonymizes farmer/farm references and strips contact,
+authentication, credential, OTP, biometric, and government-ID fields. Retraining
+is a separate controlled process: validate and export data, filter DEMO records,
+check features, evaluate on held-out/time-based data, register a new version,
+approve, and deploy. Data collection alone never changes model behavior.
+

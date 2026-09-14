@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import AppShell from "../components/AppShell";
 import FarmParcelMap from "../components/FarmParcelMap";
 import { simulateCropFinancials, simulateExportScenario, simulateGroupSellingComparison } from "@/lib/simulation-engine";
@@ -41,6 +40,8 @@ export default function RecommendationDashboard() {
   const urlWater = searchParams.get("water");
   const urlSoil = searchParams.get("soil");
   const urlSeason = searchParams.get("season");
+  const urlCrop = searchParams.get("crop");
+  const urlMarketPrice = searchParams.get("marketPrice");
 
   const initialAcres = useMemo(() => {
     const val = urlAcres ? parseFloat(urlAcres) : 2.5;
@@ -85,10 +86,37 @@ export default function RecommendationDashboard() {
   }, [urlLat, urlLng, urlSoil, urlName]);
 
   const [openExplanation, setOpenExplanation] = useState<number | null>(null);
+  const [savedProfitabilityAnalyses, setSavedProfitabilityAnalyses] = useState<Array<{
+    id: string;
+    crop: string;
+    date: string;
+    strategy: string;
+    expectedProfit: number;
+    modelsUsed: string[];
+    dataUsed: string[];
+    timestamp: string;
+    scenario: string;
+    result: string;
+  }>>(() => {
+    if (typeof window === "undefined") {
+      return [];
+    }
+
+    try {
+      const rawHistory = window.localStorage.getItem("agriprofit_profitability_analyses");
+      if (!rawHistory) {
+        return [];
+      }
+      const parsed = JSON.parse(rawHistory);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Active Farm & Geospatial State
   const [farmName, setFarmName] = useState(initialLocationInfo.name);
-  const [farmLocation, setFarmLocation] = useState(initialLocationInfo.location);
+  const farmLocation = initialLocationInfo.location;
   const [totalLandAcres, setTotalLandAcres] = useState<number>(initialAcres);
   const [farmBoundary, setFarmBoundary] = useState<{ lat: number; lng: number }[]>([]);
   const [selectedCropId, setSelectedCropId] = useState<string | null>(null);
@@ -123,9 +151,9 @@ export default function RecommendationDashboard() {
 
   // Sensitivity Simulator state
   const firstCrop = initialPortfolio.allocations[0];
-  const [simCropName, setSimCropName] = useState(firstCrop?.cropName || "Wheat");
+  const [simCropName, setSimCropName] = useState(urlCrop || firstCrop?.cropName || "Wheat");
   const [simArea, setSimArea] = useState<number>(firstCrop?.allocatedAcres || 2.5);
-  const [simPrice, setSimPrice] = useState<number>(firstCrop?.expectedSellingPricePerQuintal || 2380);
+  const [simPrice, setSimPrice] = useState<number>(urlMarketPrice ? Number(urlMarketPrice) : (firstCrop?.expectedSellingPricePerQuintal || 2380));
   const [simYield, setSimYield] = useState<number>(firstCrop?.expectedYieldPerAcre || 14.5);
   const [simCost, setSimCost] = useState<number>(firstCrop?.costPerAcre || 11500);
   const [whatIfPrice, setWhatIfPrice] = useState<number>(simPrice);
@@ -136,6 +164,9 @@ export default function RecommendationDashboard() {
   const [whatIfLaborCost, setWhatIfLaborCost] = useState<number>(5000);
   const [whatIfExportCost, setWhatIfExportCost] = useState<number>(1200);
   const [whatIfLogisticsCost, setWhatIfLogisticsCost] = useState<number>(1800);
+  const [activeProfitabilityScenario, setActiveProfitabilityScenario] = useState<"MSP" | "DIRECT_MARKET" | "GROUP_SELLING" | "EXPORT">("DIRECT_MARKET");
+  const [outcomeStatus, setOutcomeStatus] = useState<string>("");
+  const [exportAcceptanceStatus, setExportAcceptanceStatus] = useState<string>("");
 
   const whatIfPreview = useMemo(() => {
     const quantity = Math.max(0, whatIfQuantity);
@@ -158,6 +189,34 @@ export default function RecommendationDashboard() {
       breakEven,
     };
   }, [whatIfPrice, whatIfQuantity, whatIfProductionCost, whatIfTransportCost, whatIfInputCost, whatIfLaborCost, whatIfExportCost, whatIfLogisticsCost]);
+
+  async function completeMarketplaceTransaction() {
+    setOutcomeStatus("Recording actual outcome...");
+    try {
+      const response = await fetch("/api/recommendations/profitability/outcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          analysisId: `dashboard-${Date.now()}`,
+          farmId: urlFarmId || undefined,
+          scenario: activeProfitabilityScenario,
+          actualQuantity: whatIfQuantity,
+          actualPriceInr: whatIfPrice,
+          actualCostInr: whatIfPreview.cost,
+          predicted: {
+            quantity: expectedQuantity,
+            price: simPrice,
+            revenue: simResult.expectedGrossRevenue,
+            profit: simResult.expectedNetProfit,
+          },
+        }),
+      });
+      const result = await response.json();
+      setOutcomeStatus(response.ok ? `Actual outcome recorded at ${new Date(result.outcome.observedAt).toLocaleString("en-IN")}.` : result.error?.message || "Outcome could not be recorded.");
+    } catch {
+      setOutcomeStatus("Outcome could not be recorded because the API is unavailable.");
+    }
+  }
 
   // Background hydration: Loads boundary polygon & farm name asynchronously without blocking the UI
   useEffect(() => {
@@ -463,6 +522,51 @@ export default function RecommendationDashboard() {
     });
   }, [portfolio, simArea, simPrice, simYield, simCost]);
 
+  const activeScenarioRow = useMemo(
+    () => profitabilityComparison.find((row) => row.strategy === activeProfitabilityScenario) ?? profitabilityComparison[0],
+    [activeProfitabilityScenario, profitabilityComparison]
+  );
+
+  const primaryCrop = portfolio.allocations[0];
+  const primaryMandiRecord = MANDI_BENCHMARK_PRICES.find((record) => record.cropSlug === primaryCrop?.cropSlug);
+
+  const breakEvenChart = useMemo(() => {
+    const expectedQuantityForChart = Math.max(1, expectedQuantity);
+    const breakEvenQuantityForChart = Math.max(0, breakEvenTotalQuantity);
+    const xMax = Math.max(expectedQuantityForChart * 1.2, breakEvenQuantityForChart * 1.2, 1);
+    const yMax = Math.max(simResult.expectedGrossRevenue, simResult.totalEstimatedCost, 1) * 1.12;
+    const width = 720;
+    const height = 300;
+    const padding = { left: 58, right: 20, top: 20, bottom: 42 };
+    const plotWidth = width - padding.left - padding.right;
+    const plotHeight = height - padding.top - padding.bottom;
+    const toPoint = (quantity: number, value: number) => ({
+      x: padding.left + (quantity / xMax) * plotWidth,
+      y: padding.top + plotHeight - (value / yMax) * plotHeight,
+    });
+    const quantities = [0, xMax * 0.25, xMax * 0.5, xMax * 0.75, xMax];
+    const revenuePoints = quantities.map((quantity) => toPoint(quantity, quantity * simPrice));
+    const costPoints = quantities.map((quantity) => toPoint(quantity, (quantity / expectedQuantityForChart) * simResult.totalEstimatedCost));
+    const breakEvenPoint = toPoint(breakEvenQuantityForChart, breakEvenQuantityForChart * simPrice);
+    const currentPoint = toPoint(expectedQuantityForChart, simResult.expectedGrossRevenue);
+    const formatPoints = (points: Array<{ x: number; y: number }>) => points.map((point) => `${point.x},${point.y}`).join(" ");
+
+    return {
+      width,
+      height,
+      padding,
+      plotHeight,
+      xMax,
+      yMax,
+      revenuePoints,
+      costPoints,
+      breakEvenPoint,
+      currentPoint,
+      revenuePolyline: formatPoints(revenuePoints),
+      costPolyline: formatPoints(costPoints),
+    };
+  }, [breakEvenTotalQuantity, expectedQuantity, simPrice, simResult.expectedGrossRevenue, simResult.totalEstimatedCost]);
+
   const groupSellingSummary = useMemo(() => {
     const primaryCrop = portfolio.allocations[0];
     const quantityPerFarmer = Math.max(6, (primaryCrop?.expectedYieldPerAcre ?? simYield) * (primaryCrop?.allocatedAcres ?? simArea) / 3);
@@ -487,6 +591,46 @@ export default function RecommendationDashboard() {
       transportOptimizationSavingsPerQuintal: transportSavingsPerQuintal,
     });
   }, [portfolio, simArea, simPrice, simYield, simCost]);
+
+  const groupDemoScenario = useMemo(() => {
+    const productionCostPerQuintal = Math.max(1200, simCost / Math.max(1, simYield));
+    const aggregationCostPerQuintal = Math.max(20, simCost / 1000);
+    const handlingCostPerQuintal = Math.max(15, simCost / 1500);
+    const storageCostPerQuintal = Math.max(10, simCost / 2200);
+    const transportSavingsPerQuintal = Math.max(10, simCost / 3000);
+    const farmers = [
+      { name: "Farmer A", quantityQuintals: 12, productionCostPerQuintal },
+      { name: "Farmer B", quantityQuintals: 18, productionCostPerQuintal },
+      { name: "Farmer C", quantityQuintals: 15, productionCostPerQuintal },
+    ];
+    const buyerRequirementQuintals = 40;
+    const group = simulateGroupSellingComparison({
+      farmers,
+      groupSellingPricePerQuintal: simPrice * 1.03,
+      aggregationCostPerQuintal,
+      handlingCostPerQuintal,
+      storageCostPerQuintal,
+      groupTransactionCost: simCost * 0.08,
+      transportOptimizationSavingsPerQuintal: transportSavingsPerQuintal,
+    });
+    const individualRevenue = Number((group.totalQuantity * simPrice).toFixed(0));
+    const individualProfit = Number((individualRevenue - group.individualTotalCost).toFixed(0));
+    const groupMoreProfitable = group.groupProfit > individualProfit;
+    const reasons = [
+      group.totalQuantity >= buyerRequirementQuintals
+        ? `The pooled quantity is ${group.totalQuantity.toFixed(0)} q, above the buyer requirement of ${buyerRequirementQuintals} q.`
+        : `The pooled quantity is ${group.totalQuantity.toFixed(0)} q, below the buyer requirement of ${buyerRequirementQuintals} q.`,
+      group.transportSavings > 0
+        ? `Shared logistics create estimated transport savings of ₹${Math.round(group.transportSavings).toLocaleString("en-IN")}.`
+        : "No transport savings are estimated under the current inputs.",
+      groupMoreProfitable
+        ? `Group profit of ₹${Math.round(group.groupProfit).toLocaleString("en-IN")} exceeds individual profit of ₹${Math.round(individualProfit).toLocaleString("en-IN")}.`
+        : `Group profit of ₹${Math.round(group.groupProfit).toLocaleString("en-IN")} does not exceed individual profit of ₹${Math.round(individualProfit).toLocaleString("en-IN")}.`,
+      `The group break-even is ₹${Math.round(group.groupBreakEven).toLocaleString("en-IN")}/q against an expected group price of ₹${Math.round(group.expectedSellingPrice).toLocaleString("en-IN")}/q.`,
+    ];
+
+    return { group, buyerRequirementQuintals, individualRevenue, individualProfit, groupMoreProfitable, reasons };
+  }, [simCost, simPrice, simYield]);
 
   const exportEconomics = useMemo(() => {
     const primaryCrop = portfolio.allocations[0];
@@ -520,6 +664,48 @@ export default function RecommendationDashboard() {
       estimatedOtherCosts,
     };
   }, [portfolio, simArea, simPrice, simYield, simCost]);
+
+  const exportDemoScenario = useMemo(() => simulateExportScenario({
+    cropQuantityQuintals: 120,
+    localPricePerQuintal: 1800,
+    internationalReferencePricePerKg: 0.63,
+    exporterOfferPerKg: 0.58,
+    packagingCostPerQuintal: 120,
+    handlingCostPerQuintal: 90,
+    documentationCost: 4200,
+    logisticsCost: 18000,
+    transportCost: 26000,
+    exporterChargesPct: 0.04,
+    exchangeRateInrPerUsd: 83.5,
+    exchangeRateTimestamp: "2026-09-14T10:30:00.000Z",
+  }), []);
+
+  async function acceptExportOffer() {
+    setExportAcceptanceStatus("Recording exporter acceptance...");
+    try {
+      const response = await fetch("/api/recommendations/profitability/outcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          analysisId: `export-demo-${Date.now()}`,
+          scenario: "EXPORT",
+          actualQuantity: exportDemoScenario.cropQuantityQuintals,
+          actualPriceInr: exportDemoScenario.exporterOffer.inrPerKg * 100,
+          actualCostInr: exportDemoScenario.estimatedExportCosts,
+          predicted: {
+            quantity: exportDemoScenario.cropQuantityQuintals,
+            price: exportDemoScenario.expectedFarmerRealization / exportDemoScenario.cropQuantityQuintals,
+            revenue: exportDemoScenario.cropQuantityKg * exportDemoScenario.exporterOffer.inrPerKg,
+            profit: exportDemoScenario.expectedExportProfit,
+          },
+        }),
+      });
+      const result = await response.json();
+      setExportAcceptanceStatus(response.ok ? `Exporter accepted. Transaction outcome recorded at ${new Date(result.outcome.observedAt).toLocaleString("en-IN")}.` : result.error?.message || "Exporter acceptance could not be recorded.");
+    } catch {
+      setExportAcceptanceStatus("Exporter acceptance could not be recorded because the API is unavailable.");
+    }
+  }
 
   function handleAcreChange(cropId: string, value: number) {
     setCustomAcres((prev) => ({
@@ -574,6 +760,39 @@ export default function RecommendationDashboard() {
     }, 150);
   }
 
+  function saveCurrentProfitabilityAnalysis() {
+    const bestStrategy = [...profitabilityComparison].sort((a, b) => b.profit - a.profit)[0];
+    const record = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      crop: simCropName,
+      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+      strategy: bestStrategy?.label || "Direct Market",
+      expectedProfit: Math.round(bestStrategy?.profit ?? simResult.expectedNetProfit),
+      modelsUsed: [
+        "Yield predictor",
+        "Price forecast model",
+        "Profitability engine",
+      ],
+      dataUsed: [
+        "Farm context",
+        "Market price inputs",
+        "Cost assumptions",
+        "MSP benchmark",
+      ],
+      timestamp: new Date().toISOString(),
+      scenario: bestStrategy?.label || "Base case",
+      result: bestStrategy && bestStrategy.profit >= 0 ? "Profitable" : "Risk check required",
+    };
+
+    const next = [record, ...savedProfitabilityAnalyses].slice(0, 8);
+    setSavedProfitabilityAnalyses(next);
+    try {
+      localStorage.setItem("agriprofit_profitability_analyses", JSON.stringify(next));
+    } catch {
+      // Storage fallback
+    }
+  }
+
   function acceptRecommendation() {
     if (!portfolio) return;
     const payload = {
@@ -604,7 +823,7 @@ export default function RecommendationDashboard() {
   }
 
   return (
-    <AppShell pageTitle="Crop Suitability & Land Allocation">
+    <AppShell pageTitle="AgriProfit Financial + Market Intelligence Engine">
       <div className="space-y-6">
         {/* Source & Freshness Metadata Bar (Fix 3) */}
         <section className="p-4 bg-slate-50 border border-slate-200 rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs text-slate-700">
@@ -637,10 +856,10 @@ export default function RecommendationDashboard() {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-              Crop Suitability Scoring & Land Division
+              AgriProfit Financial + Market Intelligence Engine
             </h1>
             <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-              Tailored for your {totalLandAcres.toFixed(2)}-acre land holding, balancing expected margins, agro-climatic water availability, and government MSP floor price protection.
+              Follow production, cost, market choice, break-even, risk, and realized outcome in one explainable financial workflow for your {totalLandAcres.toFixed(2)}-acre farm.
             </p>
           </div>
 
@@ -653,25 +872,130 @@ export default function RecommendationDashboard() {
           </button>
         </header>
 
+        <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-card" aria-label="AgriProfit decision chain">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-800">THE FARMER DECISION CHAIN</p>
+          <div className="mt-3 grid grid-cols-2 gap-3 text-xs font-bold text-slate-800 sm:grid-cols-4 xl:grid-cols-8">
+            {["What will I produce?", "How much will it cost?", "What can I sell it for?", "What is my break-even?", "How much can I earn?", "Which market is better?", "What if price/yield falls?", "What actually happened?"] .map((step, index) => (
+              <div key={step} className="rounded-xl border border-emerald-200 bg-white p-3">
+                <span className="block text-[10px] text-emerald-700">0{index + 1}</span>
+                <span className="mt-1 block leading-4">{step}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-emerald-900">Every output below is tied to a farm, crop, scenario, source, model calculation, or confirmed outcome. Collection alone never retrains a model.</p>
+        </section>
+
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
+          <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Farm: {farmName}</p>
+              <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-900">PROFITABILITY &amp; BREAK-EVEN</h2>
+              <p className="mt-1 text-sm text-slate-600">Crop: <strong className="text-slate-900">{simCropName}</strong> · Scenario values update from the current farm inputs.</p>
+            </div>
+            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">Deterministic financial comparison</span>
+          </div>
+
+          <div>
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Scenario</p>
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Profitability scenarios">
+              {[
+                ["MSP", "MSP"],
+                ["DIRECT_MARKET", "Direct"],
+                ["GROUP_SELLING", "Group"],
+                ["EXPORT", "Export"],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeProfitabilityScenario === value}
+                  onClick={() => setActiveProfitabilityScenario(value as typeof activeProfitabilityScenario)}
+                  className={`rounded-md border px-4 py-2 text-xs font-bold transition-colors ${
+                    activeProfitabilityScenario === value
+                      ? "border-emerald-700 bg-emerald-700 text-white"
+                      : "border-slate-300 bg-white text-slate-700 hover:border-emerald-600 hover:text-emerald-800"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {activeScenarioRow && (
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Expected price</p><p className="mt-2 text-xl font-black text-slate-900">₹{Math.round(activeScenarioRow.expectedPrice).toLocaleString("en-IN")}/kg</p></div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Expected revenue</p><p className="mt-2 text-xl font-black text-slate-900">₹{Math.round(activeScenarioRow.revenue).toLocaleString("en-IN")}</p></div>
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Expected profit</p><p className="mt-2 text-xl font-black text-emerald-700">₹{Math.round(activeScenarioRow.profit).toLocaleString("en-IN")}</p></div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Margin / ROI</p><p className="mt-2 text-xl font-black text-slate-900">{activeScenarioRow.margin.toFixed(1)}%</p></div>
+            </div>
+          )}
+        </section>
+
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap border-b border-slate-200 pb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Data freshness</p>
+              <h2 className="mt-1 text-xl sm:text-2xl font-bold text-slate-900">SOURCE &amp; LAST UPDATED</h2>
+            </div>
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">No unverified LIVE claims</span>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <p className="font-bold text-slate-900">Mandi data</p>
+              <p className="mt-2 text-slate-700"><span className="font-semibold">Source:</span> {primaryMandiRecord?.provenance.sourceName ?? "Existing AgriProfit market API"}</p>
+              <p className="mt-1 text-slate-700"><span className="font-semibold">Updated:</span> {primaryMandiRecord?.provenance.recordedDate ?? "Not supplied by current response"}</p>
+              <p className="mt-1 text-xs text-slate-500">Benchmark/reference data, not a live trading feed.</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <p className="font-bold text-slate-900">Weather</p>
+              <p className="mt-2 text-slate-700"><span className="font-semibold">Source:</span> Open-Meteo when a weather report is provided</p>
+              <p className="mt-1 text-slate-700"><span className="font-semibold">Updated:</span> Not supplied to this page response</p>
+              <p className="mt-1 text-xs text-slate-500">Weather suitability uses the available farm context or benchmark fallback.</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <p className="font-bold text-slate-900">MSP</p>
+              <p className="mt-2 text-slate-700"><span className="font-semibold">Source:</span> CACP government MSP dataset</p>
+              <p className="mt-1 text-slate-700"><span className="font-semibold">Updated:</span> Effective season/date shown in the MSP catalogue</p>
+              <p className="mt-1 text-xs text-slate-500">Government procurement reference/floor where applicable, not a universal market price.</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <p className="font-bold text-slate-900">International reference</p>
+              <p className="mt-2 text-slate-700"><span className="font-semibold">Source:</span> {exportEconomics.referenceDataMeta.source}</p>
+              <p className="mt-1 text-slate-700"><span className="font-semibold">Period:</span> {exportEconomics.referenceDataMeta.period}</p>
+              <p className="mt-1 text-xs text-slate-500">Reference period is shown; this is not presented as a live international quote.</p>
+            </div>
+          </div>
+        </section>
+
         <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
           <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-4">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Break-even Dashboard</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Production · Market · Break-even</p>
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">{simCropName.toUpperCase()}</h2>
             </div>
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-bold ${
-                breakEvenStatus === "PROFITABLE"
-                  ? "bg-emerald-100 text-emerald-800"
-                  : breakEvenStatus === "HIGH PROFIT POTENTIAL"
-                    ? "bg-violet-100 text-violet-800"
-                    : breakEvenStatus === "BREAK-EVEN"
-                      ? "bg-amber-100 text-amber-800"
-                      : "bg-red-100 text-red-800"
-              }`}
-            >
-              {breakEvenStatus}
-            </span>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={saveCurrentProfitabilityAnalysis}
+                className="px-4 py-2 bg-slate-900 text-white text-xs font-bold uppercase tracking-[0.12em] rounded hover:bg-slate-800 cursor-pointer"
+              >
+                Save Analysis
+              </button>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  breakEvenStatus === "PROFITABLE"
+                    ? "bg-emerald-100 text-emerald-800"
+                    : breakEvenStatus === "HIGH PROFIT POTENTIAL"
+                      ? "bg-violet-100 text-violet-800"
+                      : breakEvenStatus === "BREAK-EVEN"
+                        ? "bg-amber-100 text-amber-800"
+                        : "bg-red-100 text-red-800"
+                }`}
+              >
+                {breakEvenStatus}
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -710,6 +1034,55 @@ export default function RecommendationDashboard() {
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Visual break-even graph</p>
+                <h3 className="mt-1 text-lg font-bold text-slate-900">Revenue vs total cost</h3>
+              </div>
+              <p className="text-xs text-slate-600">Plotted from the current yield, price, and cost calculation</p>
+            </div>
+            <div className="mt-4 overflow-x-auto">
+              <svg
+                viewBox={`0 0 ${breakEvenChart.width} ${breakEvenChart.height}`}
+                className="min-w-[620px] w-full"
+                role="img"
+                aria-label="Revenue and total cost lines with calculated break-even intersection"
+              >
+                <polygon
+                  points={`${breakEvenChart.revenuePoints[0].x},${breakEvenChart.revenuePoints[0].y} ${breakEvenChart.revenuePoints[1].x},${breakEvenChart.revenuePoints[1].y} ${breakEvenChart.breakEvenPoint.x},${breakEvenChart.breakEvenPoint.y} ${breakEvenChart.breakEvenPoint.x},${breakEvenChart.padding.top + breakEvenChart.plotHeight} ${breakEvenChart.revenuePoints[0].x},${breakEvenChart.padding.top + breakEvenChart.plotHeight}`}
+                  fill="#fee2e2"
+                  opacity="0.8"
+                />
+                <polygon
+                  points={`${breakEvenChart.breakEvenPoint.x},${breakEvenChart.breakEvenPoint.y} ${breakEvenChart.revenuePoints[4].x},${breakEvenChart.revenuePoints[4].y} ${breakEvenChart.costPoints[4].x},${breakEvenChart.costPoints[4].y} ${breakEvenChart.breakEvenPoint.x},${breakEvenChart.breakEvenPoint.y}`}
+                  fill="#d1fae5"
+                  opacity="0.8"
+                />
+                <line x1={breakEvenChart.padding.left} y1={breakEvenChart.padding.top + breakEvenChart.plotHeight} x2={breakEvenChart.width - breakEvenChart.padding.right} y2={breakEvenChart.padding.top + breakEvenChart.plotHeight} stroke="#94a3b8" />
+                <line x1={breakEvenChart.padding.left} y1={breakEvenChart.padding.top} x2={breakEvenChart.padding.left} y2={breakEvenChart.padding.top + breakEvenChart.plotHeight} stroke="#94a3b8" />
+                <polyline points={breakEvenChart.costPolyline} fill="none" stroke="#f97316" strokeWidth="3" />
+                <polyline points={breakEvenChart.revenuePolyline} fill="none" stroke="#047857" strokeWidth="3" />
+                <line x1={breakEvenChart.currentPoint.x} y1={breakEvenChart.currentPoint.y} x2={breakEvenChart.currentPoint.x} y2={breakEvenChart.padding.top + breakEvenChart.plotHeight} stroke="#0f172a" strokeDasharray="4 4" />
+                <circle cx={breakEvenChart.breakEvenPoint.x} cy={breakEvenChart.breakEvenPoint.y} r="5" fill="#2563eb" stroke="white" strokeWidth="2" />
+                <circle cx={breakEvenChart.currentPoint.x} cy={breakEvenChart.currentPoint.y} r="5" fill="#047857" stroke="white" strokeWidth="2" />
+                <text x={breakEvenChart.breakEvenPoint.x + 8} y={breakEvenChart.breakEvenPoint.y - 8} fontSize="11" fontWeight="700" fill="#1d4ed8">Break-even: {breakEvenTotalQuantity.toFixed(2)} q</text>
+                <text x={breakEvenChart.currentPoint.x - 8} y={breakEvenChart.currentPoint.y - 10} textAnchor="end" fontSize="11" fontWeight="700" fill="#065f46">Current: {expectedQuantity.toFixed(2)} q · ₹{Math.round(simPrice).toLocaleString("en-IN")}/q</text>
+                <text x={breakEvenChart.padding.left + 8} y={breakEvenChart.padding.top + 28} fontSize="11" fontWeight="700" fill="#b91c1c">Loss zone</text>
+                <text x={breakEvenChart.width - breakEvenChart.padding.right - 70} y={breakEvenChart.padding.top + 28} fontSize="11" fontWeight="700" fill="#047857">Profit zone</text>
+                <text x={breakEvenChart.padding.left - 8} y={breakEvenChart.padding.top + 4} textAnchor="end" fontSize="10" fill="#64748b">₹{Math.round(breakEvenChart.yMax).toLocaleString("en-IN")}</text>
+                <text x={breakEvenChart.padding.left - 8} y={breakEvenChart.padding.top + breakEvenChart.plotHeight} textAnchor="end" fontSize="10" fill="#64748b">₹0</text>
+                <text x={breakEvenChart.width / 2} y={breakEvenChart.height - 8} textAnchor="middle" fontSize="10" fill="#64748b">Quantity (quintals)</text>
+                <text x="14" y={breakEvenChart.height / 2} textAnchor="middle" fontSize="10" fill="#64748b" transform={`rotate(-90 14 ${breakEvenChart.height / 2})`}>₹ value</text>
+              </svg>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-4 text-xs text-slate-600">
+              <span><strong className="text-emerald-700">●</strong> Revenue</span>
+              <span><strong className="text-orange-600">●</strong> Total cost</span>
+              <span><strong className="text-blue-700">●</strong> Break-even intersection</span>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Profitability Status</p>
@@ -730,6 +1103,48 @@ export default function RecommendationDashboard() {
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">SELL AT MSP vs DIRECT MARKET vs GROUP SELLING vs EXPORT</h2>
             </div>
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Backend-calculated values only</span>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <h3 className="text-lg font-bold text-slate-900">MY PROFITABILITY ANALYSES</h3>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Saved locally</span>
+            </div>
+
+            {savedProfitabilityAnalyses.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+                No saved profitability analyses yet. Select a strategy and click “Save Analysis” to build your history.
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {savedProfitabilityAnalyses.map((analysis) => (
+                  <article key={analysis.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{analysis.crop}</p>
+                        <h4 className="mt-1 text-xl font-black text-slate-900">{analysis.date}</h4>
+                      </div>
+                      <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-[0.12em]">
+                        {analysis.strategy}
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl bg-white border border-slate-200 p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Expected Profit</p>
+                      <p className="mt-2 text-2xl font-black text-emerald-700">₹{analysis.expectedProfit.toLocaleString("en-IN")}</p>
+                    </div>
+
+                    <div className="space-y-2 text-sm text-slate-700">
+                      <div><span className="font-bold text-slate-900">Models used:</span> {analysis.modelsUsed.join(" • ")}</div>
+                      <div><span className="font-bold text-slate-900">Data used:</span> {analysis.dataUsed.join(" • ")}</div>
+                      <div><span className="font-bold text-slate-900">Timestamp:</span> {new Date(analysis.timestamp).toLocaleString("en-IN")}</div>
+                      <div><span className="font-bold text-slate-900">Scenario:</span> {analysis.scenario}</div>
+                      <div><span className="font-bold text-slate-900">Result:</span> {analysis.result}</div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="overflow-x-auto">
@@ -769,6 +1184,47 @@ export default function RecommendationDashboard() {
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">INDIVIDUAL vs GROUP SELLING</h2>
             </div>
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Assumption-based backend calculation</span>
+          </div>
+
+          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 space-y-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-800">SECOND DEMO · GROUP SELLING</p>
+                <h3 className="mt-1 text-xl font-black text-slate-900">12 q + 18 q + 15 q = {groupDemoScenario.group.totalQuantity.toFixed(0)} q</h3>
+                <p className="mt-1 text-sm text-slate-700">Buyer requirement: <strong>{groupDemoScenario.buyerRequirementQuintals} q</strong></p>
+              </div>
+              <span className={`rounded-full px-3 py-1 text-xs font-black ${groupDemoScenario.groupMoreProfitable ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
+                GROUP SELLING IS {groupDemoScenario.groupMoreProfitable ? "MORE" : "NOT MORE"} PROFITABLE
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div className="rounded-xl border border-slate-200 bg-white p-4">
+                <p className="text-xs font-black uppercase tracking-wide text-slate-500">Individual economics</p>
+                <dl className="mt-3 space-y-2 text-sm text-slate-700">
+                  <div className="flex justify-between gap-3"><dt>Total quantity</dt><dd className="font-bold">{groupDemoScenario.group.totalQuantity.toFixed(0)} q</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Revenue at individual price</dt><dd className="font-bold">₹{groupDemoScenario.individualRevenue.toLocaleString("en-IN")}</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Total cost</dt><dd className="font-bold">₹{Math.round(groupDemoScenario.group.individualTotalCost).toLocaleString("en-IN")}</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Profit</dt><dd className="font-bold">₹{groupDemoScenario.individualProfit.toLocaleString("en-IN")}</dd></div>
+                </dl>
+              </div>
+              <div className="rounded-xl border border-emerald-200 bg-white p-4">
+                <p className="text-xs font-black uppercase tracking-wide text-emerald-700">Group economics</p>
+                <dl className="mt-3 space-y-2 text-sm text-slate-700">
+                  <div className="flex justify-between gap-3"><dt>Expected realization</dt><dd className="font-bold">₹{Math.round(groupDemoScenario.group.perFarmerRealization).toLocaleString("en-IN")} / farmer</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Transport savings</dt><dd className="font-bold text-emerald-700">₹{Math.round(groupDemoScenario.group.transportSavings).toLocaleString("en-IN")}</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Break-even</dt><dd className="font-bold">₹{Math.round(groupDemoScenario.group.groupBreakEven).toLocaleString("en-IN")}/q</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Group profit</dt><dd className="font-bold text-emerald-700">₹{Math.round(groupDemoScenario.group.groupProfit).toLocaleString("en-IN")}</dd></div>
+                </dl>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-indigo-200 bg-white p-4">
+              <p className="text-xs font-black uppercase tracking-wide text-indigo-800">WHY THIS VERDICT?</p>
+              <ul className="mt-2 space-y-1 text-sm text-slate-700">
+                {groupDemoScenario.reasons.map((reason) => <li key={reason} className="flex gap-2"><span className="font-black text-emerald-700">✓</span><span>{reason}</span></li>)}
+              </ul>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -820,6 +1276,43 @@ export default function RecommendationDashboard() {
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1"># EXPORT ECONOMICS</h2>
             </div>
             <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">Indicative estimate only</span>
+          </div>
+
+          <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 space-y-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-800">THIRD DEMO · EXPORT</p>
+                <h3 className="mt-1 text-xl font-black text-slate-900">120 q Onion → UAE</h3>
+                <p className="mt-1 text-sm text-slate-700">Indian exporter matched to a UAE buyer offer.</p>
+              </div>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">Indicative, not guaranteed</span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">International reference</p><p className="mt-2 text-lg font-black text-slate-900">UAE · UN Comtrade</p><p className="text-xs text-slate-600">USD/kg · {exportDemoScenario.referenceDataMeta.period}</p></div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Trade data</p><p className="mt-2 text-lg font-black text-slate-900">{exportDemoScenario.historicalTradeDataMeta.source}</p><p className="text-xs text-slate-600">{exportDemoScenario.historicalTradeDataMeta.period}</p></div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Exporter offer</p><p className="mt-2 text-lg font-black text-slate-900">₹{Math.round(exportDemoScenario.exporterOffer.inrPerKg).toLocaleString("en-IN")}/kg</p><p className="text-xs text-slate-600">Indian exporter / buyer term sheet</p></div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Currency</p><p className="mt-2 text-lg font-black text-slate-900">USD → INR</p><p className="text-xs text-slate-600">₹{exportDemoScenario.currencyConversion.inrPerUsd}/USD · {exportDemoScenario.currencyConversion.timestamp}</p></div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Export costs</p><p className="mt-2 text-xl font-black text-slate-900">₹{Math.round(exportDemoScenario.estimatedExportCosts).toLocaleString("en-IN")}</p><p className="text-xs text-slate-600">Packaging, handling, documentation, logistics, transport, charges</p></div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Indicative farmer realization</p><p className="mt-2 text-xl font-black text-emerald-700">₹{Math.round(exportDemoScenario.expectedFarmerRealization).toLocaleString("en-IN")}</p></div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Break-even</p><p className="mt-2 text-xl font-black text-slate-900">₹{Math.round(exportDemoScenario.exportBreakEven).toLocaleString("en-IN")}/q</p></div>
+              <div className="rounded-xl border border-emerald-200 bg-white p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Expected profit</p><p className="mt-2 text-xl font-black text-emerald-700">₹{Math.round(exportDemoScenario.expectedExportProfit).toLocaleString("en-IN")}</p></div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-xs font-black uppercase tracking-wide text-slate-700">MODEL USED</p><p className="mt-2 text-sm text-slate-700">Deterministic export economics engine with currency conversion and cost sensitivity.</p></div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-xs font-black uppercase tracking-wide text-slate-700">DATA SOURCES</p><p className="mt-2 text-sm text-slate-700">UN Comtrade reference, UAE trade period {exportDemoScenario.referenceDataMeta.period}, Indian exporter offer, displayed FX reference.</p></div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-xs font-black uppercase tracking-wide text-slate-700">ASSUMPTIONS &amp; RISK</p><p className="mt-2 text-sm text-slate-700">Offer is indicative. Freight, quality, duties, insurance, documentation timing, FX movement, and buyer acceptance can change realization.</p></div>
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-sky-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs font-semibold text-slate-700">Exporter accepts the indicative offer to continue through the authenticated marketplace transaction workflow.</p>
+              <button type="button" onClick={acceptExportOffer} className="agri-btn-primary shrink-0">Exporter accepts</button>
+            </div>
+            {exportAcceptanceStatus && <p className="text-xs font-semibold text-sky-800" role="status">{exportAcceptanceStatus}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -973,14 +1466,14 @@ export default function RecommendationDashboard() {
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">LIVE DATA PIPELINE</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">DATA INPUT PIPELINE</p>
               <span className="px-2 py-1 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">Repository priority: DB → API → ML → MSP → Mandi → Weather → Crop/Soil → Trade → Export → FX → Cached</span>
             </div>
             <div className="mt-3 space-y-2">
               {(portfolio.aiModelSummary?.liveDataPipeline ?? []).map((item) => (
                 <div key={item.stage} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-3">
                   <span className={`mt-0.5 px-2 py-1 rounded text-[10px] font-bold ${item.isCached ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"}`}>
-                    {item.isCached ? "Cached" : "Live"}
+                    {item.isCached ? "Cached" : "External input"}
                   </span>
                   <div className="text-sm text-slate-700">
                     <p className="font-bold text-slate-900">{item.stage}</p>
@@ -1727,6 +2220,17 @@ export default function RecommendationDashboard() {
                   <p className="mt-2 text-xl font-black text-slate-900">{whatIfPreview.breakEven.toFixed(2)} q</p>
                 </div>
               </div>
+              <div className="flex flex-col gap-2 border-t border-[var(--border-subtle)] pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs text-[var(--text-secondary)]">Complete the marketplace transaction to store the realized quantity, price, revenue, cost, and profit separately from the prediction.</p>
+                <button
+                  type="button"
+                  onClick={completeMarketplaceTransaction}
+                  className="agri-btn-primary shrink-0"
+                >
+                  Complete marketplace transaction
+                </button>
+              </div>
+              {outcomeStatus && <p className="text-xs font-semibold text-[var(--color-primary-text)]" role="status">{outcomeStatus}</p>}
             </section>
 
             <section className="agri-card p-6 space-y-4">
