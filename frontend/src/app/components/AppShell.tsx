@@ -4,19 +4,22 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { DISTRICT_MASTER } from "@/lib/geo-service";
+import { useTranslation } from "@/lib/i18n/TranslationContext";
+import LanguageSelector from "./LanguageSelector";
+import PageAudioTranslator from "./PageAudioTranslator";
 
 // Top-level Navigation strictly required by Government UX specifications
 const TOP_NAV_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "My Farm", href: "/farms" },
-  { label: "Marketplace", href: "/marketplace" },
-  { label: "Crop Information", href: "/crops" },
-  { label: "APMC Market", href: "/markets" },
-  { label: "Weather", href: "/weather" },
-  { label: "Government Schemes", href: "/schemes" },
-  { label: "Agricultural Knowledge", href: "/knowledge" },
-  { label: "Reports", href: "/recommendations/plan" },
-  { label: "Help", href: "/assistant" },
+  { label: "Home", href: "/", key: "nav.home" },
+  { label: "My Farm", href: "/farms", key: "nav.farms" },
+  { label: "Marketplace", href: "/marketplace", key: "nav.marketplace" },
+  { label: "Crop Information", href: "/crops", key: "nav.crops" },
+  { label: "APMC Market", href: "/markets", key: "nav.markets" },
+  { label: "Weather", href: "/weather", key: "nav.weather" },
+  { label: "Government Schemes", href: "/schemes", key: "nav.schemes" },
+  { label: "Agricultural Knowledge", href: "/knowledge", key: "nav.knowledge" },
+  { label: "Reports", href: "/recommendations/plan", key: "nav.reports" },
+  { label: "Help", href: "/assistant", key: "nav.assistant" },
 ];
 
 const LANGUAGES = [
@@ -50,6 +53,7 @@ type UserInfo = {
 };
 
 export default function AppShell({ children, pageTitle }: AppShellProps) {
+  const { t, language, setLanguage } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<UserInfo | null>(null);
@@ -263,7 +267,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
       {/* 1. Skip Navigation Link for Accessibility */}
       <a href="#MainContent" className="skip-nav-link">
-        Skip to main content (मुख्य सामग्री पर जाएं)
+        {t("nav.skipToContent", "Skip to main content (मुख्य सामग्री पर जाएं)")}
       </a>
 
       {/* 2. Tricolor Government Identity Line */}
@@ -276,12 +280,15 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           <div className="flex items-center gap-2">
             <span className="text-emerald-400 font-semibold tracking-wide flex items-center gap-1.5 text-xs sm:text-sm">
               <span>🌱</span>
-              <span className="text-white font-bold">Empowering Farmers and Reducing Losses</span>
+              <span className="text-white font-bold">{t("topbar.tagline", "Empowering Farmers and Reducing Losses")}</span>
             </span>
           </div>
 
           {/* Accessibility, Theme & Multilingual Controls */}
           <div className="flex items-center gap-2.5 ml-auto flex-wrap">
+            {/* Audio Listen / Read-Aloud Button */}
+            <PageAudioTranslator compact />
+
             {/* Day / Night Mode Toggle */}
             <button
               type="button"
@@ -352,19 +359,8 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
               {highContrast ? "Normal Contrast" : "🌓 Contrast"}
             </button>
 
-            {/* Language Selector */}
-            <select
-              value={selectedLang}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              className="bg-slate-800 text-slate-100 border border-slate-700 rounded px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 cursor-pointer w-auto max-w-[130px] shrink-0"
-              aria-label="Select Portal Language"
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
+            {/* Global Multilingual Selector */}
+            <LanguageSelector compact />
           </div>
         </div>
       </header>
@@ -492,7 +488,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                         : "!text-white hover:!bg-[#094163] hover:!text-amber-200 border-transparent"
                     }`}
                   >
-                    {item.label}
+                    {t(item.key, item.label)}
                   </Link>
                 </li>
               );
@@ -506,7 +502,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5">
             <Link href="/" className="text-[#0b4d75] hover:underline font-semibold">
-              Home
+              {t("nav.home", "Home")}
             </Link>
             <span className="text-slate-400">/</span>
             <span className="font-bold text-slate-800">{pageTitle}</span>
@@ -553,7 +549,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                       isActive ? "bg-[#0b4d75] text-white" : "text-slate-800 hover:bg-slate-100"
                     }`}
                   >
-                    {item.label}
+                    {t(item.key, item.label)}
                   </Link>
                 );
               })}
