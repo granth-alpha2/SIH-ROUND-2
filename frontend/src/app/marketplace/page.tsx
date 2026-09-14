@@ -13,8 +13,12 @@ import ExportOpportunitiesBoard from "./components/ExportOpportunitiesBoard";
 import RequestBasketDrawer from "./components/RequestBasketDrawer";
 import ProcurementReceiptModal from "./components/ProcurementReceiptModal";
 import { MarketplaceUserRole, RequestBasketItem, ProcurementReceipt, DirectMarketListing } from "@/lib/marketplace-types";
+import { useTranslation } from "@/lib/i18n/TranslationContext";
+import { usePageAudioContent } from "@/lib/i18n/PageAudioRegistry";
+import MarketplaceChatModal from "./components/MarketplaceChatModal";
 
 export default function MarketplacePage() {
+  const { t } = useTranslation();
   const [currentRole, setCurrentRole] = useState<MarketplaceUserRole>("farmer");
   const [searchQuery, setSearchQuery] = useState("");
   const [stats, setStats] = useState<any>({});
@@ -27,6 +31,19 @@ export default function MarketplacePage() {
   const [basketOpen, setBasketOpen] = useState(false);
   const [basketItems, setBasketItems] = useState<RequestBasketItem[]>([]);
   const [viewingReceipt, setViewingReceipt] = useState<ProcurementReceipt | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+
+  // Register clean readable audio summary for screen reader / TTS
+  usePageAudioContent({
+    title: t("marketplace.title", "Secondary Marketplace & Direct Farm-to-Market"),
+    summary: "Today's Mandi Snapshot: Official Government MSP Wheat ₹2,425 per quintal. Nearby Mandi modal rate: ₹2,380 per quintal. Direct buyer offers and APEDA export matches available.",
+    sections: [
+      { heading: "Government MSP", text: "₹2,425 per quintal with biometric gate clearance." },
+      { heading: "Direct Farm Market", text: "Connect directly with certified private millers and processors." },
+      { heading: "Multilingual Trade Chat", text: "Negotiate crop prices in Hindi, Punjabi, Haryanvi, Tamil, and English with live translation." },
+    ],
+    dependencies: [cropCards.length],
+  });
 
   async function loadOverview() {
     try {
@@ -201,6 +218,15 @@ export default function MarketplacePage() {
                 <span>🛒</span>
                 <span>Mode B: Direct Market & Group Selling</span>
               </a>
+
+              <button
+                type="button"
+                onClick={() => setChatOpen(true)}
+                className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black rounded-xl text-xs transition-all flex items-center gap-2 shadow-md cursor-pointer"
+              >
+                <span className="text-sm">💬</span>
+                <span>Multilingual Trade Chat & Negotiation</span>
+              </button>
             </div>
           </div>
         </section>
@@ -249,6 +275,12 @@ export default function MarketplacePage() {
         <ProcurementReceiptModal
           receipt={viewingReceipt}
           onClose={() => setViewingReceipt(null)}
+        />
+
+        {/* Multilingual Trade Chat Modal */}
+        <MarketplaceChatModal
+          isOpen={chatOpen}
+          onClose={() => setChatOpen(false)}
         />
       </div>
     </AppShell>
