@@ -134,7 +134,7 @@ export default function MarketsPage() {
     const quantityAvailabilityScore = item.arrivalsTonnes < 30 ? 3 : item.arrivalsTonnes < 100 ? 2 : 1;
     const exportDependencyScore = recommendedStrategy === "EXPORT" ? 3 : 1;
     const riskScore = priceUncertaintyScore + yieldUncertaintyScore + costSensitivityScore + logisticsSensitivityScore + buyerDemandScore + quantityAvailabilityScore + exportDependencyScore;
-    const riskClassification = riskScore >= 16 ? "HIGH RISK" : riskScore >= 11 ? "MODERATE RISK" : "LOW RISK";
+    const riskClassification: "LOW RISK" | "MODERATE RISK" | "HIGH RISK" = riskScore >= 16 ? "HIGH RISK" : riskScore >= 11 ? "MODERATE RISK" : "LOW RISK";
     const riskReasons = [
       priceUncertaintyScore >= 3 ? `High price uncertainty: ${item.volatility.toLowerCase()} market volatility.` : priceUncertaintyScore === 2 ? "Moderate price uncertainty from market volatility." : "Low price uncertainty from stable market volatility.",
       yieldUncertaintyScore >= 3 ? "High yield uncertainty because the recent price movement is highly variable." : yieldUncertaintyScore === 2 ? "Moderate yield uncertainty based on recent market movement." : "Lower yield uncertainty under the current trend assumption.",

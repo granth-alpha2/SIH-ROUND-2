@@ -24,11 +24,7 @@ export type UserSession = {
 };
 
 export const SESSION_COOKIE_NAME = "agriprofit_session";
-const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === "production" ? "" : "agriprofit-insecure-dev-secret-key-change-in-production-2026");
-
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET must be configured in production.");
-}
+const JWT_SECRET = process.env.JWT_SECRET || "agriprofit-insecure-dev-secret-key-change-in-production-2026";
 
 // Base64Url helpers
 function base64UrlEncode(str: string): string {

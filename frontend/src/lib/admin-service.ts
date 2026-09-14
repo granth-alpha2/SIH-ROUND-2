@@ -123,7 +123,7 @@ async function getMlDataTelemetry(): Promise<MlDataTelemetry> {
       const response = await fetch(`${baseUrl}/models/info`, { cache: "no-store" });
       if (response.ok) {
         const payload = await response.json();
-        models = [payload?.yield_model, payload?.price_model].filter(Boolean).map((model: Record<string, unknown>) => ({
+        models = [payload?.yield_model, payload?.price_model].filter(Boolean).map((model: any) => ({
           name: String(model.model_name ?? model.name ?? "Registered model"),
           version: String(model.version ?? model.model_version ?? "Unversioned"),
           modelType: String(model.model_type ?? "ML_MODEL"),

@@ -95,6 +95,7 @@ export default function MarketplaceChatModal({
       private_buyer: "AgroCorp Logistics (Buyer)",
       exporter: "Gulf Agri Exports (Exporter)",
       government_buyer: "FCI Officer S. Sharma",
+      admin: "System Administrator",
     };
 
     try {

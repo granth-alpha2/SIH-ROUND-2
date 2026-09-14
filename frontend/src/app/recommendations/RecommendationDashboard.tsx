@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import AppShell from "../components/AppShell";
 import FarmParcelMap from "../components/FarmParcelMap";
@@ -20,6 +21,7 @@ import {
 } from "@/lib/portfolio-optimizer";
 import { type CropSeason, type CropRecord } from "@/lib/crop-data";
 import { resolveDistrictFromCoords } from "@/lib/geo-service";
+import { MANDI_BENCHMARK_PRICES, type MandiPriceRecord } from "@/lib/market-service";
 import CropCompareCard from "@/features/recommendations/CropCompareCard";
 import SeasonalCropPlanningPanel, {
   type AllocatedSeasonalCrop,
