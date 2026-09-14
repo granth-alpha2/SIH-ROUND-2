@@ -34,3 +34,4 @@ pnpm-debug.log*
 .DS_Store
 *.pem
 *.tsbuildinfo
+*.exe

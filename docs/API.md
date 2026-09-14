@@ -49,3 +49,36 @@ are aggregate-only and use pseudonymous identifiers. Phone numbers, credentials,
 authentication data, biometrics, and government IDs are excluded from CSV exports
 and audit metadata.
 
+---
+
+## 3. Secondary Marketplace Endpoints (`frontend/src/app/api/marketplace/`)
+
+### Overview & Discovery
+* `GET /api/marketplace/overview`: Aggregated market snapshot, CACP MSP floors, mandi prices, and crop cards.
+
+### Mode A: Government MSP Procurement
+* `GET /api/marketplace/msp/centers`: Lists registered procurement centers (FCI, PUNGRAIN, HAFED, NAFED).
+* `GET /api/marketplace/msp/requests`: Lists MSP procurement requests filtered by farmer, status, or center.
+* `POST /api/marketplace/msp/requests`: Farmer submits MSP application linked to farm polygon and yield.
+* `GET /api/marketplace/msp/requests/[id]`: Fetches single MSP request detail.
+* `POST /api/marketplace/msp/approve`: Government officer approves request and issues cryptographically secure 12-digit code.
+* `POST /api/marketplace/msp/reject`: Rejects application with official remarks.
+* `POST /api/marketplace/msp/verify-code`: Validates 12-digit code at procurement center terminal.
+* `POST /api/marketplace/msp/biometric/verify`: Executes demo eye biometric identity verification.
+* `POST /api/marketplace/msp/procure`: Finalizes intake with actual weighbridge quantity, prints receipt, and initiates demo payment.
+
+### Mode B: Direct Farm-to-Market & Group Selling
+* `GET /api/marketplace/listings`: Search & filter direct listings by crop, district, max price, and min quantity.
+* `POST /api/marketplace/listings`: Farmer creates direct crop listing with asking price and quality grade.
+* `POST /api/marketplace/offers`: Private buyer makes offer on listing or adds to Request Basket.
+* `PATCH /api/marketplace/offers`: Farmer accepts or counters buyer offer, creating direct sale transaction.
+* `GET /api/marketplace/groups`: Lists active farmer pooling groups with compatibility scores.
+* `POST /api/marketplace/groups`: Creates new selling group or joins existing pool.
+
+### Export Gateway & Administration
+* `GET /api/marketplace/export/opportunities`: 10-country international trade reference prices from FAOSTAT / UN Comtrade.
+* `GET /api/marketplace/export/exporters`: Directory of licensed Indian agricultural exporting companies.
+* `POST /api/marketplace/export/match`: Submits aggregated group export proposal to verified Indian exporter.
+* `GET /api/marketplace/transactions`: Unified ledger of completed transactions, receipts, and payout statuses.
+* `GET /api/marketplace/admin/telemetry`: Administrative governance, fraud prevention, and volume metrics.
+

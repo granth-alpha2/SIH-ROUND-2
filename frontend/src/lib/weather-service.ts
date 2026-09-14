@@ -347,3 +347,5 @@ export async function getAgriWeather(
   }
 }
 
+export const fetchAgriWeather = getAgriWeather;
+

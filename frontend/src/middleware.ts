@@ -16,7 +16,10 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api/crops") ||
     pathname === "/schemes" ||
     pathname === "/knowledge" ||
+    pathname === "/soil" ||
+    pathname.startsWith("/soil") ||
     pathname === "/favicon.ico" ||
+
     pathname.endsWith(".svg") ||
     pathname.endsWith(".png") ||
     pathname.endsWith(".jpg") ||

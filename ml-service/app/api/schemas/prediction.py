@@ -58,3 +58,32 @@ class PriceForecastResponse(BaseModel):
     is_ml_forecast: bool
     mape_error_pct: Optional[float] = None
 
+
+class FertilizerPredictionRequest(BaseModel):
+    crop: str = Field("Wheat", example="Wheat")
+    ph: float = Field(7.2, example=7.2)
+    ec_ds_m: float = Field(0.8, example=0.8)
+    organic_carbon_pct: float = Field(0.55, example=0.55)
+    available_n_kg_ha: float = Field(240.0, example=240.0)
+    available_p_kg_ha: float = Field(14.0, example=14.0)
+    available_k_kg_ha: float = Field(180.0, example=180.0)
+    sulphur_ppm: float = Field(12.0, example=12.0)
+    zinc_ppm: float = Field(0.8, example=0.8)
+    iron_ppm: float = Field(6.0, example=6.0)
+    soil_texture: str = Field("Loam", example="Loam")
+    layer_number: int = Field(1, example=1)
+
+
+class FertilizerPredictionResponse(BaseModel):
+    crop: str
+    is_ml_predicted: bool
+    model_version: str
+    provenance: str
+    n_status: str
+    p_status: str
+    k_status: str
+    priority_nutrient: str
+    recommended_dosages_kg_per_acre: Dict[str, float]
+    advisory_flags: Dict[str, bool]
+
+

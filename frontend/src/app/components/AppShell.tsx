@@ -4,18 +4,22 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { DISTRICT_MASTER } from "@/lib/geo-service";
+import { useTranslation } from "@/lib/i18n/TranslationContext";
+import LanguageSelector from "./LanguageSelector";
+import PageAudioTranslator from "./PageAudioTranslator";
 
 // Top-level Navigation strictly required by Government UX specifications
 const TOP_NAV_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "My Farm", href: "/farms" },
-  { label: "Crop Information", href: "/crops" },
-  { label: "Market", href: "/markets" },
-  { label: "Weather", href: "/weather" },
-  { label: "Government Schemes", href: "/schemes" },
-  { label: "Agricultural Knowledge", href: "/knowledge" },
-  { label: "Reports", href: "/recommendations/plan" },
-  { label: "Help", href: "/assistant" },
+  { label: "Home", href: "/", key: "nav.home" },
+  { label: "My Farm", href: "/farms", key: "nav.farms" },
+  { label: "Marketplace", href: "/marketplace", key: "nav.marketplace" },
+  { label: "Crop Information", href: "/crops", key: "nav.crops" },
+  { label: "APMC Market", href: "/markets", key: "nav.markets" },
+  { label: "Weather", href: "/weather", key: "nav.weather" },
+  { label: "Government Schemes", href: "/schemes", key: "nav.schemes" },
+  { label: "Agricultural Knowledge", href: "/knowledge", key: "nav.knowledge" },
+  { label: "Reports", href: "/recommendations/plan", key: "nav.reports" },
+  { label: "Help", href: "/assistant", key: "nav.assistant" },
 ];
 
 const LANGUAGES = [
@@ -49,6 +53,7 @@ type UserInfo = {
 };
 
 export default function AppShell({ children, pageTitle }: AppShellProps) {
+  const { t, language, setLanguage } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<UserInfo | null>(null);
@@ -238,18 +243,31 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
     }
   }
 
-  const isDefaultName = !user?.name || user.name.startsWith("Farmer (") || user.name.includes("(+91");
-  const displayName = isDefaultName
-    ? user?.phone
-      ? `Farmer (+91 ${user.phone.slice(-4)})`
-      : "Farmer Portal Account"
-    : user?.name || "Farmer Portal Account";
+  const isGovt = user?.role === "government_buyer";
+  const isBuyer = user?.role === "private_buyer";
+  const isExporter = user?.role === "exporter";
+
+  let displayName = user?.name || "Farmer Account";
+  if (isGovt) {
+    displayName = user?.name || "Officer S. Sharma (FCI)";
+  } else if (isBuyer) {
+    displayName = user?.name || "AgroCorp Buyer";
+  } else if (isExporter) {
+    displayName = user?.name || "APEDA Exporter";
+  } else {
+    const isDefaultName = !user?.name || user.name.startsWith("Farmer (") || user.name.includes("(+91");
+    displayName = isDefaultName
+      ? user?.phone
+        ? `Farmer (+91 ${user.phone.slice(-4)})`
+        : "Farmer Portal Account"
+      : user?.name || "Farmer Portal Account";
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
       {/* 1. Skip Navigation Link for Accessibility */}
       <a href="#MainContent" className="skip-nav-link">
-        Skip to main content (मुख्य सामग्री पर जाएं)
+        {t("nav.skipToContent", "Skip to main content (मुख्य सामग्री पर जाएं)")}
       </a>
 
       {/* 2. Tricolor Government Identity Line */}
@@ -262,12 +280,15 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           <div className="flex items-center gap-2">
             <span className="text-emerald-400 font-semibold tracking-wide flex items-center gap-1.5 text-xs sm:text-sm">
               <span>🌱</span>
-              <span className="text-white font-bold">Empowering Farmers and Reducing Losses</span>
+              <span className="text-white font-bold">{t("topbar.tagline", "Empowering Farmers and Reducing Losses")}</span>
             </span>
           </div>
 
           {/* Accessibility, Theme & Multilingual Controls */}
           <div className="flex items-center gap-2.5 ml-auto flex-wrap">
+            {/* Audio Listen / Read-Aloud Button */}
+            <PageAudioTranslator compact />
+
             {/* Day / Night Mode Toggle */}
             <button
               type="button"
@@ -338,19 +359,8 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
               {highContrast ? "Normal Contrast" : "🌓 Contrast"}
             </button>
 
-            {/* Language Selector */}
-            <select
-              value={selectedLang}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              className="bg-slate-800 text-slate-100 border border-slate-700 rounded px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 cursor-pointer w-auto max-w-[130px] shrink-0"
-              aria-label="Select Portal Language"
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
+            {/* Global Multilingual Selector */}
+            <LanguageSelector compact />
           </div>
         </div>
       </header>
@@ -397,17 +407,25 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
               className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800"
               title="Edit account profile"
             >
-              <span className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-xs">
-                👤
+              <span className={`w-7 h-7 rounded-full font-black flex items-center justify-center text-xs ${
+                isGovt
+                  ? "bg-sky-100 text-sky-900"
+                  : isBuyer
+                  ? "bg-amber-100 text-amber-900"
+                  : isExporter
+                  ? "bg-indigo-100 text-indigo-900"
+                  : "bg-emerald-100 text-emerald-800"
+              }`}>
+                {isGovt ? "🏛️" : isBuyer ? "🏢" : isExporter ? "🚢" : "👤"}
               </span>
-              <span className="hidden sm:inline-block max-w-[130px] truncate">{displayName}</span>
+              <span className="hidden sm:inline-block max-w-[150px] truncate">{displayName}</span>
             </button>
 
             {/* Logout Button */}
             <button
               type="button"
               onClick={handleLogout}
-              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold"
+              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold cursor-pointer"
               title="Sign Out"
             >
               <span className="hidden sm:inline">Sign out</span>
@@ -426,6 +444,30 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           </div>
         </div>
       </div>
+
+      {/* Role-Specific Workstation Banner for Government Officers */}
+      {isGovt && (
+        <div className="bg-[#0b4d75] text-white py-2 px-4 sm:px-6 border-b border-[#083754]">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-amber-400 text-slate-950 font-black rounded text-[10px] uppercase tracking-wider">
+                🏛️ Official Mandi Workstation
+              </span>
+              <span className="font-semibold text-slate-100">
+                FCI / Civil Supplies Gate Terminal Active · Logged in as <strong>{displayName}</strong>
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/marketplace/government"
+                className="px-3 py-1 bg-white hover:bg-amber-300 text-slate-950 rounded-lg font-black text-xs transition-colors shadow-sm"
+              >
+                Open Verification Queue & Weighbridge →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 5. Main Desktop Navigation Bar (Strict Government Specification - NEVER hidden on desktop) */}
       <nav className="bg-[#0b4d75] text-white border-b border-[#083754] hidden lg:block sticky top-0 z-40 shadow-sm" aria-label="Main Navigation">
@@ -446,7 +488,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                         : "!text-white hover:!bg-[#094163] hover:!text-amber-200 border-transparent"
                     }`}
                   >
-                    {item.label}
+                    {t(item.key, item.label)}
                   </Link>
                 </li>
               );
@@ -460,7 +502,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5">
             <Link href="/" className="text-[#0b4d75] hover:underline font-semibold">
-              Home
+              {t("nav.home", "Home")}
             </Link>
             <span className="text-slate-400">/</span>
             <span className="font-bold text-slate-800">{pageTitle}</span>
@@ -507,7 +549,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                       isActive ? "bg-[#0b4d75] text-white" : "text-slate-800 hover:bg-slate-100"
                     }`}
                   >
-                    {item.label}
+                    {t(item.key, item.label)}
                   </Link>
                 );
               })}
@@ -558,10 +600,10 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           <span>Farm</span>
         </Link>
         <Link
-          href="/markets"
-          className={`flex flex-col items-center text-[11px] font-bold ${pathname.startsWith("/markets") ? "text-emerald-700" : "text-slate-600"}`}
+          href="/marketplace"
+          className={`flex flex-col items-center text-[11px] font-bold ${pathname.startsWith("/marketplace") ? "text-emerald-700" : "text-slate-600"}`}
         >
-          <span className="text-base">📊</span>
+          <span className="text-base">🏬</span>
           <span>Market</span>
         </Link>
         <Link

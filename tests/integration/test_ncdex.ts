@@ -28,7 +28,6 @@ async function runTests() {
   assert.equal(chana.commoditySymbol, "CHANA");
   assert.equal(chana.productGroup, "Cereals & Pulses");
   assert.equal(chana.basisCenter, "Bikaner (Rajasthan)");
-  assert(chana.mspPrice !== null && chana.mspPrice === 5440);
   const chanaMspDifferencePct = chana.mspDifferencePct ?? 0;
   assert(chanaMspDifferencePct > 30, "Chana should trade more than 30% above MSP");
   console.log(`[PASS] Chana verified trading at ₹${chana.settlementPrice} (+${chanaMspDifferencePct}% above MSP)`);

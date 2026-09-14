@@ -74,7 +74,36 @@ AgriProfit is an AI-powered agricultural decision-support platform designed for 
 * **Nginx:** Routes `/` to Next.js (`:3000`) and `/ml/` to FastAPI (`:8000`).
 * **Docker Compose:** Multi-container orchestration (`docker-compose.prod.yml`).
 
-## 3. Profitability Decision Architecture
+---
+
+## 3. Secondary Marketplace & Direct Farm-to-Market Module
+
+### A. Dual Channels
+1. **Mode A — MSP Government Procurement:**
+   - Farmer connects with verified Government Procurement Officers (FCI, PUNGRAIN, HAFED, NAFED).
+   - Price locked automatically from CACP statutory dataset (`OFFICIAL_MSP_CATALOG`).
+   - Generates cryptographically secure 12-digit numeric one-time transaction code.
+   - Verified on-site at procurement terminal using 12-digit code + Biometric Verification Adapter (`DemoBiometricProvider`).
+   - Weighed quantity determines final realization (`Actual Weight × Locked MSP`).
+   - Generates tamper-evident digital receipt and demo DBT/PFMS payment record.
+2. **Mode B — Direct Farm-to-Market & Group Selling:**
+   - Farmer lists crop produce independently with custom asking price and quality grade.
+   - Price intelligence engine displays transparent comparison against MSP floor, APMC mandi modal, and ML forecasted price.
+   - Private wholesale buyers negotiate via platform-mediated counter-offers and multi-item Request Baskets.
+   - Group Selling aggregates smallholder yields (e.g. 12q + 18q + 15q = 45q) with explainable compatibility scoring (0-100).
+3. **Export Gateway:**
+   - Farmers/Groups connect to registered Indian Exporters (not foreign buyers directly).
+   - International reference prices from FAOSTAT / UN Comtrade across 10 destination countries.
+   - Transparent cost calculation: `International Price - Logistics - Exporter Margin = Net Realization`.
+
+### B. Biometric Verification Adapter Architecture
+- Interface: `IBiometricProvider` with methods `verify()`, `getProviderReference()`, `getVerificationStatus()`.
+- Implementation: `DemoBiometricProvider` (UIDAI Iris Emulation v1.2).
+- Privacy: Never captures or stores raw iris scans, templates, or images. Only records cryptographic reference IDs, timestamps, and verification status. Clearly labeled as "Biometric Verification — Demo".
+
+---
+
+## 4. Profitability Decision Architecture
 
 The marketplace-to-profitability path reuses existing farm, crop, weather, MSP,
 market, and ML services. The deterministic cost engine normalizes units and
@@ -89,7 +118,9 @@ deterministic calculations, and external data are labeled separately. Failed or
 malformed ML responses produce an explicit unavailable signal, never a fabricated
 prediction.
 
-## 4. Model Registry and Transparency
+---
+
+## 5. Model Registry and Transparency
 
 The FastAPI service exposes model versions and valid evaluation metrics through
 `/health` and `/models/info`. Model metadata includes type, version, purpose,
@@ -99,7 +130,9 @@ improve a deployed model; future retraining requires governed export, LIVE/DEMO
 filtering, quality checks, time-based evaluation, approval, version registration,
 and controlled deployment.
 
-## 5. Marketplace Economics
+---
+
+## 6. Marketplace Economics
 
 Group economics models pooled quantity, buyer demand, shared transport savings,
 aggregation/handling/storage costs, realization, break-even, profit, and farmer
@@ -108,7 +141,9 @@ currency conversion, exporter offer, logistics, documentation, transport,
 indicative realization, break-even, profit, and execution risk. External inputs
 must expose source and freshness or reference-period metadata.
 
-## 6. Security, Privacy, and Demo Limits
+---
+
+## 7. Security, Privacy, and Demo Limits
 
 Private APIs authenticate sessions, authorize roles, and validate farm ownership.
 Admin views expose aggregate telemetry only. CSV exports pseudonymize farmer/farm

@@ -14,6 +14,7 @@ import { simulateCropFinancials, type SimulationResult } from "./simulation-engi
 import type { FarmerPreferenceRecord, RiskAppetite, ResourceLevel, SoilType } from "../app/api/preferences/repository";
 import type { AgriWeatherReport } from "./weather-service";
 import { predictYieldWithML } from "./ml-client";
+import { SoilLayerRecord, calculateSoilCropCompatibility } from "./soil-service";
 
 export type FactorScores = {
   weatherSuitability: number; // 0-100
@@ -103,6 +104,7 @@ export type RecommendationInput = {
   currentSeason?: CropSeason;
   preferences: FarmerPreferenceRecord;
   weather?: AgriWeatherReport;
+  soilLayers?: SoilLayerRecord[];
   context?: {
     farmerId?: string;
     farmId?: string;
@@ -230,8 +232,19 @@ function computeCostFit(crop: CropRecord, investmentCapacity: ResourceLevel = "M
 
 /**
  * 6. Calculate Soil Fit Score (0-100)
+ * Uses 3-layer root-zone compatibility model when soil layers are available
  */
-function computeSoilFit(crop: CropRecord, soilType?: SoilType, soilPh?: number): number {
+function computeSoilFit(
+  crop: CropRecord,
+  soilType?: SoilType,
+  soilPh?: number,
+  soilLayers?: SoilLayerRecord[]
+): number {
+  if (soilLayers && soilLayers.length > 0) {
+    const comp = calculateSoilCropCompatibility(soilLayers, crop.slug);
+    return comp.overallSoilScore;
+  }
+
   let score = 80;
   if (soilType && crop.suitableSoils.some((s) => s.toLowerCase().includes(soilType.toLowerCase()))) {
     score += 15;
@@ -247,6 +260,12 @@ function computeSoilFit(crop: CropRecord, soilType?: SoilType, soilPh?: number):
  */
 function generateCropExplanation(crop: CropRecord, score: number, factors: FactorScores, mspRecord?: MandiPriceRecord): string {
   const reasons: string[] = [];
+
+  if (factors.soilFit >= 85) {
+    reasons.push("Optimal 3-layer soil & root-zone profile compatibility");
+  } else if (factors.soilFit < 65) {
+    reasons.push("Moderate root-zone limitation detected in deeper soil layers");
+  }
 
   if (factors.mspSafety >= 90 && crop.economics.mspPricePerQuintal) {
     reasons.push(`Guaranteed Central Govt MSP safety floor (₹${crop.economics.mspPricePerQuintal}/q)`);
@@ -271,6 +290,7 @@ function generateCropExplanation(crop: CropRecord, score: number, factors: Facto
   return `${reasons.join(". ")}.`;
 }
 
+
 /**
  * Deterministically score a single crop against farmer preferences, weather, and market conditions.
  */
@@ -280,7 +300,8 @@ export function scoreSingleCrop(
   weather: AgriWeatherReport | undefined,
   mandi: MandiPriceRecord | undefined,
   allocatedAcres: number = 1.0,
-  mlYieldOverride?: number
+  mlYieldOverride?: number,
+  soilLayers?: SoilLayerRecord[]
 ): CropScoreOutput {
   const activeMandi = mandi || MANDI_BENCHMARK_PRICES.find((m) => m.cropSlug === crop.slug || m.cropId === crop.id);
 
@@ -289,7 +310,8 @@ export function scoreSingleCrop(
   const profitScore = computeProfitabilityScore(crop);
   const mspScore = computeMspSafetyScore(crop);
   const costFit = computeCostFit(crop, prefs.investmentCapacity);
-  const soilFit = computeSoilFit(crop, prefs.soilType, prefs.soilPh);
+  const soilFit = computeSoilFit(crop, prefs.soilType, prefs.soilPh, soilLayers);
+
 
   // Apply penalties for avoided crops or severe water mismatch
   let riskPenalty = 0;
@@ -455,8 +477,10 @@ export function generateRecommendations(input: RecommendationInput): Recommendat
       marketConditions: context.marketConditions,
     }).find((m) => m.cropSlug === crop.slug || m.cropId === crop.id);
 
-    return scoreSingleCrop(crop, prefs, weather, contextualMandi || MANDI_BENCHMARK_PRICES.find((m) => m.cropSlug === crop.slug || m.cropId === crop.id), 1.0);
+    const mandi = contextualMandi || MANDI_BENCHMARK_PRICES.find((m) => m.cropSlug === crop.slug || m.cropId === crop.id);
+    return scoreSingleCrop(crop, prefs, weather, mandi, 1.0, undefined, input.soilLayers);
   });
+
 
   // Sort candidate crops by deterministic score descending
   scoredCrops.sort((a, b) => b.score - a.score);
@@ -565,8 +589,9 @@ export async function generateRecommendationsWithML(input: RecommendationInput):
     } catch {
       // Fallback to static ICAR benchmark
     }
-    return scoreSingleCrop(crop, prefs, weather, mandi, 1.0, mlYield);
+    return scoreSingleCrop(crop, prefs, weather, mandi, 1.0, mlYield, input.soilLayers);
   });
+
 
   const scoredCrops = await Promise.all(scoredCropsPromises);
   scoredCrops.sort((a, b) => b.score - a.score);

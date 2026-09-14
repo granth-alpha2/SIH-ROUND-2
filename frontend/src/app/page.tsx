@@ -4,11 +4,33 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import AppShell from "./components/AppShell";
 import type { FarmRecord } from "./api/farms/repository";
+import { useTranslation } from "@/lib/i18n/TranslationContext";
+import { usePageAudioContent } from "@/lib/i18n/PageAudioRegistry";
+import LanguageSelector from "./components/LanguageSelector";
+import PageAudioTranslator from "./components/PageAudioTranslator";
 
 export default function Home() {
+  const { t } = useTranslation();
   const [farms, setFarms] = useState<FarmRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSourceModal, setShowSourceModal] = useState(false);
+
+  // Register clean readable audio summary for screen readers & TTS
+  usePageAudioContent({
+    title: t("dashboard.title", "Farmer Services & Farm Portfolio Dashboard"),
+    summary: t("dashboard.subtitle", "Official planning tools for land mapping, multivariate crop suitability scoring, mandi price monitoring, and ICAR package-of-practices advisory."),
+    sections: [
+      {
+        heading: t("dashboard.dataSources", "Data Sources"),
+        text: "Live Open-Meteo Weather, Static Agmarknet Mandi Benchmarks, CACP 2024-25 MSP Floors",
+      },
+      {
+        heading: t("dashboard.farmersCorner", "Farmers Corner / Quick Services"),
+        text: "Map New Farm Boundary, Calculate Crop Suitability, Government Schemes, Direct Market",
+      },
+    ],
+    dependencies: [farms.length],
+  });
 
   useEffect(() => {
     async function load() {
@@ -34,12 +56,12 @@ export default function Home() {
   const estimatedNetRevenue = Math.round(displayAcres * 22500).toLocaleString("en-IN");
 
   return (
-    <AppShell pageTitle="Farmer Services & Dashboard">
+    <AppShell pageTitle={t("dashboard.title", "Farmer Services & Dashboard")}>
       <div className="space-y-6">
-        {/* 1. Mandatory Data Source & Freshness Metadata Bar (Fix 3) */}
+        {/* 1. Mandatory Data Source & Freshness Metadata Bar */}
         <section className="p-4 bg-slate-50 border border-slate-200 rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs text-slate-700">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-bold text-slate-900">Data Sources:</span>
+            <span className="font-bold text-slate-900">{t("dashboard.dataSources", "Data Sources")}:</span>
             <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold">
               Live Open-Meteo Weather
             </span>
@@ -52,34 +74,42 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3 ml-auto">
-            <span className="text-slate-500">Last Synced: Today, 08:30 AM IST</span>
+            <span className="text-slate-500">{t("dashboard.lastSynced", "Last Synced: Today, 08:30 AM IST")}</span>
             <button
               type="button"
               onClick={() => setShowSourceModal(true)}
               className="text-[#0b4d75] font-bold underline hover:text-[#083754]"
             >
-              [View Source Provenance]
+              {t("dashboard.viewProvenance", "[View Source Provenance]")}
             </button>
           </div>
         </section>
 
-        {/* 2. Welcome & Government Portal Header */}
+        {/* 2. Welcome & Government Portal Header with Per-Page Language Switcher */}
         <header className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-1 bg-emerald-700 text-white rounded font-bold text-xs">
-              Kisan Seva Kendra | National Farmer Portal
-            </span>
-            <span className="text-xs font-semibold text-slate-500">
-              Rabi Season 2024–25 (Agricultural Year 2024-25)
-            </span>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-1 bg-emerald-700 text-white rounded font-bold text-xs">
+                {t("dashboard.kisanSeva", "Kisan Seva Kendra | National Farmer Portal")}
+              </span>
+              <span className="text-xs font-semibold text-slate-500">
+                {t("dashboard.season", "Rabi Season 2024–25 (Agricultural Year 2024-25)")}
+              </span>
+            </div>
+
+            {/* Per-Page Language & Audio Accessibility Controls (Section 6 Requirement) */}
+            <div className="flex items-center gap-2">
+              <PageAudioTranslator compact />
+              <LanguageSelector compact />
+            </div>
           </div>
 
           <div className="space-y-1">
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              Farmer Services & Farm Portfolio Dashboard
+              {t("dashboard.title", "Farmer Services & Farm Portfolio Dashboard")}
             </h1>
             <p className="text-slate-600 text-sm sm:text-base max-w-4xl leading-relaxed">
-              Official planning tools for land mapping, multivariate crop suitability scoring, mandi price monitoring, and ICAR package-of-practices advisory.
+              {t("dashboard.subtitle", "Official planning tools for land mapping, multivariate crop suitability scoring, mandi price monitoring, and ICAR package-of-practices advisory.")}
             </p>
           </div>
 
@@ -90,33 +120,33 @@ export default function Home() {
               className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-bold text-sm flex items-center gap-2 shadow-sm"
             >
               <span>🗺️</span>
-              <span>Map New Farm Boundary</span>
+              <span>{t("dashboard.mapFarm", "Map New Farm Boundary")}</span>
             </Link>
             <Link
               href="/recommendations"
               className="px-5 py-2.5 bg-[#0b4d75] hover:bg-[#083754] text-white rounded font-bold text-sm flex items-center gap-2 shadow-sm"
             >
               <span>🌾</span>
-              <span>Calculate Crop Suitability</span>
+              <span>{t("dashboard.cropSuitability", "Calculate Crop Suitability")}</span>
             </Link>
             <Link
               href="/schemes"
               className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded font-bold text-sm flex items-center gap-2"
             >
               <span>🏛️</span>
-              <span>Government Schemes</span>
+              <span>{t("dashboard.govSchemes", "Government Schemes")}</span>
             </Link>
           </div>
         </header>
 
-        {/* 3. Farmer Services Grid (PM-KISAN "Farmers Corner" pattern - Fix 2) */}
+        {/* 3. Farmer Services Grid (PM-KISAN "Farmers Corner" pattern) */}
         <section aria-labelledby="farmers-corner-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 id="farmers-corner-heading" className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <span className="text-emerald-700">🌱</span>
-              <span>Farmers Corner / त्वरित सेवाएं (Quick Services)</span>
+              <span>{t("dashboard.farmersCorner", "Farmers Corner / त्वरित सेवाएं (Quick Services)")}</span>
             </h2>
-            <span className="text-xs text-slate-500">Modeled on PM-KISAN Service Directory</span>
+            <span className="text-xs text-slate-500">{t("dashboard.farmersCornerSub", "Modeled on PM-KISAN Service Directory")}</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -340,6 +370,72 @@ export default function Home() {
           <p className="text-[11px] text-slate-500 italic pt-1">
             * Footnote: Returns are calculated using official ICAR Comprehensive Cost (C2) benchmarks and Agmarknet modal price estimates. Market realizations vary based on actual mandi arrivals and grain quality grades.
           </p>
+        </section>
+
+        {/* 5. My Marketplace Summary Widget (Prompt 43) */}
+        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-150 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🏬</span>
+                <h2 className="text-xl font-bold text-slate-900">
+                  My Marketplace & Selling Pipeline
+                </h2>
+              </div>
+              <p className="text-xs text-slate-500">
+                Live status of government MSP requests, private buyer offers, cooperative groups, and demo payments
+              </p>
+            </div>
+            <Link
+              href="/marketplace"
+              className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+            >
+              <span>Explore Marketplace →</span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Estimated Active Value</span>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-800">
+                ₹1,42,500
+              </div>
+              <p className="text-[11px] text-emerald-700 font-semibold">Across active harvest allocations</p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Direct Listings</span>
+              <div className="text-2xl sm:text-3xl font-black text-slate-900">
+                3 <span className="text-sm font-semibold text-slate-500">Active</span>
+              </div>
+              <p className="text-[11px] text-slate-600">Wheat, Mustard & Tomato</p>
+            </div>
+
+            <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Pending MSP Requests</span>
+              <div className="text-2xl sm:text-3xl font-black text-amber-800">
+                1 <span className="text-sm font-semibold text-slate-500">Pending</span>
+              </div>
+              <p className="text-[11px] text-amber-700 font-semibold">Wheat (35 quintals @ ₹2,275)</p>
+            </div>
+
+            <div className="p-4 bg-indigo-50/70 border border-indigo-200 rounded-lg space-y-1">
+              <span className="text-xs font-bold text-slate-500 uppercase">Cooperative & Export</span>
+              <div className="text-2xl sm:text-3xl font-black text-indigo-800">
+                2 <span className="text-sm font-semibold text-slate-500">Opportunities</span>
+              </div>
+              <p className="text-[11px] text-indigo-700 font-semibold">Wheat group pool + UAE exporter</p>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <span className="text-slate-600 font-medium">
+              🌾 Quick MSP Selling: Need statutory floor protection? Submit an application to Doraha / Ludhiana FCI silos.
+            </span>
+            <Link href="/marketplace/msp" className="text-emerald-700 font-bold hover:underline">
+              Submit MSP Application →
+            </Link>
+          </div>
         </section>
 
         {/* 5. Source Provenance Modal */}

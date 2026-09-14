@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "An explainable crop and farm profit planning workspace.",
 };
 
+import ClientProviders from "./components/ClientProviders";
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
@@ -30,19 +32,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 const ec = localStorage.getItem('agriprofit_eyecare') === 'true' || localStorage.getItem('agriprofit_theme') === 'eyecare';
                 const hc = localStorage.getItem('agriprofit_high_contrast') === 'true';
                 const fs = localStorage.getItem('agriprofit_font_size') || 'md';
+                const l = localStorage.getItem('agriprofit_lang') || 'en';
                 const t = hc ? 'high-contrast' : (ec ? m + '-eyecare' : m);
                 document.documentElement.setAttribute('data-theme', t);
                 document.documentElement.setAttribute('data-mode', m);
                 document.documentElement.setAttribute('data-eyecare', ec ? 'true' : 'false');
                 document.documentElement.setAttribute('data-contrast', hc ? 'high' : 'normal');
                 document.documentElement.setAttribute('data-font-size', fs);
+                document.documentElement.setAttribute('lang', l);
               } catch (e) {}
             `,
           }}
         />
       </head>
 
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ClientProviders>{children}</ClientProviders>
+      </body>
     </html>
   );
 }

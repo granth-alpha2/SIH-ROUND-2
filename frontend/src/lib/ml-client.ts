@@ -183,3 +183,79 @@ export async function forecastPriceWithML(
   return null;
 }
 
+export type MLPredictFertilizerParams = {
+  crop: string;
+  ph?: number;
+  ec_ds_m?: number;
+  organic_carbon_pct?: number;
+  available_n_kg_ha?: number;
+  available_p_kg_ha?: number;
+  available_k_kg_ha?: number;
+  sulphur_ppm?: number;
+  zinc_ppm?: number;
+  iron_ppm?: number;
+  soil_texture?: string;
+  layer_number?: number;
+};
+
+export type MLFertilizerResult = {
+  crop: string;
+  is_ml_predicted: boolean;
+  model_version: string;
+  provenance: string;
+  n_status: string;
+  p_status: string;
+  k_status: string;
+  priority_nutrient: string;
+  recommended_dosages_kg_per_acre: {
+    urea: number;
+    dap: number;
+    mop: number;
+    ssp: number;
+    zinc_sulphate: number;
+  };
+  advisory_flags: {
+    high_salinity: boolean;
+    alkaline_ph: boolean;
+    acidic_ph: boolean;
+    low_organic_carbon: boolean;
+  };
+};
+
+/**
+ * Predict fertilizer dosage and nutrient status using trained Random Forest models
+ */
+export async function predictFertilizerWithML(
+  params: MLPredictFertilizerParams
+): Promise<MLFertilizerResult | null> {
+  try {
+    const res = await fetch(`${ML_BASE_URL}/predict/fertilizer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(2000),
+      body: JSON.stringify({
+        crop: params.crop,
+        ph: params.ph ?? 7.2,
+        ec_ds_m: params.ec_ds_m ?? 0.8,
+        organic_carbon_pct: params.organic_carbon_pct ?? 0.55,
+        available_n_kg_ha: params.available_n_kg_ha ?? 240.0,
+        available_p_kg_ha: params.available_p_kg_ha ?? 14.0,
+        available_k_kg_ha: params.available_k_kg_ha ?? 180.0,
+        sulphur_ppm: params.sulphur_ppm ?? 12.0,
+        zinc_ppm: params.zinc_ppm ?? 0.8,
+        iron_ppm: params.iron_ppm ?? 6.0,
+        soil_texture: params.soil_texture ?? "Loam",
+        layer_number: params.layer_number ?? 1,
+      }),
+    });
+
+    if (res.ok) {
+      return (await res.json()) as MLFertilizerResult;
+    }
+  } catch {
+    // Graceful fallback
+  }
+  return null;
+}
+
+

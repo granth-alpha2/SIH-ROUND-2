@@ -62,7 +62,43 @@ CREATE TABLE farms (
 CREATE INDEX idx_farms_boundary ON farms USING GIST(boundary);
 ```
 
-## 3. Profitability, Model, and Audit Entities
+---
+
+## 3. Secondary Marketplace Tables (Migration 005)
+
+### `procurement_centers`
+Official government procurement depots (FCI, PUNGRAIN, HAFED, NAFED) with contact, coordinates, and district linkage.
+
+### `msp_procurement_requests`
+Farmer MSP selling declarations with locked statutory MSP rates, requested quantities, and lifecycle states (`PENDING` -> `APPROVED` -> `ARRIVED` -> `BIOMETRIC_VERIFIED` -> `COMPLETED`).
+
+### `msp_authorization_codes`
+Cryptographic 12-digit numeric one-time transaction codes (`^[0-9]{12}$`) tied to request, farmer, and center, with expiry and single-use consumption flags.
+
+### `msp_verification_events`
+Audit logs of biometric verification events storing provider references, timestamps, and status without raw biometric data.
+
+### `marketplace_listings`
+Direct farmer-to-buyer produce listings with asking prices, quality grades, delivery terms, and real-time comparison vs MSP and ML expected prices.
+
+### `marketplace_offers`
+Private buyer purchase offers, counter-offers, and acceptance status.
+
+### `marketplace_groups` & `marketplace_group_members`
+Farmer cooperative aggregation groups pooling smallholder quantities with explainable compatibility scores.
+
+### `marketplace_exporters` & `marketplace_export_matches`
+Registered Indian exporter directory (APEDA & IEC validated) and group export proposals.
+
+### `marketplace_transactions`
+Unified ledger of completed MSP and direct marketplace transactions, digital receipts, and demo DBT payment records.
+
+### `marketplace_audit_logs`
+Immutable compliance and security audit logs tracking every event, actor, role, and metadata snapshot.
+
+---
+
+## 4. Profitability, Model, and Audit Entities
 
 Migration `006_profitability_and_model_audit.sql` adds only missing persistence
 entities. Existing farms, users, crops, market prices, MSP, weather, and forecast
@@ -79,7 +115,9 @@ model, market, scenario, result, outcome, and export actions. Audit rows contain
 event, actor, timestamp, analysis ID, model version, source, and non-sensitive
 metadata only. Owner/RBAC checks protect private profitability and outcome data.
 
-## 4. Data Governance and Retraining
+---
+
+## 5. Data Governance and Retraining
 
 Provider data carries source type, `LIVE`/`DEMO` origin, and effective/fetch time.
 CSV generation pseudonymizes farmer/farm references and strips contact,

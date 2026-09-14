@@ -10,12 +10,12 @@ Serves trained machine learning models for:
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .api.routes import health, yield_routes, price_routes
+from .api.routes import health, yield_routes, price_routes, fertilizer_routes
 from .utils.config import PORT, HOST
 
 app = FastAPI(
     title="AgriProfit ML Inference Microservice",
-    description="Production-grade AI/ML service for Indian agricultural yield prediction and price forecasting.",
+    description="Production-grade AI/ML service for Indian agricultural yield prediction, price forecasting, and soil fertilizer optimization.",
     version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -34,6 +34,8 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(yield_routes.router)
 app.include_router(price_routes.router)
+app.include_router(fertilizer_routes.router)
+
 
 
 @app.get("/")
