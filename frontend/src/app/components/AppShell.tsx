@@ -7,19 +7,18 @@ import { DISTRICT_MASTER } from "@/lib/geo-service";
 import { useTranslation } from "@/lib/i18n/TranslationContext";
 import LanguageSelector from "./LanguageSelector";
 import PageAudioTranslator from "./PageAudioTranslator";
+import PortalBreadcrumb from "./PortalBreadcrumb";
 
-// Top-level Navigation strictly required by Government UX specifications
+// Top-level Navigation strictly structured as Government Service Pillars
 const TOP_NAV_ITEMS = [
   { label: "Home", href: "/", key: "nav.home" },
-  { label: "My Farm", href: "/farms", key: "nav.farms" },
-  { label: "Marketplace", href: "/marketplace", key: "nav.marketplace" },
-  { label: "Crop Information", href: "/crops", key: "nav.crops" },
-  { label: "APMC Market", href: "/markets", key: "nav.markets" },
-  { label: "Weather", href: "/weather", key: "nav.weather" },
-  { label: "Government Schemes", href: "/schemes", key: "nav.schemes" },
-  { label: "Agricultural Knowledge", href: "/knowledge", key: "nav.knowledge" },
-  { label: "Reports", href: "/recommendations/plan", key: "nav.reports" },
-  { label: "Help", href: "/assistant", key: "nav.assistant" },
+  { label: "Farm Services", href: "/farm", key: "nav.farm" },
+  { label: "Crop Services", href: "/crop-services", key: "nav.cropServices" },
+  { label: "Market Services", href: "/market-services", key: "nav.marketServices" },
+  { label: "Reports & Records", href: "/reports", key: "nav.reports" },
+  { label: "Schemes", href: "/schemes", key: "nav.schemes" },
+  { label: "Knowledge Base", href: "/knowledge", key: "nav.knowledge" },
+  { label: "AI Agronomist", href: "/assistant", key: "nav.assistant" },
 ];
 
 const LANGUAGES = [
@@ -497,18 +496,14 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
         </div>
       </nav>
 
-      {/* 6. Breadcrumbs Trail & Context Bar */}
+      {/* 6. Deep Government Portal Breadcrumbs Trail & Context Bar */}
       <div className="bg-slate-100 border-b border-slate-200 py-2 px-4 sm:px-6 text-xs text-slate-600">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5">
-            <Link href="/" className="text-[#0b4d75] hover:underline font-semibold">
-              {t("nav.home", "Home")}
-            </Link>
-            <span className="text-slate-400">/</span>
-            <span className="font-bold text-slate-800">{pageTitle}</span>
-          </nav>
+          <div className="flex-1 min-w-[280px]">
+            <PortalBreadcrumb />
+          </div>
 
-          <div className="text-slate-500 hidden sm:flex items-center gap-3">
+          <div className="text-slate-500 hidden sm:flex items-center gap-3 shrink-0">
             <span>📅 As on: {new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
             <span>•</span>
             <span className="text-emerald-700 font-semibold">● Portal Operational</span>
