@@ -522,11 +522,11 @@ export default function RecommendationDashboard() {
         sellingPricePerQuintal: simPrice,
         totalCost: simResult.totalEstimatedCost,
         baseScenarioYields: [
-          Math.max(0, simYield - 12),
-          Math.max(0, simYield - 6),
-          simYield,
-          simYield + 6,
-          simYield + 12,
+          Math.max(0.1, Number((simYield * 0.6).toFixed(1))),
+          Math.max(0.2, Number((simYield * 0.8).toFixed(1))),
+          Number(simYield.toFixed(1)),
+          Number((simYield * 1.15).toFixed(1)),
+          Number((simYield * 1.3).toFixed(1)),
         ],
       }),
     [simPrice, simResult.totalEstimatedCost, simYield]
@@ -2395,8 +2395,8 @@ export default function RecommendationDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {priceSensitivityScenarios.map((scenario) => (
-                      <tr key={scenario.price} className="border-t border-slate-200">
+                    {priceSensitivityScenarios.map((scenario, idx) => (
+                      <tr key={`price-${idx}-${scenario.price}`} className="border-t border-slate-200">
                         <td className="px-4 py-3 font-semibold text-slate-900">₹{Math.round(scenario.price).toLocaleString("en-IN")}/q</td>
                         <td className="px-4 py-3">₹{Math.round(scenario.revenue).toLocaleString("en-IN")}</td>
                         <td className={`px-4 py-3 font-bold ${scenario.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
@@ -2442,8 +2442,8 @@ export default function RecommendationDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {yieldSensitivityScenarios.map((scenario) => (
-                      <tr key={scenario.yieldQuintals} className="border-t border-slate-200">
+                    {yieldSensitivityScenarios.map((scenario, idx) => (
+                      <tr key={`yield-${idx}-${scenario.yieldQuintals}`} className="border-t border-slate-200">
                         <td className="px-4 py-3 font-semibold text-slate-900">{scenario.yieldQuintals.toFixed(0)} q</td>
                         <td className="px-4 py-3">₹{Math.round(scenario.revenue).toLocaleString("en-IN")}</td>
                         <td className={`px-4 py-3 font-bold ${scenario.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
@@ -2489,8 +2489,8 @@ export default function RecommendationDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {costSensitivityScenarios.map((scenario) => (
-                      <tr key={scenario.label} className="border-t border-slate-200">
+                    {costSensitivityScenarios.map((scenario, idx) => (
+                      <tr key={`cost-${idx}-${scenario.label}`} className="border-t border-slate-200">
                         <td className="px-4 py-3 font-semibold text-slate-900">{scenario.label}</td>
                         <td className="px-4 py-3">₹{Math.round(scenario.breakEvenPrice).toLocaleString("en-IN")}/q</td>
                         <td className={`px-4 py-3 font-bold ${scenario.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>

@@ -357,12 +357,19 @@ export function buildYieldSensitivityScenarios({
   const sellingPrice = Number.isFinite(sellingPricePerQuintal) ? Math.max(0, sellingPricePerQuintal) : 0;
   const cost = Number.isFinite(totalCost) ? Math.max(0, totalCost) : 0;
 
-  const yields = baseScenarioYields && baseScenarioYields.length > 0
-    ? baseScenarioYields
-    : [referenceYield - 10, referenceYield - 5, referenceYield, referenceYield + 5, referenceYield + 10];
+  const defaultYields = [
+    Math.max(0.1, Number((referenceYield * 0.6).toFixed(1))),
+    Math.max(0.2, Number((referenceYield * 0.8).toFixed(1))),
+    Number(referenceYield.toFixed(1)),
+    Number((referenceYield * 1.15).toFixed(1)),
+    Number((referenceYield * 1.3).toFixed(1)),
+  ];
 
-  return yields.map((yieldQuintals) => {
-    const normalizedYield = Math.max(0, Number(yieldQuintals) || 0);
+  const rawYields = baseScenarioYields && baseScenarioYields.length > 0 ? baseScenarioYields : defaultYields;
+  const uniqueYields = Array.from(new Set(rawYields.map((y) => Math.max(0, Number(y) || 0))));
+
+  return uniqueYields.map((yieldQuintals) => {
+    const normalizedYield = yieldQuintals;
     const revenue = Number((normalizedYield * sellingPrice).toFixed(2));
     const profit = Number((revenue - cost).toFixed(2));
     const margin = revenue > 0 ? Number(((profit / revenue) * 100).toFixed(2)) : 0;
