@@ -1,289 +1,333 @@
 "use client";
 
 import React, { useState } from "react";
-import { MarketplaceUserRole } from "@/lib/marketplace-types";
+import {
+  REGISTERED_GOVERNMENT_OFFICERS,
+  REGISTERED_EXPORTERS,
+  OfficialOfficerRecord,
+  OfficialExporterRecord,
+} from "@/lib/official-credentials";
 
 type BilateralStationClearanceProps = {
   stationType: "government" | "exporter";
   onAuthorized: () => void;
 };
 
-const DEMO_OFFICERS = [
-  {
-    name: "Officer S. Sharma",
-    phone: "9876500001",
-    designation: "Food Corporation of India (FCI) · Mandi In-Charge",
-    badge: "FCI-PB-994",
-    center: "Khanna Grain Hub / Doraha Silo (#PB-LDH-01)",
-    role: "government_buyer" as MarketplaceUserRole,
-  },
-  {
-    name: "Inspector R. K. Verma",
-    phone: "9876500002",
-    designation: "State Civil Supplies (PUNGRAIN) · Chief Weighbridge Inspector",
-    badge: "PUNG-LDH-042",
-    center: "Ludhiana Central Mandi Yard (#PB-LDH-02)",
-    role: "government_buyer" as MarketplaceUserRole,
-  },
-];
-
-const DEMO_EXPORTERS = [
-  {
-    name: "Sun Agri Exports Pvt Ltd",
-    phone: "9876500005",
-    designation: "APEDA Verified Agricultural Exporter (Category-A)",
-    badge: "APEDA/2023/DEL/9981",
-    center: "Middle East & EU Trade Desk",
-    role: "exporter" as MarketplaceUserRole,
-  },
-  {
-    name: "Bharat Global Trade Hub",
-    phone: "9876500006",
-    designation: "Directorate General of Foreign Trade (DGFT) Licensed",
-    badge: "IEC: 0519928341",
-    center: "Nhava Sheva Port Export Terminal",
-    role: "exporter" as MarketplaceUserRole,
-  },
-];
-
 export default function BilateralStationClearance({
   stationType,
   onAuthorized,
 }: BilateralStationClearanceProps) {
-  const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Manual login states
-  const [customPhone, setCustomPhone] = useState(stationType === "government" ? "9876500001" : "9876500005");
-  const [customOtp, setCustomOtp] = useState("123456");
-  const [customName, setCustomName] = useState(stationType === "government" ? "Officer S. Sharma" : "Sun Agri Exports");
-
-  const profiles = stationType === "government" ? DEMO_OFFICERS : DEMO_EXPORTERS;
   const isGovt = stationType === "government";
 
-  async function executeAuthorize(phone: string, otp: string, name: string, role: MarketplaceUserRole) {
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [showReference, setShowReference] = useState(true);
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!identifier.trim()) {
+      setError(
+        isGovt
+          ? "Please enter your Official Government Officer ID / Employee Code."
+          : "Please enter your APEDA / DGFT IEC Registration Code."
+      );
+      return;
+    }
+    if (!password.trim()) {
+      setError("Please enter your Official Security Password.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setSuccessMsg(null);
 
     try {
-      // 1. Dispatch send-otp to seed cache
-      await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      }).catch(() => null);
-
-      // 2. Direct bilateral authorization via OTP verification endpoint
-      const res = await fetch("/api/auth/verify-otp", {
+      const res = await fetch("/api/auth/portal-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          phone,
-          otp,
-          name,
-          role,
+          portalType: stationType,
+          identifier: identifier.trim(),
+          password: password.trim(),
         }),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setSuccessMsg(`Station clearance verified for ${name}. Opening workstation...`);
-        onAuthorized();
+        const userName = data.user?.name || (isGovt ? "Officer" : "Exporter");
+        setSuccessMsg(`Official Security Clearance Verified. Welcome, ${userName}. Launching console...`);
         setTimeout(() => {
-          window.location.reload();
-        }, 400);
+          onAuthorized();
+        }, 600);
       } else {
-        setError(data?.error?.message || "Failed to establish bilateral station session.");
+        setError(data?.error?.message || "Authentication failed. Invalid ID or Password.");
       }
     } catch {
-      setError("Network error while connecting to bilateral authorization gateway.");
+      setError("Network error while communicating with the official authentication authority.");
     } finally {
       setLoading(false);
     }
   }
 
-  function handleQuickAuthorize(profile: (typeof profiles)[0]) {
-    executeAuthorize(profile.phone, "123456", profile.name, profile.role);
+  function handleAutoFillOfficer(officer: OfficialOfficerRecord) {
+    setIdentifier(officer.id);
+    setPassword(officer.password);
+    setError(null);
+    setSuccessMsg(null);
   }
 
-  function handleManualLogin(e: React.FormEvent) {
-    e.preventDefault();
-    if (!customPhone || customPhone.length < 10) {
-      setError("Please enter a valid 10-digit mobile number.");
-      return;
-    }
-    if (!customOtp || customOtp.length < 4) {
-      setError("Please enter a valid OTP code (or default demo key 123456).");
-      return;
-    }
-    const role: MarketplaceUserRole = isGovt ? "government_buyer" : "exporter";
-    executeAuthorize(customPhone, customOtp, customName, role);
+  function handleAutoFillExporter(exporter: OfficialExporterRecord) {
+    setIdentifier(exporter.id);
+    setPassword(exporter.password);
+    setError(null);
+    setSuccessMsg(null);
   }
 
   return (
-    <div className="max-w-2xl mx-auto my-6 p-6 sm:p-8 bg-white border-2 border-slate-300 rounded-3xl shadow-xl space-y-6 font-sans">
-      {/* Official National Emblem & Security Header */}
-      <div className="text-center space-y-2 border-b border-slate-200 pb-5">
-        <div className="text-4xl">{isGovt ? "🏛️" : "🚢"}</div>
-        <div className="space-y-1">
-          <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border ${
-            isGovt
-              ? "bg-sky-100 text-sky-900 border-sky-300"
-              : "bg-indigo-100 text-indigo-900 border-indigo-300"
-          }`}>
-            🔒 Bilateral Secure Workstation Clearance
-          </span>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            {isGovt
-              ? "Government Procurement Officer Terminal"
-              : "APEDA Exporter Trade Terminal"}
-          </h2>
-          <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
-            {isGovt
-              ? "This window is isolated from public farmer listings to ensure tamper-proof Mandi gate verification, UIDAI iris biometric authentication, and PFMS DBT fund disbursements."
-              : "Restricted international trade portal for APEDA-registered export houses, containerized aggregate buying, and foreign trade realization settlements."}
+    <div className="max-w-2xl mx-auto my-8 space-y-6 font-sans">
+      {/* Official Government / Trade Authority Box */}
+      <div className="bg-white border-2 border-slate-300 rounded-3xl shadow-xl overflow-hidden">
+        {/* National Header Banner */}
+        <div className={`p-6 sm:p-8 text-white ${
+          isGovt
+            ? "bg-gradient-to-r from-[#0b3b59] via-[#0b4d75] to-[#082a40]"
+            : "bg-gradient-to-r from-indigo-950 via-indigo-900 to-slate-900"
+        }`}>
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-3xl">{isGovt ? "🏛️" : "🚢"}</span>
+                <span className="px-2.5 py-0.5 bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider rounded-md">
+                  {isGovt ? "Official Government Terminal" : "APEDA Exporter Gateway"}
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight">
+                {isGovt
+                  ? "Food Corporation of India (FCI) Procurement Console"
+                  : "APEDA & DGFT International Trade Gateway"}
+              </h2>
+              <p className="text-xs text-slate-200 leading-relaxed max-w-lg">
+                {isGovt
+                  ? "Ministry of Consumer Affairs, Food & Public Distribution · Official Mandi Procurement, Weighbridge Intake & DBT Disbursement Gateway."
+                  : "Directorate General of Foreign Trade · Agricultural & Processed Food Products Export Development Authority Trade Terminal."}
+              </p>
+            </div>
+            <div className="hidden sm:block text-right">
+              <span className="px-2 py-1 bg-white/10 rounded text-[10px] font-mono text-amber-200 block">
+                {isGovt ? "FCI-SECURE-V4" : "DGFT-APEDA-GATEWAY"}
+              </span>
+              <span className="text-[10px] text-slate-300">256-Bit Encrypted</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Security Notice */}
+        <div className="bg-amber-50 border-y border-amber-200 px-6 py-3 flex items-start gap-2.5 text-xs text-amber-900">
+          <span className="text-sm shrink-0">⚠️</span>
+          <p className="leading-snug">
+            <strong>Restricted Access Notice:</strong> Access is permitted solely to authorized{" "}
+            {isGovt ? "FCI Mandi Officers & State Civil Supplies Inspectors" : "APEDA-licensed Trade Desks"}
+            . Authentication with official registered ID and security password is required.
           </p>
         </div>
-      </div>
 
-      {error && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2">
-          <span>⚠️</span>
-          <span>{error}</span>
-        </div>
-      )}
-
-      {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
-          <span>✅</span>
-          <span>{successMsg}</span>
-        </div>
-      )}
-
-      {/* 1-Tap Bilateral Authorization Profiles for SIH Demo */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-700">
-            Method 1: Instant 1-Click Station Clearance
-          </span>
-          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-            SIH Demo Master Key Pre-Configured
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          {profiles.map((p) => (
-            <div
-              key={p.phone}
-              className={`p-4 rounded-2xl border-2 transition-all flex flex-wrap items-center justify-between gap-3 ${
-                isGovt
-                  ? "bg-slate-50 hover:bg-sky-50/50 border-slate-200 hover:border-sky-500"
-                  : "bg-slate-50 hover:bg-indigo-50/50 border-slate-200 hover:border-indigo-500"
-              }`}
-            >
-              <div className="space-y-1 max-w-sm">
-                <div className="flex items-center gap-2">
-                  <strong className="text-sm font-black text-slate-900">{p.name}</strong>
-                  <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-mono font-bold text-slate-700">
-                    {p.badge}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-600 font-medium">{p.designation}</p>
-                <p className="text-[11px] text-slate-400 font-medium">Station: {p.center}</p>
+        {/* Login Form */}
+        <form onSubmit={handleLogin} className="p-6 sm:p-8 space-y-5">
+          {error && (
+            <div className="p-4 rounded-2xl bg-rose-50 border-2 border-rose-200 text-rose-900 text-xs font-bold flex items-start gap-3 animate-in fade-in">
+              <span className="text-base shrink-0">🚫</span>
+              <div className="space-y-0.5">
+                <p className="font-black text-rose-950">AUTHENTICATION REJECTED</p>
+                <p className="font-normal text-rose-800">{error}</p>
               </div>
-
-              <button
-                type="button"
-                onClick={() => handleQuickAuthorize(p)}
-                disabled={loading}
-                className={`px-4 py-2.5 rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 cursor-pointer shrink-0 disabled:opacity-50 ${
-                  isGovt
-                    ? "bg-[#0b4d75] hover:bg-[#083754] text-white"
-                    : "bg-indigo-700 hover:bg-indigo-800 text-white"
-                }`}
-              >
-                <span>🔑</span>
-                <span>{loading ? "Verifying..." : `Authorize as ${p.name.split(" ")[0]}`}</span>
-              </button>
             </div>
-          ))}
-        </div>
-      </div>
+          )}
 
-      {/* Method 2: Manual Phone & OTP Authentication */}
-      <div className="border-t border-slate-200 pt-5 space-y-3">
-        <span className="text-xs font-black uppercase tracking-wider text-slate-700">
-          Method 2: Custom Station Login (Phone & OTP)
-        </span>
-        <form onSubmit={handleManualLogin} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold text-slate-600 uppercase">
-                Officer / Organization Name
+          {successMsg && (
+            <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 text-emerald-900 text-xs font-bold flex items-start gap-3 animate-in fade-in">
+              <span className="text-base shrink-0">✅</span>
+              <div>
+                <p className="font-black text-emerald-950">IDENTITY VERIFIED</p>
+                <p className="font-normal text-emerald-800">{successMsg}</p>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {/* ID Input */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-700">
+                {isGovt ? "1. Official Officer ID / Employee Code" : "1. APEDA / DGFT IEC Registration Code"}
               </label>
-              <input
-                type="text"
-                value={customName}
-                onChange={(e) => setCustomName(e.target.value)}
-                placeholder="e.g. Officer S. Sharma"
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900"
-              />
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">
+                  {isGovt ? "🪪" : "📄"}
+                </span>
+                <input
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder={isGovt ? "e.g. FCI-PB-994 or PUNG-LDH-042" : "e.g. IEC-0519928341 or APEDA/2023/DEL/9981"}
+                  autoComplete="username"
+                  required
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#0b4d75] transition-all"
+                />
+              </div>
+              <p className="text-[11px] text-slate-400">
+                {isGovt
+                  ? "Enter your gazetted FCI officer identification code or Mandi station ID."
+                  : "Enter your 10-digit DGFT Import Export Code (IEC) or APEDA License."}
+              </p>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold text-slate-600 uppercase">
-                Registered Mobile Number
+            {/* Password Input */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-700">
+                {isGovt ? "2. Official Security Password / Mandi Key" : "2. Trade Desk Security Password"}
               </label>
-              <input
-                type="text"
-                value={customPhone}
-                onChange={(e) => setCustomPhone(e.target.value)}
-                placeholder="10-digit mobile number"
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 font-mono"
-              />
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">
+                  🔑
+                </span>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={isGovt ? "Enter Official FCI Security Password" : "Enter Corporate Trade Password"}
+                  autoComplete="current-password"
+                  required
+                  className="w-full pl-10 pr-12 py-3 bg-slate-50 border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-[#0b4d75] transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500 hover:text-slate-700 cursor-pointer"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Encrypted with SHA-256 session tokens. Never share government passwords.
+              </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <div className="space-y-1 flex-1 min-w-[150px]">
-              <label className="text-[11px] font-bold text-slate-600 uppercase">
-                Security OTP Code (Demo Key: 123456)
-              </label>
-              <input
-                type="text"
-                value={customOtp}
-                onChange={(e) => setCustomOtp(e.target.value)}
-                placeholder="123456"
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 font-mono tracking-widest"
-              />
-            </div>
-
-            <div className="self-end">
-              <button
-                type="submit"
-                disabled={loading}
-                className={`px-5 py-2.5 rounded-xl text-xs font-black text-white shadow-md transition-all cursor-pointer disabled:opacity-50 ${
-                  isGovt ? "bg-emerald-700 hover:bg-emerald-800" : "bg-indigo-700 hover:bg-indigo-800"
-                }`}
-              >
-                {loading ? "Authenticating..." : "Login to Terminal ➔"}
-              </button>
-            </div>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3.5 px-5 rounded-2xl font-black text-sm text-white shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${
+              isGovt
+                ? "bg-[#0b4d75] hover:bg-[#083754] active:scale-[0.99]"
+                : "bg-indigo-700 hover:bg-indigo-800 active:scale-[0.99]"
+            }`}
+          >
+            <span>{loading ? "⏳" : "🔒"}</span>
+            <span>
+              {loading
+                ? "Verifying Official Credentials..."
+                : isGovt
+                ? "Authenticate & Unlock FCI Mandi Terminal"
+                : "Verify IEC License & Unlock Trade Desk"}
+            </span>
+          </button>
         </form>
       </div>
 
-      <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-500 space-y-1">
-        <p className="font-semibold text-slate-700">
-          💻 Dual-Laptop Showcase Setup:
-        </p>
-        <p className="text-[11px] text-slate-500">
-          <strong>Laptop 1 (Farmer):</strong> Open <code className="bg-slate-200 px-1 py-0.5 rounded text-slate-800">/marketplace/msp</code> to view layered application milestones & 12-digit gate pass.
-          <br />
-          <strong>Laptop 2 (Govt Officer):</strong> Open <code className="bg-slate-200 px-1 py-0.5 rounded text-slate-800">/marketplace/government</code>, authorize as Officer Sharma, and execute gate verification.
-        </p>
+      {/* Official Demo Credentials Reference (For SIH Evaluator & Demonstration Convenience) */}
+      <div className="bg-slate-50 border border-slate-300 rounded-2xl p-5 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-base">📋</span>
+            <div>
+              <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                Official Registered Directory & Test Credentials
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Authorized credentials for evaluation and demonstration. Click "Auto-Fill" to test the ID & Password authentication.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowReference(!showReference)}
+            className="text-xs font-bold text-[#0b4d75] hover:underline cursor-pointer"
+          >
+            {showReference ? "Hide Reference" : "Show Reference"}
+          </button>
+        </div>
+
+        {showReference && (
+          <div className="grid gap-3 pt-2">
+            {isGovt ? (
+              REGISTERED_GOVERNMENT_OFFICERS.map((officer) => (
+                <div
+                  key={officer.id}
+                  className="p-3.5 bg-white border border-slate-200 rounded-xl flex flex-wrap items-center justify-between gap-3 hover:border-sky-400 transition-all"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <strong className="text-xs font-black text-slate-900">{officer.name}</strong>
+                      <span className="px-2 py-0.5 bg-sky-50 text-sky-800 border border-sky-200 rounded text-[10px] font-mono font-bold">
+                        ID: {officer.id}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 font-medium">
+                      {officer.designation} · {officer.stationName}
+                    </p>
+                    <p className="text-[11px] font-mono text-slate-500">
+                      Password: <span className="text-emerald-700 font-bold bg-slate-100 px-1.5 py-0.5 rounded">{officer.password}</span>
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAutoFillOfficer(officer)}
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-sky-100 text-[#0b4d75] hover:text-[#083754] rounded-lg text-xs font-bold border border-slate-300 transition-all cursor-pointer shrink-0 flex items-center gap-1.5"
+                  >
+                    <span>⚡</span>
+                    <span>Auto-Fill Credentials</span>
+                  </button>
+                </div>
+              ))
+            ) : (
+              REGISTERED_EXPORTERS.map((exporter) => (
+                <div
+                  key={exporter.id}
+                  className="p-3.5 bg-white border border-slate-200 rounded-xl flex flex-wrap items-center justify-between gap-3 hover:border-indigo-400 transition-all"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <strong className="text-xs font-black text-slate-900">{exporter.name}</strong>
+                      <span className="px-2 py-0.5 bg-indigo-50 text-indigo-800 border border-indigo-200 rounded text-[10px] font-mono font-bold">
+                        IEC: {exporter.id}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 font-medium">
+                      {exporter.designation} · {exporter.tradeDesk}
+                    </p>
+                    <p className="text-[11px] font-mono text-slate-500">
+                      Password: <span className="text-indigo-700 font-bold bg-slate-100 px-1.5 py-0.5 rounded">{exporter.password}</span>
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAutoFillExporter(exporter)}
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-indigo-100 text-indigo-800 hover:text-indigo-950 rounded-lg text-xs font-bold border border-slate-300 transition-all cursor-pointer shrink-0 flex items-center gap-1.5"
+                  >
+                    <span>⚡</span>
+                    <span>Auto-Fill Credentials</span>
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

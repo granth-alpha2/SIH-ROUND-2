@@ -42,33 +42,9 @@ export default function MarketplaceNavHeader({
     onRoleChange(targetRole);
 
     if (targetRole === "government_buyer") {
-      try {
-        await fetch("/api/auth/verify-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            phone: "9876500001",
-            otp: "123456",
-            name: "Officer S. Sharma",
-            role: "government_buyer",
-          }),
-        });
-      } catch {}
       window.location.href = "/marketplace/government";
       return;
     } else if (targetRole === "exporter") {
-      try {
-        await fetch("/api/auth/verify-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            phone: "9876500005",
-            otp: "123456",
-            name: "Sun Agri Exports",
-            role: "exporter",
-          }),
-        });
-      } catch {}
       window.location.href = "/marketplace/export";
       return;
     } else if (targetRole === "private_buyer") {

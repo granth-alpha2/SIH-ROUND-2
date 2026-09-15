@@ -16,6 +16,9 @@ type DemoProfile = {
   detail: string;
   phone: string;
   targetMandi?: string;
+  officerId?: string;
+  exporterId?: string;
+  password?: string;
 };
 
 const DEMO_PROFILES: Record<LoginRole, DemoProfile[]> = {
@@ -50,7 +53,7 @@ const DEMO_PROFILES: Record<LoginRole, DemoProfile[]> = {
   ],
   government_buyer: [
     {
-      name: "S. Sharma",
+      name: "Officer S. Sharma",
       role: "government_buyer",
       badge: "🏛️ FCI Procurement Officer",
       badgeColor: "bg-sky-100 text-sky-900 border-sky-300",
@@ -58,9 +61,11 @@ const DEMO_PROFILES: Record<LoginRole, DemoProfile[]> = {
       detail: "Food Corporation of India (FCI) · Khanna Grain Hub Mandi",
       phone: "9876500001",
       targetMandi: "Khanna Grain Hub (PC-PB-LDH-01)",
+      officerId: "FCI-PB-994",
+      password: "FCI@Govt#2026",
     },
     {
-      name: "R. K. Verma",
+      name: "Inspector R. K. Verma",
       role: "government_buyer",
       badge: "🏛️ PUNGRAIN Chief Inspector",
       badgeColor: "bg-sky-100 text-sky-900 border-sky-300",
@@ -68,6 +73,8 @@ const DEMO_PROFILES: Record<LoginRole, DemoProfile[]> = {
       detail: "PUNGRAIN Weighbridge & DBT Terminal · Ludhiana Central Mandi",
       phone: "9876500002",
       targetMandi: "Ludhiana Central Mandi (PC-PB-LDH-02)",
+      officerId: "PUNG-LDH-042",
+      password: "Pungrain@2026",
     },
   ],
   private_buyer: [
@@ -92,22 +99,26 @@ const DEMO_PROFILES: Record<LoginRole, DemoProfile[]> = {
   ],
   exporter: [
     {
-      name: "Sun Agri Exports",
+      name: "Sun Agri Exports Pvt Ltd",
       role: "exporter",
-      badge: "🚢 APEDA Exporter",
+      badge: "🚢 APEDA Category-A Exporter",
       badgeColor: "bg-indigo-100 text-indigo-900 border-indigo-300",
-      state: "New Delhi",
+      state: "New Delhi / Nhava Sheva",
       detail: "Reg: APEDA/2023/DEL/9981 · UAE, Saudi Arabia & EU Trade",
       phone: "9876500005",
+      exporterId: "IEC-0519928341",
+      password: "Export@Sun#2026",
     },
     {
       name: "Bharat Global Trade Hub",
       role: "exporter",
-      badge: "🚢 Global Commodity House",
+      badge: "🚢 DGFT Licensed Commodity House",
       badgeColor: "bg-indigo-100 text-indigo-900 border-indigo-300",
-      state: "Mumbai",
-      detail: "IEC: 0519928341 · ASEAN & Middle East Containerized Trade",
+      state: "Mumbai / Mundra",
+      detail: "IEC: 0308817290 · ASEAN & Middle East Containerized Trade",
       phone: "9876500006",
+      exporterId: "IEC-0308817290",
+      password: "BharatTrade@2026",
     },
   ],
 };
@@ -274,6 +285,57 @@ export default function LoginPage() {
     }
   }
 
+  const [officerId, setOfficerId] = useState("FCI-PB-994");
+  const [officerPassword, setOfficerPassword] = useState("FCI@Govt#2026");
+  const [exporterId, setExporterId] = useState("IEC-0519928341");
+  const [exporterPassword, setExporterPassword] = useState("Export@Sun#2026");
+  const [showPortalPassword, setShowPortalPassword] = useState(false);
+
+  async function handlePortalLogin(portalType: "government" | "exporter", customId?: string, customPass?: string) {
+    const identifier = (customId || (portalType === "government" ? officerId : exporterId)).trim();
+    const pass = (customPass || (portalType === "government" ? officerPassword : exporterPassword)).trim();
+
+    if (!identifier || !pass) {
+      setError(
+        portalType === "government"
+          ? "Please enter both Officer ID and Security Password."
+          : "Please enter both IEC Code and Trade Password."
+      );
+      return;
+    }
+
+    setError("");
+    setSuccessMsg("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/portal-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          portalType,
+          identifier,
+          password: pass,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setError(data?.error?.message || "Invalid credentials. Access rejected.");
+        setLoading(false);
+        return;
+      }
+
+      setSuccessMsg(`Official identity verified. Welcome, ${data.user?.name || "Official"}. Launching terminal...`);
+      setTimeout(() => {
+        router.push(portalType === "government" ? "/marketplace/government" : "/marketplace/export");
+        router.refresh();
+      }, 500);
+    } catch {
+      setError("Network error while verifying official credentials.");
+      setLoading(false);
+    }
+  }
+
   const roleMeta = {
     farmer: {
       title: "Farmer / Kisan Workspace Login",
@@ -360,9 +422,11 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => {
                   setSelectedRole("government_buyer");
-                  setName("S. Sharma");
-                  setPhone("9876500001");
+                  setOfficerId("FCI-PB-994");
+                  setOfficerPassword("FCI@Govt#2026");
                   setStep("phone");
+                  setError("");
+                  setSuccessMsg("");
                 }}
                 className={`p-3 rounded-xl border-2 text-left font-bold transition-all cursor-pointer ${
                   selectedRole === "government_buyer"
@@ -372,7 +436,7 @@ export default function LoginPage() {
               >
                 <span className="text-xl block mb-1">🏛️</span>
                 <div className="text-xs font-black">Govt Officer</div>
-                <div className="text-[10px] text-slate-500 font-normal leading-tight">FCI / Mandi Gate</div>
+                <div className="text-[10px] text-slate-500 font-normal leading-tight">FCI Mandi Gate</div>
               </button>
 
               <button
@@ -382,6 +446,8 @@ export default function LoginPage() {
                   setName("AgroCorp Sourcing Desk");
                   setPhone("9876500003");
                   setStep("phone");
+                  setError("");
+                  setSuccessMsg("");
                 }}
                 className={`p-3 rounded-xl border-2 text-left font-bold transition-all cursor-pointer ${
                   selectedRole === "private_buyer"
@@ -398,9 +464,11 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => {
                   setSelectedRole("exporter");
-                  setName("Sun Agri Exports");
-                  setPhone("9876500005");
+                  setExporterId("IEC-0519928341");
+                  setExporterPassword("Export@Sun#2026");
                   setStep("phone");
+                  setError("");
+                  setSuccessMsg("");
                 }}
                 className={`p-3 rounded-xl border-2 text-left font-bold transition-all cursor-pointer ${
                   selectedRole === "exporter"
@@ -451,85 +519,214 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* STEP 1: Phone & Persona Selection */}
+          {/* STEP 1: Credential / Phone & Persona Selection */}
           {step === "phone" ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendOtp();
-              }}
-              className="space-y-5"
-            >
-              {/* Name input */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="farmer-name-input"
-                  className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']"
+            <div className="space-y-5">
+              {selectedRole === "government_buyer" ? (
+                /* OFFICIAL GOVERNMENT OFFICER ID & PASSWORD FORM */
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handlePortalLogin("government");
+                  }}
+                  className="space-y-4"
                 >
-                  {selectedRole === "government_buyer"
-                    ? "Official Name & Designation:"
-                    : selectedRole === "farmer"
-                    ? "Farmer Name (Optional):"
-                    : "Entity / Representative Name:"}
-                </label>
-                <input
-                  id="farmer-name-input"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={
-                    selectedRole === "government_buyer"
-                      ? "e.g. S. Sharma (FCI Procurement Officer)"
-                      : selectedRole === "farmer"
-                      ? "e.g. Ramesh Kumar / Gurpreet Singh"
-                      : "e.g. AgroCorp Sourcing Desk"
-                  }
-                  className="agri-input w-full font-bold text-base min-h-[50px]"
-                />
-              </div>
+                  <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl flex items-center gap-2.5 text-xs text-sky-900 font-bold">
+                    <span>🏛️</span>
+                    <span>Official Government Gate: Authentication requires registered Officer Employee ID and security password.</span>
+                  </div>
 
-              {/* Mobile Number input */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="phone-input"
-                  className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']"
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']">
+                      Official Officer ID / Employee Code:
+                    </label>
+                    <div className="flex gap-2">
+                      <span className="inline-flex items-center px-3.5 rounded-2xl bg-[var(--bg-surface-subtle)] border-2 border-[var(--border-default)] font-bold text-base">
+                        🪪
+                      </span>
+                      <input
+                        type="text"
+                        value={officerId}
+                        onChange={(e) => setOfficerId(e.target.value)}
+                        placeholder="e.g. FCI-PB-994 or PUNG-LDH-042"
+                        className="agri-input flex-1 font-bold text-base min-h-[50px]"
+                        required
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']">
+                      Official Security Password / Mandi Key:
+                    </label>
+                    <div className="flex gap-2">
+                      <span className="inline-flex items-center px-3.5 rounded-2xl bg-[var(--bg-surface-subtle)] border-2 border-[var(--border-default)] font-bold text-base">
+                        🔑
+                      </span>
+                      <input
+                        type={showPortalPassword ? "text" : "password"}
+                        value={officerPassword}
+                        onChange={(e) => setOfficerPassword(e.target.value)}
+                        placeholder="Enter Official Security Password"
+                        className="agri-input flex-1 font-bold text-base min-h-[50px]"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPortalPassword(!showPortalPassword)}
+                        className="px-3 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-100"
+                      >
+                        {showPortalPassword ? "Hide" : "Show"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading || !officerId.trim() || !officerPassword.trim()}
+                    className="agri-btn-primary w-full min-h-[54px] text-lg font-extrabold shadow-lg cursor-pointer bg-[#0b4d75] hover:bg-[#083754]"
+                  >
+                    {loading ? "Authenticating Official ID..." : "Authenticate as FCI Procurement Officer 🔒"}
+                  </button>
+                </form>
+              ) : selectedRole === "exporter" ? (
+                /* APEDA / DGFT EXPORTER IEC & PASSWORD FORM */
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handlePortalLogin("exporter");
+                  }}
+                  className="space-y-4"
                 >
-                  Registered Mobile Number:
-                </label>
-                <div className="flex gap-3">
-                  <span className="inline-flex items-center px-4 rounded-2xl bg-[var(--bg-surface-subtle)] border-2 border-[var(--border-default)] text-base font-bold text-[var(--text-primary)] min-h-[50px]">
-                    🇮🇳 +91
-                  </span>
-                  <input
-                    id="phone-input"
-                    type="tel"
-                    inputMode="numeric"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                    placeholder="98765 00001"
-                    className="agri-input flex-1 font-extrabold text-xl tracking-wider min-h-[50px]"
-                    required
-                    autoFocus
-                  />
-                </div>
-              </div>
+                  <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl flex items-center gap-2.5 text-xs text-indigo-900 font-bold">
+                    <span>🚢</span>
+                    <span>APEDA / DGFT Trade Gate: Authentication requires registered IEC code and corporate trade password.</span>
+                  </div>
 
-              <button
-                type="submit"
-                disabled={loading || phone.length !== 10}
-                className="agri-btn-primary w-full min-h-[54px] text-lg font-extrabold shadow-lg cursor-pointer"
-              >
-                {loading ? "Preparing Authorization..." : `Continue as ${roleMeta.themeBadge} →`}
-              </button>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']">
+                      APEDA / DGFT IEC Registration Code:
+                    </label>
+                    <div className="flex gap-2">
+                      <span className="inline-flex items-center px-3.5 rounded-2xl bg-[var(--bg-surface-subtle)] border-2 border-[var(--border-default)] font-bold text-base">
+                        📄
+                      </span>
+                      <input
+                        type="text"
+                        value={exporterId}
+                        onChange={(e) => setExporterId(e.target.value)}
+                        placeholder="e.g. IEC-0519928341"
+                        className="agri-input flex-1 font-bold text-base min-h-[50px]"
+                        required
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']">
+                      Trade Desk Security Password:
+                    </label>
+                    <div className="flex gap-2">
+                      <span className="inline-flex items-center px-3.5 rounded-2xl bg-[var(--bg-surface-subtle)] border-2 border-[var(--border-default)] font-bold text-base">
+                        🔑
+                      </span>
+                      <input
+                        type={showPortalPassword ? "text" : "password"}
+                        value={exporterPassword}
+                        onChange={(e) => setExporterPassword(e.target.value)}
+                        placeholder="Enter Corporate Trade Password"
+                        className="agri-input flex-1 font-bold text-base min-h-[50px]"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPortalPassword(!showPortalPassword)}
+                        className="px-3 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-100"
+                      >
+                        {showPortalPassword ? "Hide" : "Show"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading || !exporterId.trim() || !exporterPassword.trim()}
+                    className="agri-btn-primary w-full min-h-[54px] text-lg font-extrabold shadow-lg cursor-pointer bg-indigo-700 hover:bg-indigo-800"
+                  >
+                    {loading ? "Verifying IEC License..." : "Verify IEC & Unlock Trade Desk 🚢"}
+                  </button>
+                </form>
+              ) : (
+                /* FARMER / PRIVATE BUYER PHONE OTP FORM */
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSendOtp();
+                  }}
+                  className="space-y-5"
+                >
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="farmer-name-input"
+                      className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']"
+                    >
+                      {selectedRole === "farmer" ? "Farmer Name (Optional):" : "Entity / Representative Name:"}
+                    </label>
+                    <input
+                      id="farmer-name-input"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder={selectedRole === "farmer" ? "e.g. Ramesh Kumar / Gurpreet Singh" : "e.g. AgroCorp Sourcing Desk"}
+                      className="agri-input w-full font-bold text-base min-h-[50px]"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="phone-input"
+                      className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']"
+                    >
+                      Registered Mobile Number:
+                    </label>
+                    <div className="flex gap-3">
+                      <span className="inline-flex items-center px-4 rounded-2xl bg-[var(--bg-surface-subtle)] border-2 border-[var(--border-default)] text-base font-bold text-[var(--text-primary)] min-h-[50px]">
+                        🇮🇳 +91
+                      </span>
+                      <input
+                        id="phone-input"
+                        type="tel"
+                        inputMode="numeric"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        placeholder="98765 00001"
+                        className="agri-input flex-1 font-extrabold text-xl tracking-wider min-h-[50px]"
+                        required
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading || phone.length !== 10}
+                    className="agri-btn-primary w-full min-h-[54px] text-lg font-extrabold shadow-lg cursor-pointer"
+                  >
+                    {loading ? "Preparing Authorization..." : `Continue as ${roleMeta.themeBadge} →`}
+                  </button>
+                </form>
+              )}
 
               {/* 1-Tap Quick Demo Profiles Tailored for Active Role */}
               <div className="pt-4 border-t-2 border-[var(--border-subtle)] space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-black uppercase tracking-wider text-[var(--text-muted)] font-['Space_Grotesk']">
-                    ⚡ 1-Tap Instant Demo Logins ({selectedRole.replace("_", " ").toUpperCase()})
+                    ⚡ Official Test Profiles ({selectedRole.replace("_", " ").toUpperCase()})
                   </p>
                   <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    Pre-fills Demo Master Key 123456
+                    {selectedRole === "government_buyer" || selectedRole === "exporter" ? "Official ID & Password" : "Pre-fills Demo Master Key 123456"}
                   </span>
                 </div>
 
@@ -539,9 +736,23 @@ export default function LoginPage() {
                       key={profile.phone}
                       type="button"
                       onClick={() => {
-                        setPhone(profile.phone);
-                        setName(profile.name);
-                        handleSendOtp(profile.phone, profile.name, profile.role);
+                        if (selectedRole === "government_buyer") {
+                          if (profile.officerId && profile.password) {
+                            setOfficerId(profile.officerId);
+                            setOfficerPassword(profile.password);
+                            handlePortalLogin("government", profile.officerId, profile.password);
+                          }
+                        } else if (selectedRole === "exporter") {
+                          if (profile.exporterId && profile.password) {
+                            setExporterId(profile.exporterId);
+                            setExporterPassword(profile.password);
+                            handlePortalLogin("exporter", profile.exporterId, profile.password);
+                          }
+                        } else {
+                          setPhone(profile.phone);
+                          setName(profile.name);
+                          handleSendOtp(profile.phone, profile.name, profile.role);
+                        }
                       }}
                       className="w-full p-3.5 rounded-2xl bg-[var(--bg-surface-subtle)] hover:bg-[var(--bg-surface-accent)] border-2 border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-left transition-all flex items-center justify-between group cursor-pointer"
                     >
@@ -557,20 +768,22 @@ export default function LoginPage() {
                         <div className="text-xs text-[var(--text-secondary)] font-medium">
                           {profile.state} · {profile.detail}
                         </div>
+                        {(profile.officerId || profile.exporterId) && (
+                          <div className="text-[11px] font-mono text-slate-500 pt-0.5">
+                            ID: <span className="font-bold text-sky-800">{profile.officerId || profile.exporterId}</span> · Password: <span className="font-bold text-emerald-800">{profile.password}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="text-right shrink-0">
-                        <span className="text-sm font-mono text-[var(--color-primary)] font-extrabold block">
-                          +91 {profile.phone}
-                        </span>
-                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-emerald-700">
-                          Tap to Login →
+                        <span className="text-xs font-bold text-slate-500 group-hover:text-emerald-700 block">
+                          ⚡ Sign In →
                         </span>
                       </div>
                     </button>
                   ))}
                 </div>
               </div>
-            </form>
+            </div>
           ) : (
             /* STEP 2: 6-Digit OTP Verification */
             <div className="space-y-5">

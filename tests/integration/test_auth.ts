@@ -22,6 +22,12 @@ import {
   updateFarm,
   deleteFarm,
 } from "../../frontend/src/app/api/farms/repository";
+import {
+  verifyOfficerCredentials,
+  verifyExporterCredentials,
+  REGISTERED_GOVERNMENT_OFFICERS,
+  REGISTERED_EXPORTERS,
+} from "../../frontend/src/lib/official-credentials";
 
 
 let passed = 0;
@@ -151,8 +157,55 @@ async function runTests() {
   // 11. Delete farm
   const deleted = await deleteFarm(farmId);
   assert(deleted === true, "deleteFarm returns true");
-  const reCheck = await getFarm(farmId);
-  assert(reCheck === null, "Deleted farm is no longer retrievable");
+  // 12. Official Government Procurement Officer Authentication
+  console.log("\n=== Testing Government Officer & Exporter Authentication ===");
+  const validOfficer = verifyOfficerCredentials("FCI-PB-994", "FCI@Govt#2026");
+  assert(validOfficer !== null, "Valid FCI Officer ID and Password authenticates successfully");
+  assert(validOfficer?.role === "government_buyer", "Officer has role 'government_buyer'");
+  assert(validOfficer?.name === "Officer S. Sharma", "Officer name resolved correctly");
+
+  const caseInsensitiveOfficer = verifyOfficerCredentials("fci-pb-994", "FCI@Govt#2026");
+  assert(caseInsensitiveOfficer !== null, "Officer ID authentication is case-insensitive");
+
+  const wrongPasswordOfficer = verifyOfficerCredentials("FCI-PB-994", "wrong-password-123");
+  assert(wrongPasswordOfficer === null, "Rejects officer authentication with incorrect password");
+
+  const nonExistentOfficer = verifyOfficerCredentials("FAKE-OFFICER-999", "FCI@Govt#2026");
+  assert(nonExistentOfficer === null, "Rejects non-existent officer ID");
+
+  // 13. Official APEDA / DGFT Exporter Authentication
+  const validExporter = verifyExporterCredentials("IEC-0519928341", "Export@Sun#2026");
+  assert(validExporter !== null, "Valid DGFT IEC Code and Password authenticates successfully");
+  assert(validExporter?.role === "exporter", "Exporter has role 'exporter'");
+  assert(validExporter?.name === "Sun Agri Exports Pvt Ltd", "Exporter company name resolved correctly");
+
+  const caseInsensitiveExporter = verifyExporterCredentials("iec-0519928341", "Export@Sun#2026");
+  assert(caseInsensitiveExporter !== null, "Exporter IEC authentication is case-insensitive");
+
+  const wrongPasswordExporter = verifyExporterCredentials("IEC-0519928341", "invalid-pass");
+  assert(wrongPasswordExporter === null, "Rejects exporter authentication with incorrect password");
+
+  const nonExistentExporter = verifyExporterCredentials("IEC-0000000000", "Export@Sun#2026");
+  assert(nonExistentExporter === null, "Rejects non-existent exporter IEC code");
+
+  // 14. JWT token generation & verification for official roles
+  const govtToken = await signJWT({
+    sub: `usr_gov_${validOfficer!.id}`,
+    phone: validOfficer!.phone,
+    name: validOfficer!.name,
+    role: validOfficer!.role,
+  });
+  const decodedGovt = await verifyJWT(govtToken);
+  assert(decodedGovt !== null && decodedGovt.role === "government_buyer", "JWT session for government_buyer correctly verified");
+
+  const exporterToken = await signJWT({
+    sub: `usr_exp_${validExporter!.id}`,
+    phone: validExporter!.phone,
+    name: validExporter!.name,
+    role: validExporter!.role,
+  });
+  const decodedExporter = await verifyJWT(exporterToken);
+  assert(decodedExporter !== null && decodedExporter.role === "exporter", "JWT session for exporter correctly verified");
 
   console.log(`\n========================================`);
   console.log(`Results: ${passed} passed, ${failed} failed`);

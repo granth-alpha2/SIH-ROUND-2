@@ -25,12 +25,24 @@ export default function ExportPage() {
           } else {
             setIsAuthorizedExporter(false);
           }
+        } else {
+          setIsAuthorizedExporter(false);
         }
+      } else {
+        setIsAuthorizedExporter(false);
       }
     } catch {
+      setIsAuthorizedExporter(false);
     } finally {
       setCheckingAuth(false);
     }
+  }
+
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
+    setIsAuthorizedExporter(false);
   }
 
   useEffect(() => {
@@ -81,10 +93,11 @@ export default function ExportPage() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setIsAuthorizedExporter(false)}
-                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold border border-white/20 transition-all cursor-pointer"
+                  onClick={handleLogout}
+                  className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
                 >
-                  Switch Exporter
+                  <span>🔒</span>
+                  <span>Lock & Sign Out</span>
                 </button>
               </div>
             </div>
