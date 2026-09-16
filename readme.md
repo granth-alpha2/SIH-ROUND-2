@@ -1,377 +1,388 @@
-# AgriProfit — AI-Powered Smart Crop & Farm Profit Optimization Platform
+# AgriProfit — AI-Powered Smart Agriculture & 5-Channel Marketplace Platform
 
-> A production-grade decision-support platform that helps Indian farmers decide **what to grow, where to grow it, when to grow it, and how to manage it** by combining spatial PostGIS land mapping, live Open-Meteo agro-meteorology, APMC mandi market trends, Government MSP floor benchmarks, deterministic multi-factor recommendation scoring, interactive profit simulations, Python FastAPI ML yield & price models, and a context-aware multimodal AI agronomist.
-
----
-
-## 1. Vision & Mission
-
-Most Indian farmers plan their crop cycles using incomplete, delayed, or informal information — last season's price, a neighbor's choice, or a trader's advice. This leads to severe price crashes from over-planting popular crops, missed high-value alternatives, and avoidable financial vulnerability.
-
-**AgriProfit's vision** is to give every farmer, on their own land, an AI-generated, explainable, and risk-aware farm plan that maximizes **expected profit, return on investment (ROI), and financial stability** — not just raw yield or a single unhedged metric.
+> **Smart India Hackathon (SIH 2026) · Round 2 Production Implementation**  
+> A unified, production-grade agricultural decision-support and commodity trade platform. AgriProfit empowers Indian farmers to plan, optimize, and directly monetize their harvest by combining **spatial PostGIS field mapping**, **live Open-Meteo agro-meteorology**, **APMC mandi market rates**, **CACP Minimum Support Price (MSP) benchmarks**, **Python FastAPI ML yield and price forecasters**, **a 5-channel transparent marketplace**, and **Unnati AI (उन्नति AI)** — an omnipresent multimodal, multilingual agronomist assistant powered by Google Gemini 2.5 Flash.
 
 ---
 
-## 2. Problem Statement
-
-Farmers currently lack a single unified platform that combines:
-
-- **Farm-specific spatial boundaries and land area** (pinpoint GPS & polygon mapping).
-- **Localized agro-meteorological forecasting** (temperature, rainfall, soil moisture, and 90-day climate baselines).
-- **Real-time APMC mandi market price trends and volatility**.
-- **Government Minimum Support Price (MSP) floor protection**.
-- **International trade signals and macroeconomic export demand** (FAOSTAT/UN Comtrade).
-- **Realistic, itemized input cost estimates** (seeds, fertilizers, irrigation, labor, machinery).
-- **Multi-dimensional risk scoring** (climate risks, pest/disease susceptibility, market price crashes, procurement safety).
-
-As a result, crop selection today remains intuition-driven rather than data-driven, exposing farming households to extreme financial volatility.
-
----
-
-## 3. The AgriProfit Solution
-
-AgriProfit provides an intuitive, mobile-first 8-step decision system:
-
-1. **Spatial Farm Marking:** Pinpoint farm location or draw precise multi-hectare land polygons on interactive Google Maps with real-time geodesic area calculation.
-2. **Land Sectioning:** Split land into distinct zones for multi-crop risk diversification.
-3. **Preference Calibration:** Configure risk appetite, irrigation access (borewell, canal, drip, rainfed), investment budgets, and crops to avoid.
-4. **AI-Optimized Multi-Crop Allocation:** Generate a 4-part portfolio (Primary High-Profit, Low-Risk Hedged, Fast-Cash Crop, and Climate-Resilient) complete with profit rankings, weather suitability, and risk metrics.
-5. **Interactive Financial Simulation:** Full financial breakdown displaying expected revenue, costs, net profit, ROI percentage, and break-even yield.
-6. **Milestone Lifecycle Calendar:** Stage-by-stage crop management roadmap from land preparation to harvest.
-7. **Advisory Notification Inbox:** Timely automated alerts for irrigation intervals, pest outbreaks, weather anomalies, and market price spikes.
-8. **Context-Aware Multimodal AI Agronomist:** Chat with a dedicated agronomist assistant capable of diagnosing plant diseases from uploaded leaf photos and answering location-specific farming questions.
-
----
-
-## 4. Target Users
-
-- **Primary:** Smallholder and commercial farmers (via responsive mobile-first web app).
-- **Secondary:** Farmer Producer Organizations (FPOs), agricultural extension officers, and cooperative societies managing clusters of farms.
-- **Tertiary:** State agricultural departments and credit institutions (aggregated regional analytics and crop planning telemetry).
-
----
-
-## 5. Core Features Matrix
-
-| Feature | Description | Technical Implementation |
-|---|---|---|
-| **Spatial Farm Mapping** | Pin & polygon drawing, GPS geolocation, geodesic area | Google Maps JavaScript API, PostGIS `ST_GeomFromGeoJSON` |
-| **Agro-Meteorology** | 7-day live weather forecast + 90-day seasonal climate norms | Open-Meteo API, IMD regional baselines |
-| **Mandi Price Intelligence** | Daily APMC mandi rates, historical volatility, price trends | Agmarknet time-series ingestion, ML price models |
-| **MSP Floor Protection** | Procurement status, CACP benchmarks, fallback pricing | Official data.gov.in / DA&FW datasets |
-| **Trade Demand Signals** | Global import/export volume trends and international demand | FAOSTAT / UN Comtrade benchmark scoring |
-| **Portfolio Optimizer** | Multi-crop land allocation engine maximizing net return | Deterministic multi-factor scoring & constraint solver |
-| **Profit & ROI Simulator** | Interactive cost-benefit calculator per acre and per farm | Real-time mathematical simulation engine |
-| **Crop Lifecycle Calendar** | Stage-by-stage agronomic milestone timeline | Curated ICAR lifecycle calendar database |
-| **Advisory Notifications** | Irrigation, weather, disease risk, and market alerts | 5-category smart notification dispatch repository |
-| **AI Vision Agronomist** | Multimodal crop diagnostics & contextual agronomy chat | Next.js API route + OpenRouter / Gemini / OpenAI LLM APIs |
-| **Admin & Telemetry Center** | Data quality health, system metrics, and audit logs | Protected admin dashboard with real-time telemetry |
-
----
-
-## 6. End-to-End Farmer Workflow
+## 🌟 Key Highlights & Current Capabilities
 
 ```text
-┌────────────────────────┐      ┌────────────────────────┐      ┌────────────────────────┐
-│  1. Login & Auth       │ ──►  │  2. Map Farm Boundary  │ ──►  │  3. Set Preferences    │
-│  (OTP / SIH Demo)      │      │  (Google Maps/GPS)     │      │  (Water, Risk, Budget) │
-└────────────────────────┘      └────────────────────────┘      └────────────────────────┘
-                                                                             │
-                                                                             ▼
-┌────────────────────────┐      ┌────────────────────────┐      ┌────────────────────────┐
-│  6. Lifecycle Timeline │ ◄──  │  5. Accept / Edit Plan │ ◄──  │  4. AI Recommendation  │
-│  (Stage-by-Stage Plan) │      │  (Simulation & ROI)    │      │  (4-Part Portfolio)    │
-└────────────────────────┘      └────────────────────────┘      └────────────────────────┘
-            │
-            ▼
-┌────────────────────────┐      ┌────────────────────────┐
-│  7. Smart Alerts       │ ──►  │  8. AI Agronomist Chat │
-│  (Weather, Pest, Mandi)│      │  (Multimodal Diagnosis)│
-└────────────────────────┘      └────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                               AGRIPROFIT UNIFIED ECOSYSTEM                             │
+├───────────────────────────────┬───────────────────────────────┬────────────────────────┤
+│ 🌾 4 Government Pillars       │ 🛒 5-Channel Marketplace      │ 🤖 Unnati AI Assistant │
+│   1. Farm Services (GIS/Soil) │   1. Govt FCI/MSP Mandi Gate  │   • Google Gemini 2.5  │
+│   2. Crop Services (Wizard)   │   2. Direct Farm-Gate Trade   │   • Voice STT / TTS    │
+│   3. Market Services (APMC)   │   3. APEDA Global Export Gate │   • Computer Vision    │
+│   4. Reports & Records (SHC)  │   4. FPO Group Aggregation    │   • Movable & Resizing │
+│                               │   5. CACP MSP Floor Guarantee │   • Role-Aware Persona │
+├───────────────────────────────┴───────────────────────────────┴────────────────────────┤
+│ 🇮🇳 11 Indian Languages · 💻💻 Dual-Laptop Live SIH Demo Mode · ⚡ 1-Click Fast Login │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **4 Structured Government Service Pillars:** Farm Services, Crop Services, Market Services, and Official Reports & Records formatted to digital public infrastructure standards.
+- **5-Channel Transparent Marketplace:** Direct trade, FCI official MSP procurement with 12-digit gate passcodes & biometric DBT disbursal, APEDA export gateway, and FPO group pooling.
+- **Unnati AI (उन्नति AI) Assistant:** Draggable, resizable floating popup assistant powered by Google Gemini 2.5 Flash (`gemini-2.5-flash`), with vernacular voice recognition, Hindi/English speech synthesis, and leaf disease diagnosis.
+- **Dual-Laptop Live Demonstration System:** Seamless multi-workstation flow (Laptop 1: Farmer produces & registers harvest; Laptop 2: FCI Officer scans biometric & disburses funds).
+- **1-Click Instant Persona Logins:** Pre-configured profiles for Farmers (Ramesh Kumar), FCI Mandi Officers (Officer S. Sharma), APEDA Exporters, and Agribusiness Buyers with zero SMS or password friction.
+- **Vernacular & Accessible:** Supports 11 Indian languages (English, Hindi, Punjabi, Gujarati, Marathi, Telugu, Bengali, Tamil, Kannada, Malayalam, Odia), screen reader page narrator, high-contrast mode, and adjustable text scaling.
+- **Machine Learning & Telemetry:** Python FastAPI microservice delivering Random Forest Crop Yield predictions ($R^2 = 0.9601$) and Ensemble Mandi Price forecasts ($R^2 = 0.9733$).
+
+---
+
+## 1. Vision & Problem Statement
+
+### The Problem
+Over 85% of Indian farmers are smallholders operating on intuition, word-of-mouth, or last season's prices. This causes:
+1. **Glut-and-Crash Cycles:** Over-cultivation of single popular crops leading to catastrophic post-harvest price crashes.
+2. **Asymmetric Market Intermediation:** Farmers receiving only 30–40% of consumer end-prices due to multi-tiered middleman markups.
+3. **MSP Procurement Hurdles:** Farmers traveling long distances to mandis only to face arbitrary moisture rejections or delayed payments.
+4. **Export Inaccessibility:** Inability for small farmers to tap into high-margin global demand due to quality grading and minimum volume thresholds.
+
+### The AgriProfit Solution
+AgriProfit connects the entire agricultural lifecycle into a single closed loop:
+**Spatial Land Mapping → Agro-Climatic Suitability → Multi-Crop Optimization → Real-Time Crop Management → 5-Channel Direct Monetization.**
+
+---
+
+## 2. Platform Architecture: The 4 Core Service Pillars
+
+The user experience is structured into four primary service pillars accessible from the main dashboard:
+
+```text
+                               ┌───────────────────────────┐
+                               │   AgriProfit Dashboard    │
+                               └─────────────┬─────────────┘
+             ┌───────────────────────┬───────┴───────┬───────────────────────┐
+             ▼                       ▼               ▼                       ▼
+   ┌───────────────────┐   ┌───────────────────┐   ┌───────────────────┐   ┌───────────────────┐
+   │ 1. Farm Services  │   │ 2. Crop Services  │   │3. Market Services │   │4. Reports/Records │
+   │ • Polygon GIS Map │   │ • Planning Wizard │   │ • APMC Daily Rates│   │ • Cadastral Plan  │
+   │ • 3-Layer Soil HC │   │ • Crop Comparison │   │ • CACP MSP Catalog│   │ • Soil Health Card│
+   │ • NPK Calculator  │   │ • 4-Crop Portfolio│   │ • NCDEX Futures   │   │ • 120-Day Roadmap │
+   │ • Live Weather    │   │ • Zaid Quick-Crops│   │ • 5-Channel E-Mkt │   │ • Govt Schemes    │
+   └───────────────────┘   └───────────────────┘   └───────────────────┘   └───────────────────┘
+```
+
+### Pillar 1: Farm Services (`/farm`)
+- **Interactive Land Mapping:** GPS pinpointing and polygon drawing on Google Maps with real-time geodesic area calculation in acres and hectares.
+- **3-Layer Soil Health Card (`/farm/soil`):** Complete analysis of primary macronutrients (N, P, K), secondary micronutrients (Zn, Fe, B, S), and physical soil health (pH, EC, Organic Carbon).
+- **Fertilizer Rebalancing Engine:** Automated calculation of exact Urea, DAP, and MOP requirements per acre to reduce input waste.
+- **Live Agro-Meteorology (`/weather`):** 7-day temperature, rainfall, and spray window forecasts via Open-Meteo, cross-referenced with regional IMD baselines.
+
+### Pillar 2: Crop Services (`/crop-services`)
+- **Progressive Planning Wizard (`/crop-services/planning`):** Tailors crop recommendations based on soil type, water source (canal, borewell, drip, rainfed), and risk appetite.
+- **4-Part Hedged Portfolio Optimizer:** Allocates land between:
+  1. *Primary High-Profit Crop* (max revenue potential)
+  2. *Low-Risk Hedged Crop* (stable MSP/assured buyer)
+  3. *Short-Duration Fast-Cash Crop* (quick liquidity in 60–90 days)
+  4. *Climate-Resilient Legume* (nitrogen fixation & drought tolerance)
+- **Pairwise Crop Comparison (`/crop-services/compare`):** Side-by-side agronomic and financial trade-off matrix.
+- **ICAR Crop Library (`/crops`):** Curated database of 40+ crops with package-of-practices, sowing depths, and disease resistances.
+
+### Pillar 3: Market Services & 5-Channel Marketplace (`/market-services`, `/marketplace`)
+- **APMC Mandi Watch (`/markets`):** Daily modal prices, arrivals, and 30-day volatility across national mandis.
+- **CACP MSP Floor Catalog (`/market-services/msp`):** Statutory floor prices with historical growth rates.
+- **NCDEX Commodity Curves (`/market-services/ncdex`):** Forward futures contracts indicating harvest-season price expectations.
+- **5-Channel Digital Marketplace:** Detailed below.
+
+### Pillar 4: Reports & Records (`/reports`)
+- **Cadastral Land Dossier (`/reports/farm`):** Official PDF-ready land record documenting GPS vertices, soil profile, and crop history.
+- **Soil Health Card Dossier (`/reports/soil`):** Printable nutrient scorecards with color-coded diagnostic ratings.
+- **Seasonal Action Roadmap (`/recommendations/plan`):** 120-day chronological operational checklist from tilling to post-harvest storage.
+- **Government Welfare Schemes (`/schemes`):** Direct eligibility scanner for PM-KISAN, PMFBY crop insurance, Kisan Credit Card (KCC), and Agriculture Infrastructure Fund (AIF).
+
+---
+
+## 3. The 5-Channel Unified Agri-Marketplace
+
+AgriProfit's marketplace eliminates exploitative middlemen by offering five distinct channels tailored to different buyer and seller personas:
+
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        5-CHANNEL UNIFIED AGRI-MARKETPLACE                              │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ Channel 1: Official MSP Procurement Gateway (/marketplace/government)                 │
+│   • 12-digit Mandi gate passcodes for guaranteed queue priority                        │
+│   • Automated weighbridge gross/tare capture & moisture deductions                     │
+│   • Simulated Aadhaar biometric authentication & direct DBT payment settlement          │
+│   • Formal FCI/NAFED downloadable procurement receipts                                 │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ Channel 2: Direct Farm-Gate Wholesale Desk (/marketplace/direct)                       │
+│   • Direct catalog listings with live price-positioning vs MSP floor                   │
+│   • Bilateral counter-offer engine with buyer escrow protection                        │
+│   • Dynamic bulk request basket with farm-gate freight estimates                       │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ Channel 3: International Agri-Export Gateway (/marketplace/export)                     │
+│   • 10-country international demand signals (UAE, Saudi Arabia, EU, USA, ASEAN)       │
+│   • Free-On-Board (FOB) price arbitrage vs Indian domestic mandi prices                │
+│   • Itemized export cost waterfall (APEDA cess, phytosanitary lab test, cold chain)    │
+│   • Farmer Cooperative Container Pooling to meet 20ft/40ft reefer thresholds           │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ Channel 4: Cooperative & FPO Group Selling (/marketplace/groups)                       │
+│   • Smallholders aggregate identical crops to unlock wholesale transport rates         │
+│   • Transparent pro-rata revenue distribution based on weight and moisture grade       │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ Channel 5: CACP Statutory MSP Safety Net Guarantee (/market-services/msp)              │
+│   • Hardcoded price floor: platform warns and blocks predatory below-MSP bidding        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 7. Monorepo Project Structure
+## 4. Unnati AI (उन्नति AI) — The Platform Intelligence
 
-```text
-AgriProfit/
-├── frontend/                         # Next.js 16 + React 19 + TypeScript Application
-│   ├── src/
-│   │   ├── app/                      # App Router routes (33 endpoints & pages)
-│   │   │   ├── (auth)/login/         # OTP authentication & One-Click Demo
-│   │   │   ├── farms/                # Spatial farm mapping & land management
-│   │   │   ├── recommendations/      # Portfolio optimizer & profit simulations
-│   │   │   ├── weather/              # Agro-meteorology & climate telemetry
-│   │   │   ├── markets/              # APMC mandi pricing & MSP safety watch
-│   │   │   ├── crops/                # Curated crop catalog & agronomic metrics
-│   │   │   ├── assistant/            # AI agronomist & plant pathology vision
-│   │   │   ├── notifications/        # 5-category advisory alerts inbox
-│   │   │   ├── preferences/          # Water, soil, and risk configuration
-│   │   │   └── admin/                # Platform monitoring & telemetry
-│   │   ├── components/               # AppShell, FarmMapPicker, RecommendationDashboard
-│   │   └── lib/                      # Auth, crop-data, market, simulation engines
-│   └── package.json                  # Frontend dependencies
-│
-├── ml-service/                       # Python 3.11+ / FastAPI ML Microservice
-│   ├── app/                          # FastAPI app (routes, models, pipelines, schemas)
-│   │   ├── api/routes/               # REST endpoints (/predict/yield, /forecast/price)
-│   │   ├── models/                   # Yield (RF) & Mandi Price (Ridge+GBR) models
-│   │   └── utils/                    # Config, paths, and pickle artifact loaders
-│   ├── models_artifacts/             # Serialized model weights & evaluation reports
-│   ├── tests/                        # Pytest unit tests for ML models
-│   ├── requirements.txt              # Python dependencies
-│   └── Dockerfile                    # Container definition
-│
-├── data/                             # Curated Agricultural Datasets
-│   ├── raw/                          # Raw ICAR, Agmarknet, and IMD datasets
-│   ├── processed/                    # Feature-engineered training & validation splits
-│   ├── reference/                    # States, districts, and crop master records
-│   └── external/                     # CACP MSP and international trade benchmarks
-│
-├── database/                         # PostgreSQL + PostGIS Storage Layer
-│   ├── init.sql                      # Database schema and spatial table initialization
-│   └── seeds/                        # Seed data (crops, mandis, MSP benchmarks)
-│
-├── packages/                         # Shared Monorepo Packages
-│   ├── shared/                       # Shared TypeScript definitions and types
-│   ├── ui/                           # Reusable UI component library
-│   └── api-client/                   # Typed API client for frontend/services
-│
-├── scripts/                          # Automation & Testing Tools
-│   ├── dev_runner.js                 # Unified single-command launcher (FastAPI + Next.js)
-│   └── test_*.ts / test_*.py         # Automated API, ML, and integration verification
-│
-├── docs/                             # Architecture & SRS Documentation
-│   ├── ARCHITECTURE.md               # Detailed architectural design
-│   ├── API.md                        # Complete REST API reference
-│   ├── DATA_AND_ML.md                # Data dictionary & model training benchmarks
-│   ├── DATABASE.md                   # Relational & spatial schema documentation
-│   └── DEPLOYMENT.md                 # Docker Compose & production deployment guide
-│
-├── .github/workflows/                # GitHub Actions CI/CD (Typecheck, tests, ML validation)
-├── docker-compose.yml                # Multi-service local dev compose stack
-├── docker-compose.prod.yml           # Production container orchestration
-└── nginx.conf                        # Root reverse proxy configuration
-```
-
----
-
-## 8. AI / Machine Learning Architecture
-
-AgriProfit uses a layered, explainable AI architecture combining deterministic agronomic models with machine learning models and multimodal LLMs:
+**Unnati AI** is an interactive, omnipresent assistant embedded across every page of the application:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                           AgriProfit AI Layer                           │
-├──────────────────────────────────┬──────────────────────────────────────┤
-│ 1. Deterministic Scoring Engine  │ 4-Factor Weighted Algorithm (0–100)  │
-│    (Weather, Market, MSP, Cost)  │ Explainable, transparent scoring    │
-├──────────────────────────────────┼──────────────────────────────────────┤
-│ 2. Crop Yield Predictor          │ RandomForestRegressor (v2.0)         │
-│    (Trained on 7,000 ICAR rows)  │ Test R²: 0.9601 | MAE: 683 kg/ha     │
-├──────────────────────────────────┼──────────────────────────────────────┤
-│ 3. Mandi Price Forecaster        │ Ensemble Ridge + GradientBoosting    │
-│    (19,500 APMC time-series)     │ Test R²: 0.9733 | MAPE: 3.79%        │
-├──────────────────────────────────┼──────────────────────────────────────┤
-│ 4. AI Agronomist & Leaf Vision   │ Context-Aware Multimodal LLM Client  │
-│    (Farm Telemetry + Vision)     │ OpenRouter / Gemini / OpenAI         │
-└──────────────────────────────────┴──────────────────────────────────────┘
+│                      Unnati AI Assistant Window                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│ [🌾 Farmer] [🏛️ Govt Officer] [🚢 APEDA Exporter] [🛒 Buyer]           │
+│                                                                         │
+│ 🤖 "नमस्ते रमेश जी! आपके खेत में 2.5 एकड़ गेहूं के लिए 120 दिन का     │
+│    एक्शन प्लान तैयार है। क्या आप मंडी भाव या खाद की मात्रा जानना चाहते  │
+│    हैं?"                                                               │
+│                                                                         │
+│ 📸 Leaf Disease Vision Scan: Puccinia striiformis (Wheat Yellow Rust)    │
+│    Confidence: 94.8% · Treatment: Propiconazole 25% EC @ 1ml/L          │
+│                                                                         │
+│ [🎤 Speak Hindi/English] [📷 Upload Leaf Scan] [💬 Ask Any Question]   │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Universal Intelligence:** Direct integration with Google Gemini 2.5 Flash (`gemini-2.5-flash`), answering questions across agronomy, market trading, government regulations, programming, mathematics, and science.
+- **Movable & Resizable UI:** Freely draggable header and 8-point resize handles (all four borders and corners) plus one-click maximize/minimize.
+- **Dynamic Role-Adaptive Persona:**
+  - *Farmer Persona:* Sowing schedules, soil nutrition, spray windows, MSP advice.
+  - *Government Officer Persona:* Mandi intake protocols, moisture deduction rules, DBT guidelines.
+  - *Exporter Persona:* APEDA export standards, phytosanitary compliance, international container pricing.
+  - *Buyer Persona:* Farm-gate sourcing contracts, quality parameters, bulk discount analysis.
+- **Multimodal Computer Vision:** Drag-and-drop leaf photo diagnostics with built-in presets (Wheat Yellow Rust, Potato Late Blight, Nitrogen Chlorosis).
+- **Voice-Enabled:** Vernacular Hindi/Indian English Speech-to-Text (STT) and text-to-speech narration.
+
+---
+
+## 5. Dual-Laptop SIH Live Demonstration Mode
+
+AgriProfit includes a dedicated dual-laptop demonstration architecture built for Smart India Hackathon jury presentations:
+
+```text
+┌──────────────────────────────────────┐       ┌──────────────────────────────────────┐
+│        LAPTOP 1: KISAN WORKSTATION   │       │     LAPTOP 2: OFFICIAL MANDI TERMINAL │
+│         (http://<LAN_IP>:3000)       │       │         (http://<LAN_IP>:3000)       │
+├──────────────────────────────────────┤       ├──────────────────────────────────────┤
+│ 1. 1-Click Login: Ramesh Kumar (Kisan)│       │ 1. 1-Click Login: Officer S. Sharma  │
+│ 2. Map farm polygon & inspect soil   │       │ 2. Mandi Terminal reviews queue      │
+│ 3. Submit 50 Qtl Wheat for Govt MSP  │ ────► │ 3. Inputs 12-digit code: FCI-PB-9941 │
+│ 4. Receive 12-Digit Passcode         │       │ 4. Weighbridge tare & 12% moisture   │
+│ 5. Notification: "DBT Disbursed!"    │ ◄──── │ 5. Biometric scan & instant DBT pay  │
+└──────────────────────────────────────┘       └──────────────────────────────────────┘
+```
+
+### 1-Click Instant Demo Profiles
+The login screen (`/login`) features a top-level quick-access bar with pre-configured sessions that require **zero passwords or OTPs**:
+- 🌾 **Kisan Farmer:** Ramesh Kumar (`9876543210` / Karnal, Haryana)
+- 🏛️ **Govt FCI Officer:** Officer S. Sharma (`FCI-PB-994` / Ludhiana, Punjab)
+- 🚢 **APEDA Exporter:** Sun Agri Exports (`IEC-0519928341` / Delhi & Nhava Sheva)
+- 🛒 **Private Buyer:** AgroCorp Sourcing Desk (`9876500003` / Delhi NCR)
+
+---
+
+## 6. Monorepo Project Structure
+
+```text
+SIH-ROUND-2/
+├── frontend/                         # Next.js 16 (Turbopack) + React 19 + TypeScript
+│   ├── src/
+│   │   ├── app/                      # App Router (93 compiled routes & API endpoints)
+│   │   │   ├── page.tsx              # Unified Government Service Pillars Homepage
+│   │   │   ├── login/                # 1-Click Persona Login & OTP Auth
+│   │   │   ├── farm/                 # Farm Services & 3-Layer Soil Health
+│   │   │   ├── crop-services/        # Planning Wizard & Crop Portfolio Optimizer
+│   │   │   ├── market-services/      # APMC Mandi, MSP Catalog & NCDEX Curves
+│   │   │   ├── marketplace/          # 5-Channel Unified Digital Marketplace
+│   │   │   │   ├── direct/           # Channel 2: Direct Farm-Gate Wholesale Desk
+│   │   │   │   ├── government/       # Channel 1: FCI Mandi Gate Procurement
+│   │   │   │   ├── export/           # Channel 3: APEDA Global Export Desk
+│   │   │   │   └── groups/           # Channel 4: FPO Group Sourcing Desk
+│   │   │   ├── reports/              # Official Cadastral & Soil Dossiers
+│   │   │   ├── schemes/              # PM-KISAN, PMFBY & Welfare Scheme Matcher
+│   │   │   ├── assistant/            # Dedicated Full-Page Unnati AI View
+│   │   │   ├── weather/              # 7-Day Live Forecast & Climate Baselines
+│   │   │   └── api/                  # Backend REST API Routes (Auth, ML, Market, Weather)
+│   │   ├── components/               # AppShell, UnnatiAIPopup, PageAudioTranslator, etc.
+│   │   └── lib/                      # Repositories, geo-service, i18n dictionaries, auth
+│   └── package.json                  # Next.js 16.3.2, Tailwind v4, Google Maps Loader
+│
+├── ml-service/                       # Python 3.11+ / FastAPI Machine Learning Engine
+│   ├── app/                          # FastAPI application & endpoints
+│   │   ├── api/routes/               # /predict/yield & /forecast/price
+│   │   └── models/                   # RF Yield Model & Ridge+GBR Price Ensemble
+│   ├── models_artifacts/             # Serialized joblib/pickle model binaries
+│   ├── requirements.txt              # FastAPI, scikit-learn, numpy, pandas, uvicorn
+│   └── Dockerfile                    # Container definition for ML service
+│
+├── data/                             # Curated Agricultural Datasets
+│   ├── raw/                          # Raw Agmarknet, ICAR, and IMD historical records
+│   ├── processed/                    # Feature-engineered training datasets
+│   └── reference/                    # CACP MSP schedules and state/district geo-data
+│
+├── tests/                            # Automated Verification Test Suites
+│   ├── test_unnati_gemini.ts         # Live Google Gemini 2.5 Flash API validation
+│   ├── test_farms.ts                 # Spatial farm creation & boundary validation
+│   ├── test_marketplace.ts           # 5-channel transaction & counter-offer tests
+│   └── integration/                  # End-to-end integration tests
+│
+└── README.md                         # Complete project documentation
 ```
 
 ---
 
-## 9. Agricultural Data Sources
+## 7. Machine Learning & AI Architecture
 
-| Domain | Source | Ingestion Method | Refresh Frequency |
-|---|---|---|---|
-| **Geospatial & Maps** | Google Maps Platform | Direct API / Geocoding | Real-time |
-| **Agro-Meteorology** | Open-Meteo & IMD | REST API / Historical Baselines | Hourly / Seasonal |
-| **APMC Mandi Prices** | Agmarknet / e-NAM | Scraped & Processed CSV / API | Daily |
-| **Minimum Support Price** | DA&FW / CACP (data.gov.in) | Official Gazette Releases | Seasonal (Kharif/Rabi) |
-| **International Trade** | FAOSTAT & UN Comtrade | Processed Historical Indices | Monthly / Annual |
-| **Soil & Agronomy** | Soil Health Card & ICAR | Curated Reference Datasets | Static / Curated |
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                               AGRIPROFIT AI ENGINE                                     │
+├──────────────────────────────────┬─────────────────────────────────────────────────────┤
+│ 1. Unnati AI Multimodal Core     │ Google Gemini 2.5 Flash (Direct API / OpenRouter)   │
+│    (Contextual Agronomy & Vision)│ • Computer Vision Leaf Pathology                   │
+│                                  │ • Natural Language Understanding (11 Languages)     │
+│                                  │ • Role-Specific Business Logic Adapter              │
+├──────────────────────────────────┼─────────────────────────────────────────────────────┤
+│ 2. Crop Yield Predictor          │ RandomForestRegressor (v2.0)                        │
+│    (Trained on 7,000+ ICAR rows) │ • Test R²: 0.9601 | MAE: 683 kg/ha                  │
+│                                  │ • Features: Rainfall, Temp, Soil NPK, Area, Season  │
+├──────────────────────────────────┼─────────────────────────────────────────────────────┤
+│ 3. APMC Mandi Price Forecaster   │ Ensemble: Ridge Regression + GradientBoosting       │
+│    (19,500 APMC time-series)     │ • Test R²: 0.9733 | MAPE: 3.79%                     │
+│                                  │ • Features: Modal price lag, Mandi arrivals, MSP    │
+├──────────────────────────────────┼─────────────────────────────────────────────────────┤
+│ 4. Deterministic Hedging Engine  │ 4-Factor Mathematical Constraint Solver             │
+│    (Agro-Economic Optimization)  │ • Maximizes portfolio return subject to risk caps   │
+└──────────────────────────────────┴─────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 10. Installation & Quick Start
+## 8. Installation & Quick Start
 
 ### Prerequisites
-- **Node.js:** `v20.x` or `v24.x`
+- **Node.js:** `v20.x` or `v22.x`
 - **Python:** `3.10+` or `3.11+`
 - **Package Manager:** `npm`
-- **Docker & Docker Compose** (Optional for containerized run)
 
 ### 1. Clone & Configure Environment
 
 ```bash
-git clone https://github.com/granth-alpha2/SIH2026.git
-cd SIH2026
+git clone https://github.com/granth-alpha2/SIH-ROUND-2.git
+cd SIH-ROUND-2
 
-# Copy environment template
-cp .env.example .env
-cp .env.example frontend/.env.local
+# Configure frontend environment
+cp frontend/.env.example frontend/.env.local
 ```
 
-Edit `.env` and `frontend/.env.local` to add your keys:
-- `OPENROUTER_API_KEY` (or `GEMINI_API_KEY` / `OPENAI_API_KEY`)
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
-- `JWT_SECRET`
+Ensure `frontend/.env.local` includes your API keys:
+```env
+# Gemini API Key for Unnati AI (Tested with gemini-2.5-flash)
+GEMINI_API_KEY=your_gemini_api_key_here
 
----
+# Google Maps JavaScript API (for spatial farm mapping)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key_here
 
-### 2. Single-Command Launch (FastAPI ML + Next.js)
-
-Run both the Python FastAPI ML microservice (port `8000`) and the Next.js frontend (port `3000`) simultaneously with one unified command:
-
-```bash
-npm run dev
+# JWT Authentication Secret
+JWT_SECRET=your_super_secret_jwt_key_here
+SESSION_COOKIE_NAME=agriprofit_session
 ```
 
-* **Frontend Application:** **[http://localhost:3000](http://localhost:3000)**
-* **FastAPI ML Microservice & Docs:** **[http://localhost:8000/docs](http://localhost:8000/docs)**
-
----
-
-### 3. Step-by-Step Manual Launch
+### 2. Launch FastAPI ML Microservice
 
 ```bash
-# Terminal 1: Python ML Microservice
-pip install -r ml-service/requirements.txt
-python ml-service/app/main.py
-
-# Terminal 2: Next.js Frontend
-npm --prefix frontend install
-npm --prefix frontend run dev
+# In terminal 1:
+cd ml-service
+pip install -r requirements.txt
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
+* ML API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
----
-
-## 11. Environment Variables Reference
-
-| Variable | Scope | Description |
-|---|---|---|
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Client & Server | Google Maps JavaScript API key for spatial farm mapping |
-| `OPENROUTER_API_KEY` | Server-side only | LLM API key for AI agronomist chat & image pathology |
-| `OPENROUTER_MODEL` | Server-side only | Primary LLM model (e.g. `openai/gpt-4o-mini`, `google/gemini-2.0-flash`) |
-| `JWT_SECRET` | Server-side only | HMAC secret key for signing session tokens |
-| `SESSION_COOKIE_NAME` | Server-side only | Session cookie name (`agriprofit_session`) |
-| `ML_SERVICE_URL` | Server-side only | Python ML microservice URL (default: `http://127.0.0.1:8000`) |
-| `TWOFACTOR_API_KEY` | Server-side only | Optional 2Factor SMS gateway API key |
-| `FAST2SMS_API_KEY` | Server-side only | Optional Fast2SMS OTP gateway API key |
-
-> [!NOTE]
-> All sensitive API keys are kept strictly server-side. No API keys or tokens are ever exposed to the client bundle.
-
----
-
-## 12. REST API Overview
-
-Core API endpoint groups in the Next.js backend and FastAPI ML service:
-
-| Path | Method | Description |
-|---|---|---|
-| `/api/auth/send-otp` | `POST` | Dispatches 6-digit OTP to farmer's mobile |
-| `/api/auth/verify-otp` | `POST` | Verifies OTP and sets secure HTTP-only JWT cookie |
-| `/api/auth/me` | `GET` | Returns authenticated farmer profile |
-| `/api/farms` | `GET`, `POST` | List and create spatial farm records with GeoJSON |
-| `/api/farms/[id]` | `GET`, `PUT`, `DELETE` | Manage specific farm boundaries and soil properties |
-| `/api/preferences` | `GET`, `POST` | Retrieve and update farmer risk/irrigation preferences |
-| `/api/recommendations` | `POST` | Generate ranked 4-part portfolio crop recommendation |
-| `/api/weather` | `GET` | Fetch live 7-day weather and seasonal agro-climatic norms |
-| `/api/markets` | `GET` | Retrieve live APMC mandi prices and historical trends |
-| `/api/msp` | `GET` | Official Minimum Support Price benchmarks catalog |
-| `/api/crops` | `GET` | Full agricultural crop discovery database |
-| `/api/notifications` | `GET` | Advisory alert notification inbox |
-| `/api/notifications/mark-read` | `POST` | Marks notifications as read |
-| `/api/assistant` | `POST` | Multimodal AI agronomist chat & leaf image diagnosis |
-| `/api/admin/metrics` | `GET` | Real-time platform data quality telemetry |
-| `http://127.0.0.1:8000/predict/yield` | `POST` | ML Random Forest crop yield prediction |
-| `http://127.0.0.1:8000/forecast/price` | `POST` | ML Ensemble mandi price forecasting |
-
----
-
-## 13. Database Schema & Spatial PostGIS
-
-The platform uses a PostgreSQL schema enhanced with PostGIS for spatial operations:
-- `farmers`: User profile, mobile number, verification status, and timestamp records.
-- `farms`: Geocoded boundaries (`geometry(Polygon, 4326)`), center points, and total acreage.
-- `land_sections`: Subdivided plots within a farm with specific soil and irrigation types.
-- `farmer_preferences`: Risk appetite, water access, budget caps, and excluded crops.
-- `crops_master`: Curated agronomic database (season, water need, duration, cost/acre).
-- `mandi_prices`: APMC time-series price records with min/max/modal prices.
-- `msp_records`: Government MSP benchmarks per quintal by marketing season.
-- `farm_plans`: Generated multi-crop allocation plans with financial simulation snapshots.
-- `notifications`: 5-category smart advisory alerts with priority flags.
-
----
-
-## 14. Docker Production Deployment
-
-Launch the complete containerized stack (Next.js + FastAPI ML + Nginx + PostgreSQL + Redis):
+### 3. Build & Run Frontend (Production Server)
 
 ```bash
-# Production deployment
-docker compose -f docker-compose.prod.yml up --build -d
-
-# Check running services
-docker compose -f docker-compose.prod.yml ps
+# In terminal 2:
+cd frontend
+npm install
+npm run build
+npm run start
 ```
+* **Local Access:** [http://localhost:3000](http://localhost:3000)
+* **Local Network (LAN / Second Laptop):** `http://<YOUR_IP>:3000` (e.g. `http://172.21.249.202:3000`)
 
 ---
 
-## 15. Automated Testing & Verification
+## 9. Automated Testing & Verification
 
-Comprehensive automated test suites cover unit, integration, and ML validation:
+The project includes comprehensive test suites across TypeScript, Next.js routes, and Python ML models:
 
 ```bash
-# 1. Integration Tests
-npx --prefix frontend tsx tests/integration/test_farms.ts
-npx --prefix frontend tsx tests/integration/test_portfolio.ts
-npx --prefix frontend tsx tests/integration/test_markets.ts
-npx --prefix frontend tsx tests/integration/test_weather.ts
-npx --prefix frontend tsx tests/integration/test_auth.ts
+# Test Unnati AI with live Gemini 2.5 Flash API
+npx --prefix frontend tsx tests/test_unnati_gemini.ts
 
-# 2. ML Model Tests
-python ml-service/tests/test_prediction.py
+# Test Farm Spatial Mapping & DB Repository
+npx --prefix frontend tsx tests/test_farms.ts
 
-# 3. TypeScript Compilation
+# Test 5-Channel Marketplace Transactions
+npx --prefix frontend tsx tests/test_marketplace.ts
+
+# Type-check entire frontend codebase
 npx --prefix frontend tsc --noEmit
 
-# 4. Production Next.js Build
+# Verify full Next.js production build (93 routes)
 npm --prefix frontend run build
 ```
 
 ---
 
-## 16. Security & Privacy
+## 10. Multi-Device & Network Configuration
 
-- **Server-Side Key Isolation:** Third-party credentials (OpenRouter, Google Maps server keys, DB URLs) are stored strictly in environment variables and never bundled in client code.
-- **Secure Authentication:** OTP verification paired with HTTP-only, `SameSite=Lax`, signed JWT cookies.
-- **Input Validation & Sanitization:** All incoming payloads are validated using strict TypeScript contracts and FastAPI Pydantic models.
-- **Git Secret Cleanliness:** Clean commit history with zero hardcoded API keys or sensitive `.env` files tracked in git.
-
----
-
-## 17. Future Roadmap
-
-- 🛰️ **Satellite Vegetation Monitoring:** High-resolution Sentinel-2 NDVI imagery for real-time field crop vigor tracking.
-- 📡 **IoT Soil Probe Telemetry:** Live NPK, moisture, and electrical conductivity ingestion from field sensors.
-- 🌾 **Direct e-NAM / FPO Trade Connect:** Seamless digital mandi trading linkages and procurement contracts.
-- 🎙️ **Multilingual Voice Interface:** Speech-to-speech vernacular interaction in Hindi, Punjabi, Marathi, Gujarati, and Telugu.
-- 🛡️ **Crop Insurance & Micro-Credit Advisor:** Tailored recommendations for PMFBY insurance schemes and Kisan Credit Cards (KCC).
-
----
-
-## 18. Limitations & Disclaimer
-
-- **Estimates, Not Guarantees:** AgriProfit is a **decision-support tool**, not a financial or agronomic guarantee. Crop yields, mandi prices, weather conditions, and MSP procurement depend on real-world factors beyond software control.
-- **Data Freshness:** Government mandi and MSP data rely on official reporting cadences from Agmarknet and data.gov.in.
-- **Agronomic Judgment:** Farmers should use AgriProfit's analytical output alongside advice from local Krishi Vigyan Kendras (KVKs), state extension officers, and personal judgment.
+To run the application across multiple laptops during hackathon demonstrations:
+1. Ensure both devices are connected to the same Wi-Fi or hotspot.
+2. The server binds to `0.0.0.0:3000` by default.
+3. Check the host machine's IP address:
+   ```powershell
+   # On Windows PowerShell:
+   (Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias "Wi-Fi*").IPAddress
+   ```
+4. On the second laptop, open Chrome and navigate to:
+   ```text
+   http://<HOST_IP>:3000/login
+   ```
+5. Click **"🌾 Enter as Kisan Farmer"** on Laptop 1 and **"🏛️ Enter as Govt FCI Officer"** on Laptop 2 for a zero-friction bilateral demo.
 
 ---
 
-## 19. License
+## 11. Vernacular & Accessibility Standards
 
-This project is developed for the **Smart India Hackathon (SIH 2026)**.  
+- **11 Language Locales:** Full UI translation dictionaries with instantaneous switching.
+- **Audio Screen Narrator (`PageAudioTranslator`):** Automatically synthesizes clean spoken summaries of the active page in the user's chosen language.
+- **Visual Accessibility:**
+  - `Contrast`: Standard vs High-Contrast Black/Gold themes.
+  - `Mode`: Day mode, Night mode, and Blue-Light EyeCare mode.
+  - `Typography`: Adjustable font sizes (`sm`, `md`, `lg`, `xl`).
+
+---
+
+## 12. Security & Data Integrity
+
+- **Non-Secure LAN Compatibility:** Cookies are configured with `SameSite=Lax` and dynamic secure flags, ensuring sessions work across plain HTTP local networks as well as HTTPS deployments.
+- **Key Isolation:** Gemini and OpenRouter API keys are executed strictly server-side inside Next.js route handlers.
+- **Protected Telemetry:** Data quality scores and system health checks are continuously monitored via `/api/admin/metrics`.
+
+---
+
+## 13. License & Hackathon Attribution
+
+Developed for **Smart India Hackathon (SIH 2026)**.  
+Repository: [granth-alpha2/SIH-ROUND-2](https://github.com/granth-alpha2/SIH-ROUND-2)  
 Licensed under the [MIT License](LICENSE).
