@@ -122,6 +122,7 @@ export default function UnnatiAIPopup() {
   const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
   const [micStatusText, setMicStatusText] = useState("");
   const [showPresets, setShowPresets] = useState(false);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
 
   // Movable and Resizable Window State
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
@@ -200,17 +201,62 @@ export default function UnnatiAIPopup() {
     ]);
   }
 
-  // Handle Image Upload & Conversion to Base64
-  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setImageName(file.name);
+  // Handle Image Upload & Conversion to Base64 (Files, Drag-and-Drop & Paste)
+  function processImageFile(file: File) {
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file (PNG, JPG, JPEG, WebP).");
+      return;
+    }
+    setImageName(file.name || "Uploaded photo");
     const reader = new FileReader();
     reader.onload = () => {
       setSelectedImage(reader.result as string);
+      setShowPresets(false);
     };
     reader.readAsDataURL(file);
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      processImageFile(file);
+    }
+    e.target.value = "";
+  }
+
+  function handlePaste(e: React.ClipboardEvent) {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) {
+        const file = items[i].getAsFile();
+        if (file) {
+          processImageFile(file);
+          break;
+        }
+      }
+    }
+  }
+
+  function handleDragOver(e: React.DragEvent) {
+    if (e.dataTransfer.types.includes("Files")) {
+      e.preventDefault();
+      setIsDraggingFile(true);
+    }
+  }
+
+  function handleDragLeave(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDraggingFile(false);
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDraggingFile(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      processImageFile(file);
+    }
   }
 
   // Voice Recognition (STT via Web Speech API)
@@ -630,6 +676,9 @@ export default function UnnatiAIPopup() {
       {isOpen && (
         <aside
           aria-label="Unnati AI Chatbot Window"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
           style={
             position
               ? {
@@ -649,6 +698,17 @@ export default function UnnatiAIPopup() {
             isDraggingRef.current ? "select-none shadow-emerald-500/25 shadow-2xl" : ""
           }`}
         >
+          {/* Visual Drop Overlay for Drag-and-Drop Image Attachment */}
+          {isDraggingFile && (
+            <div className="absolute inset-0 bg-emerald-950/85 backdrop-blur-xs z-50 flex flex-col items-center justify-center p-6 border-4 border-dashed border-emerald-400 rounded-3xl pointer-events-none text-white text-center animate-in fade-in">
+              <span className="text-6xl mb-3 animate-bounce">📸</span>
+              <h3 className="text-lg font-black text-white">Drop Photo Here</h3>
+              <p className="text-xs text-emerald-200 mt-1 max-w-xs">
+                Release your mouse to attach this leaf or crop photo for Unnati AI vision diagnosis
+              </p>
+            </div>
+          )}
+
           {/* Resize Handles (Active when not minimized and not maximized) */}
           {!isMinimized && !isMaximized && (
             <>
@@ -908,34 +968,69 @@ export default function UnnatiAIPopup() {
                 </div>
               </div>
 
-              {/* Leaf Scan Presets Drawer Toggle */}
+              {/* Leaf Scan Presets Drawer */}
               {showPresets && (
-                <div className="p-3 bg-amber-50 dark:bg-amber-950/60 border-t border-amber-200 dark:border-amber-900 grid grid-cols-3 gap-2 shrink-0">
-                  {PRESET_LEAF_SCANS.map((preset) => (
+                <div className="p-3 bg-amber-50 dark:bg-amber-950/60 border-t border-amber-200 dark:border-amber-900 space-y-2 shrink-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-amber-950 dark:text-amber-200 flex items-center gap-1">
+                      <span>🌿</span> <span>Crop Disease Image Diagnosis</span>
+                    </span>
                     <button
-                      key={preset.title}
+                      type="button"
+                      onClick={() => setShowPresets(false)}
+                      className="text-[11px] font-bold text-amber-700 hover:text-amber-950 dark:text-amber-300 cursor-pointer"
+                    >
+                      Close ✕
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {/* Primary Button: Upload from System / PC */}
+                    <button
                       type="button"
                       onClick={() => {
-                        setSelectedImage(preset.image);
-                        setImageName(preset.title);
+                        fileInputRef.current?.click();
                         setShowPresets(false);
                       }}
-                      className="p-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-left hover:border-emerald-600 transition-all cursor-pointer"
+                      className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-left border-2 border-emerald-500 transition-all cursor-pointer flex flex-col justify-between group shadow-sm hover:scale-[1.02]"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={preset.image}
-                        alt={preset.title}
-                        className="w-full h-12 rounded object-cover mb-1"
-                      />
-                      <p className="text-[10px] font-bold text-slate-900 dark:text-slate-100 truncate">
-                        {preset.title}
+                      <div className="w-full h-12 rounded-lg bg-emerald-800/60 flex items-center justify-center text-2xl mb-1 group-hover:scale-110 transition-transform">
+                        📁
+                      </div>
+                      <p className="text-[11px] font-black text-white leading-tight">
+                        + Choose from Computer
                       </p>
-                      <span className="text-[9px] text-amber-700 dark:text-amber-300 block">
-                        {preset.badge}
+                      <span className="text-[9px] text-emerald-100 block font-medium">
+                        Any PNG, JPG, WebP photo
                       </span>
                     </button>
-                  ))}
+
+                    {PRESET_LEAF_SCANS.map((preset) => (
+                      <button
+                        key={preset.title}
+                        type="button"
+                        onClick={() => {
+                          setSelectedImage(preset.image);
+                          setImageName(preset.title);
+                          setShowPresets(false);
+                        }}
+                        className="p-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-left hover:border-emerald-600 transition-all cursor-pointer flex flex-col justify-between"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={preset.image}
+                          alt={preset.title}
+                          className="w-full h-12 rounded object-cover mb-1"
+                        />
+                        <p className="text-[10px] font-bold text-slate-900 dark:text-slate-100 truncate">
+                          {preset.title}
+                        </p>
+                        <span className="text-[9px] text-amber-700 dark:text-amber-300 block">
+                          Sample · {preset.badge}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -948,7 +1043,10 @@ export default function UnnatiAIPopup() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setSelectedImage(null)}
+                    onClick={() => {
+                      setSelectedImage(null);
+                      setImageName("");
+                    }}
                     className="text-rose-600 font-bold hover:underline cursor-pointer"
                   >
                     Remove ✕
@@ -971,23 +1069,38 @@ export default function UnnatiAIPopup() {
               )}
 
               {/* Bottom Input Area */}
-              <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex items-center gap-2 shrink-0">
-                {/* Scan Leaf Button */}
+              <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex items-center gap-1.5 sm:gap-2 shrink-0">
+                {/* 1. Direct System Upload Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-2.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1 transition-all cursor-pointer shrink-0 active:scale-95"
+                  title="Upload crop/leaf photo from your computer or device"
+                >
+                  <span className="text-sm">📁</span>
+                  <span className="hidden xs:inline sm:inline">Add Photo</span>
+                </button>
+
+                {/* 2. Sample Presets Drawer Toggle */}
                 <button
                   type="button"
                   onClick={() => setShowPresets(!showPresets)}
-                  className="px-2.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 flex items-center gap-1 transition-all cursor-pointer shrink-0"
-                  title="Scan crop leaf for diagnosis"
+                  className={`px-2 py-2 rounded-xl text-xs font-bold border flex items-center gap-1 transition-all cursor-pointer shrink-0 ${
+                    showPresets
+                      ? "bg-amber-100 dark:bg-amber-900 text-amber-900 dark:text-amber-200 border-amber-400"
+                      : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700"
+                  }`}
+                  title="View preset crop disease leaf samples"
                 >
-                  <span>📸</span>
-                  <span className="hidden sm:inline">Leaf</span>
+                  <span className="text-sm">🧪</span>
+                  <span className="hidden md:inline">Samples</span>
                 </button>
 
                 {/* Real File Input for device camera / file upload */}
                 <input
                   type="file"
                   ref={fileInputRef}
-                  accept="image/*"
+                  accept="image/*,.png,.jpg,.jpeg,.webp,.heic"
                   onChange={handleFileSelect}
                   className="hidden"
                 />
@@ -996,7 +1109,7 @@ export default function UnnatiAIPopup() {
                 <button
                   type="button"
                   onClick={toggleVoiceInput}
-                  className={`px-2.5 py-2 rounded-xl text-xs font-bold border flex items-center gap-1 transition-all cursor-pointer shrink-0 ${
+                  className={`px-2 py-2 rounded-xl text-xs font-bold border flex items-center gap-1 transition-all cursor-pointer shrink-0 ${
                     isListening
                       ? "bg-rose-600 text-white border-rose-600 animate-pulse"
                       : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:bg-slate-200"
@@ -1004,21 +1117,22 @@ export default function UnnatiAIPopup() {
                   title="Voice input in Hindi / English"
                 >
                   <span>🎤</span>
-                  <span className="hidden sm:inline">बोलें</span>
+                  <span className="hidden md:inline">बोलें</span>
                 </button>
 
-                {/* Text input */}
+                {/* Text input with onPaste image support */}
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
+                  onPaste={handlePaste}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
                       handleSend();
                     }
                   }}
-                  placeholder="Ask उन्नति AI (English, हिंदी, Hinglish)..."
+                  placeholder="Ask उन्नति AI or paste image..."
                   className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600"
                 />
 
