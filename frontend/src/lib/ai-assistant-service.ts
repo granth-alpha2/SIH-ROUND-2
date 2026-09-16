@@ -226,16 +226,24 @@ class UnifiedAgronomistAIClient {
   async generateResponse(
     messages: { role: string; content: string | object[] }[]
   ): Promise<string | null> {
+    const geminiKey = (this.geminiKey || process.env.GEMINI_API_KEY || "").trim();
     // 1. If Gemini direct API key is set
-    if (this.geminiKey) {
-      const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash"];
+    if (geminiKey) {
+      const preferredModel = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+      const geminiModels = [
+        preferredModel,
+        "gemini-2.5-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-3.7-flash",
+      ].filter((v, i, a) => a.indexOf(v) === i);
+
       for (const m of geminiModels) {
         try {
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`, {
             method: "POST",
             signal: AbortSignal.timeout(12000),
             headers: {
-              Authorization: `Bearer ${this.geminiKey}`,
+              Authorization: `Bearer ${geminiKey}`,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -248,7 +256,12 @@ class UnifiedAgronomistAIClient {
           if (res.ok) {
             const data = await res.json();
             const reply = cleanModelResponse(data.choices?.[0]?.message?.content || "");
-            if (reply) return reply;
+            if (reply && reply.length > 10) {
+              console.log(`[Unnati AI] Responded via Gemini model: ${m}`);
+              return reply;
+            }
+          } else {
+            console.warn(`[Gemini API] HTTP ${res.status} on model ${m}`);
           }
         } catch (e) {
           console.warn(`[Gemini API] Failed on model ${m}:`, e);
@@ -342,7 +355,7 @@ function generateContextualRuleResponse(
   hasImage = false,
   role: "farmer" | "government_officer" | "exporter" | "export_buyer" = "farmer"
 ): string {
-  const query = userQuery.toLowerCase();
+  const query = (typeof userQuery === "string" ? userQuery : String(userQuery || "")).toLowerCase();
 
   // 1. Computer Vision Leaf Diagnosis (Any role or Farmer)
   if (hasImage || query.includes("scan") || query.includes("photo") || query.includes("image") || query.includes("leaf")) {

@@ -344,7 +344,7 @@ CRITICAL RULES:
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "gemini-2.0-flash",
+            model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
             messages: [
               { role: "system", content: systemPrompt },
               { role: "user", content: `Context: ${context || "agricultural portal"}\nText: ${text}` },
