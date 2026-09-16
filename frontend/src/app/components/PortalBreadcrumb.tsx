@@ -102,23 +102,23 @@ export default function PortalBreadcrumb({
   return (
     <nav
       aria-label="Breadcrumb"
-      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600 font-sans shadow-2xs"
+      className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-300 font-sans shadow-2xs"
     >
       <div className="flex items-center gap-1.5 flex-wrap">
-        <span className="text-slate-400 font-bold mr-1">📍 You are here:</span>
+        <span className="text-slate-400 dark:text-slate-500 font-semibold mr-1">📍 You are here:</span>
         {items.map((item, idx) => {
           const isLast = idx === items.length - 1;
           return (
             <React.Fragment key={idx}>
-              {idx > 0 && <span className="text-slate-400 font-bold mx-1">›</span>}
+              {idx > 0 && <span className="text-slate-400 dark:text-slate-600 font-bold mx-1">›</span>}
               {isLast || !item.href ? (
-                <span className="font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200 shadow-2xs">
+                <span className="font-semibold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 shadow-2xs">
                   {item.label}
                 </span>
               ) : (
                 <Link
                   href={item.href}
-                  className="font-medium text-emerald-800 hover:text-emerald-950 hover:underline"
+                  className="font-medium text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 hover:underline"
                 >
                   {item.label}
                 </Link>
@@ -138,7 +138,7 @@ export default function PortalBreadcrumb({
               router.push("/");
             }
           }}
-          className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 rounded-lg border border-slate-300 font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
+          className="px-2.5 py-1 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-slate-100 rounded-md border border-slate-300 dark:border-slate-700 font-semibold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
         >
           <span>←</span>
           <span>Back</span>

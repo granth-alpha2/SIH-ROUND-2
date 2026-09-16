@@ -40,6 +40,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 document.documentElement.setAttribute('data-contrast', hc ? 'high' : 'normal');
                 document.documentElement.setAttribute('data-font-size', fs);
                 document.documentElement.setAttribute('lang', l);
+                if (m === 'night') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
               } catch (e) {}
             `,
           }}

@@ -29,6 +29,11 @@ export default function ThemeToggle() {
     document.documentElement.setAttribute("data-theme", themeKey);
     document.documentElement.setAttribute("data-mode", m);
     document.documentElement.setAttribute("data-eyecare", ec ? "true" : "false");
+    if (m === "night") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }
 
   function handleModeChange(newMode: BaseMode) {
@@ -70,7 +75,7 @@ export default function ThemeToggle() {
           type="button"
           onClick={() => handleModeChange("day")}
           title="Switch to Day Mode (Crisp High-Contrast Daylight)"
-          className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold font-['Space_Grotesk'] transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
             mode === "day"
               ? "bg-[var(--bg-surface)] text-[var(--color-primary-text)] shadow-xs font-bold ring-1 ring-[var(--border-default)]"
               : "text-[var(--text-muted)] hover:text-[var(--text-primary)] opacity-80 hover:opacity-100"
@@ -84,7 +89,7 @@ export default function ThemeToggle() {
           type="button"
           onClick={() => handleModeChange("night")}
           title="Switch to Night Mode (Deep OLED Dark Theme)"
-          className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold font-['Space_Grotesk'] transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
             mode === "night"
               ? "bg-[var(--bg-surface)] text-[var(--color-primary-text)] shadow-xs font-bold ring-1 ring-[var(--border-accent)]"
               : "text-[var(--text-muted)] hover:text-[var(--text-primary)] opacity-80 hover:opacity-100"
@@ -100,7 +105,7 @@ export default function ThemeToggle() {
         type="button"
         onClick={toggleEyeCare}
         title={`Eye Care Filter is ${eyeCare ? "Active" : "Disabled"}. Reduces blue light for reduced eye strain.`}
-        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold font-['Space_Grotesk'] transition-all cursor-pointer border ${
+        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer border ${
           eyeCare
             ? "bg-[var(--color-amber-bg)] text-[var(--color-amber-text)] border-[var(--color-amber-border)] shadow-2xs font-bold"
             : "bg-transparent text-[var(--text-muted)] border-transparent hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"

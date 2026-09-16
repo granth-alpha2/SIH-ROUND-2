@@ -92,6 +92,11 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                         (localStorage.getItem("agriprofit_theme") === "night" ? "night" : "day");
       setThemeMode(savedMode);
       document.documentElement.setAttribute("data-mode", savedMode);
+      if (savedMode === "night") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
 
       const savedEc = localStorage.getItem("agriprofit_eyecare") === "true";
       setEyeCare(savedEc);
@@ -166,6 +171,11 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
       localStorage.setItem("agriprofit_mode", nextMode);
       localStorage.setItem("agriprofit_theme", nextMode);
       document.documentElement.setAttribute("data-mode", nextMode);
+      if (nextMode === "night") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
       if (!highContrast) {
         document.documentElement.setAttribute("data-theme", eyeCare ? `${nextMode}-eyecare` : nextMode);
       }
