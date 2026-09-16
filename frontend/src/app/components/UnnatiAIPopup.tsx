@@ -123,6 +123,21 @@ export default function UnnatiAIPopup() {
   const [micStatusText, setMicStatusText] = useState("");
   const [showPresets, setShowPresets] = useState(false);
 
+  // Movable and Resizable Window State
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const [size, setSize] = useState<{ width: number; height: number }>({ width: 540, height: 660 });
+  const [isMaximized, setIsMaximized] = useState(false);
+  const prevRectRef = useRef<{ position: { x: number; y: number } | null; size: { width: number; height: number } }>({
+    position: null,
+    size: { width: 540, height: 660 },
+  });
+
+  const isDraggingRef = useRef(false);
+  const dragStartRef = useRef({ mouseX: 0, mouseY: 0, winX: 0, winY: 0 });
+
+  const isResizingRef = useRef<string | null>(null);
+  const resizeStartRef = useRef({ mouseX: 0, mouseY: 0, width: 0, height: 0, winX: 0, winY: 0 });
+
   useEffect(() => {
     const handleOpen = (e?: Event) => {
       setIsOpen(true);
@@ -358,6 +373,139 @@ export default function UnnatiAIPopup() {
     }
   }
 
+  // Toggle Maximize / Restore
+  function toggleMaximize() {
+    if (isMaximized) {
+      setPosition(prevRectRef.current.position);
+      setSize(prevRectRef.current.size);
+      setIsMaximized(false);
+    } else {
+      prevRectRef.current = { position, size };
+      const margin = 16;
+      setPosition({ x: margin, y: margin });
+      setSize({
+        width: typeof window !== "undefined" ? window.innerWidth - margin * 2 : 1200,
+        height: typeof window !== "undefined" ? window.innerHeight - margin * 2 : 800,
+      });
+      setIsMaximized(true);
+      setIsMinimized(false);
+    }
+  }
+
+  // Handle Drag Start from header
+  function handleDragStart(e: React.MouseEvent) {
+    if (isMaximized) return;
+    if ((e.target as HTMLElement).closest("button") || (e.target as HTMLElement).closest("input")) {
+      return;
+    }
+    e.preventDefault();
+    isDraggingRef.current = true;
+
+    const currentX = position ? position.x : Math.max(12, (typeof window !== "undefined" ? window.innerWidth : 1200) - size.width - 24);
+    const currentY = position ? position.y : Math.max(12, (typeof window !== "undefined" ? window.innerHeight : 800) - (isMinimized ? 64 : size.height) - 24);
+
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      winX: currentX,
+      winY: currentY,
+    };
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      if (!isDraggingRef.current) return;
+      const deltaX = ev.clientX - dragStartRef.current.mouseX;
+      const deltaY = ev.clientY - dragStartRef.current.mouseY;
+
+      const currentH = isMinimized ? 64 : size.height;
+      const maxX = Math.max(0, window.innerWidth - size.width - 10);
+      const maxY = Math.max(0, window.innerHeight - currentH - 10);
+
+      const newX = Math.max(10, Math.min(maxX, dragStartRef.current.winX + deltaX));
+      const newY = Math.max(10, Math.min(maxY, dragStartRef.current.winY + deltaY));
+
+      setPosition({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  }
+
+  // Handle Resize Start from edges / corners
+  function handleResizeStart(direction: string, e: React.MouseEvent) {
+    if (isMaximized || isMinimized) return;
+    e.preventDefault();
+    e.stopPropagation();
+    isResizingRef.current = direction;
+
+    const currentX = position ? position.x : Math.max(12, (typeof window !== "undefined" ? window.innerWidth : 1200) - size.width - 24);
+    const currentY = position ? position.y : Math.max(12, (typeof window !== "undefined" ? window.innerHeight : 800) - size.height - 24);
+
+    resizeStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      width: size.width,
+      height: size.height,
+      winX: currentX,
+      winY: currentY,
+    };
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      if (!isResizingRef.current) return;
+      const dir = isResizingRef.current;
+      const deltaX = ev.clientX - resizeStartRef.current.mouseX;
+      const deltaY = ev.clientY - resizeStartRef.current.mouseY;
+
+      const minW = 340;
+      const minH = 400;
+      const maxW = Math.max(minW, window.innerWidth - 20);
+      const maxH = Math.max(minH, window.innerHeight - 20);
+
+      let newWidth = resizeStartRef.current.width;
+      let newHeight = resizeStartRef.current.height;
+      let newX = resizeStartRef.current.winX;
+      let newY = resizeStartRef.current.winY;
+
+      if (dir.includes("right")) {
+        newWidth = Math.max(minW, Math.min(maxW, resizeStartRef.current.width + deltaX));
+      }
+      if (dir.includes("left")) {
+        const candidateW = resizeStartRef.current.width - deltaX;
+        if (candidateW >= minW && candidateW <= maxW) {
+          newWidth = candidateW;
+          newX = resizeStartRef.current.winX + deltaX;
+        }
+      }
+      if (dir.includes("bottom")) {
+        newHeight = Math.max(minH, Math.min(maxH, resizeStartRef.current.height + deltaY));
+      }
+      if (dir.includes("top")) {
+        const candidateH = resizeStartRef.current.height - deltaY;
+        if (candidateH >= minH && candidateH <= maxH) {
+          newHeight = candidateH;
+          newY = resizeStartRef.current.winY + deltaY;
+        }
+      }
+
+      setSize({ width: newWidth, height: newHeight });
+      setPosition({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+      isResizingRef.current = null;
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  }
+
   function renderMessageContent(text: string) {
     const segments = text.split(/(```[\s\S]*?```)/g);
     return segments.map((seg, idx) => {
@@ -478,20 +626,96 @@ export default function UnnatiAIPopup() {
         </div>
       )}
 
-      {/* 2. Floating Popup Window (When Open) */}
+      {/* 2. Floating Popup Window (When Open - Movable & Resizable) */}
       {isOpen && (
         <aside
           aria-label="Unnati AI Chatbot Window"
-          className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[95vw] sm:w-[490px] md:w-[530px] bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
-            isMinimized ? "h-16" : "h-[640px] max-h-[88vh]"
+          style={
+            position
+              ? {
+                  left: `${position.x}px`,
+                  top: `${position.y}px`,
+                  width: `${size.width}px`,
+                  height: isMinimized ? "64px" : `${size.height}px`,
+                }
+              : {
+                  right: "20px",
+                  bottom: "20px",
+                  width: `${size.width}px`,
+                  height: isMinimized ? "64px" : `${size.height}px`,
+                }
+          }
+          className={`fixed z-50 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden max-w-[98vw] max-h-[98vh] transition-shadow ${
+            isDraggingRef.current ? "select-none shadow-emerald-500/25 shadow-2xl" : ""
           }`}
         >
-          {/* Header Bar */}
+          {/* Resize Handles (Active when not minimized and not maximized) */}
+          {!isMinimized && !isMaximized && (
+            <>
+              {/* Edge handles */}
+              <div
+                onMouseDown={(e) => handleResizeStart("top", e)}
+                className="absolute top-0 left-4 right-4 h-2.5 cursor-ns-resize z-40 hover:bg-emerald-500/20 transition-colors"
+                title="Drag to resize height"
+              />
+              <div
+                onMouseDown={(e) => handleResizeStart("bottom", e)}
+                className="absolute bottom-0 left-4 right-4 h-2.5 cursor-ns-resize z-40 hover:bg-emerald-500/20 transition-colors"
+                title="Drag to resize height"
+              />
+              <div
+                onMouseDown={(e) => handleResizeStart("left", e)}
+                className="absolute top-4 bottom-4 left-0 w-2.5 cursor-ew-resize z-40 hover:bg-emerald-500/20 transition-colors"
+                title="Drag to resize width"
+              />
+              <div
+                onMouseDown={(e) => handleResizeStart("right", e)}
+                className="absolute top-4 bottom-4 right-0 w-2.5 cursor-ew-resize z-40 hover:bg-emerald-500/20 transition-colors"
+                title="Drag to resize width"
+              />
+
+              {/* Corner handles */}
+              <div
+                onMouseDown={(e) => handleResizeStart("top-left", e)}
+                className="absolute top-0 left-0 w-5 h-5 cursor-nwse-resize z-50 flex items-start justify-start p-1 text-white/50 hover:text-amber-300 transition-colors select-none"
+                title="Drag to resize"
+              >
+                <span className="text-[10px] leading-none">◤</span>
+              </div>
+              <div
+                onMouseDown={(e) => handleResizeStart("top-right", e)}
+                className="absolute top-0 right-0 w-5 h-5 cursor-nesw-resize z-50 flex items-start justify-end p-1 text-white/50 hover:text-amber-300 transition-colors select-none"
+                title="Drag to resize"
+              >
+                <span className="text-[10px] leading-none">◥</span>
+              </div>
+              <div
+                onMouseDown={(e) => handleResizeStart("bottom-left", e)}
+                className="absolute bottom-0 left-0 w-5 h-5 cursor-nesw-resize z-50 flex items-end justify-start p-1 text-slate-400 hover:text-emerald-500 transition-colors select-none"
+                title="Drag to resize"
+              >
+                <span className="text-[10px] leading-none">◣</span>
+              </div>
+              <div
+                onMouseDown={(e) => handleResizeStart("bottom-right", e)}
+                className="absolute bottom-1 right-1 w-6 h-6 cursor-nwse-resize z-50 flex items-end justify-end p-1 text-slate-400 hover:text-emerald-600 transition-colors select-none"
+                title="Drag corner to resize"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M10 2L2 10M10 6L6 10M10 9L9 10" />
+                </svg>
+              </div>
+            </>
+          )}
+
+          {/* Header Bar - Draggable */}
           <div
-            className={`p-3.5 bg-gradient-to-r ${currentConfig.color} text-white flex items-center justify-between gap-2 shadow-md shrink-0 select-none`}
+            onMouseDown={handleDragStart}
+            className={`p-3 bg-gradient-to-r ${currentConfig.color} text-white flex items-center justify-between gap-2 shadow-md shrink-0 select-none cursor-grab active:cursor-grabbing border-b border-white/10`}
+            title="Click and drag header to move window"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-xl shrink-0">
+            <div className="flex items-center gap-2 min-w-0 pointer-events-none">
+              <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-lg shrink-0">
                 🤖
               </div>
               <div className="min-w-0">
@@ -501,6 +725,9 @@ export default function UnnatiAIPopup() {
                   </h2>
                   <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 font-black rounded text-[9px] uppercase tracking-wider">
                     NATIONAL AI
+                  </span>
+                  <span className="text-[10px] text-emerald-200/80 hidden sm:inline">
+                    · ⠿ Drag to Move
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-200 truncate flex items-center gap-1">
@@ -516,9 +743,17 @@ export default function UnnatiAIPopup() {
                 type="button"
                 onClick={() => setIsMinimized(!isMinimized)}
                 className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
-                title={isMinimized ? "Expand window" : "Minimize window"}
+                title={isMinimized ? "Restore height" : "Minimize window"}
               >
-                {isMinimized ? "□" : "−"}
+                {isMinimized ? "⌃" : "−"}
+              </button>
+              <button
+                type="button"
+                onClick={toggleMaximize}
+                className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+                title={isMaximized ? "Restore window size" : "Maximize window"}
+              >
+                {isMaximized ? "❐" : "□"}
               </button>
               <button
                 type="button"
