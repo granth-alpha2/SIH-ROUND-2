@@ -68,31 +68,31 @@ export default function MarketSnapshotCards({ stats }: MarketSnapshotProps) {
           </p>
         </div>
 
-        {/* Card 4: Export Trade Reference */}
-        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm space-y-1 hover:border-indigo-500 transition-colors">
+        {/* Card 4: Direct Buyer Premium */}
+        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm space-y-1 hover:border-emerald-500 transition-colors">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase">Export Reference</span>
-            <span className="text-xs">🌍</span>
+            <span className="text-[11px] font-bold text-slate-500 uppercase">Direct Premium</span>
+            <span className="text-xs">🛒</span>
           </div>
-          <div className="text-xl font-black text-indigo-700">
-            ₹3,150 <span className="text-xs font-semibold text-slate-500">/q</span>
+          <div className="text-xl font-black text-emerald-700">
+            +₹150 <span className="text-xs font-semibold text-slate-500">/q</span>
           </div>
-          <p className="text-[10px] text-indigo-600 font-semibold leading-tight">
-            UAE FOB Reference (FAOSTAT)
+          <p className="text-[10px] text-emerald-600 font-semibold leading-tight">
+            Avg miller markup over Mandi
           </p>
         </div>
 
-        {/* Card 5: Net Farmer Realization */}
-        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm space-y-1 hover:border-emerald-500 transition-colors">
+        {/* Card 5: FPO Group Savings */}
+        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm space-y-1 hover:border-indigo-500 transition-colors">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase">Export Net Realiz.</span>
-            <span className="text-xs">💰</span>
+            <span className="text-[11px] font-bold text-slate-500 uppercase">Group Pooling</span>
+            <span className="text-xs">👥</span>
           </div>
-          <div className="text-xl font-black text-emerald-700">
-            ₹2,550 <span className="text-xs font-semibold text-slate-500">/q</span>
+          <div className="text-xl font-black text-indigo-700">
+            Save ₹45 <span className="text-xs font-semibold text-slate-500">/q</span>
           </div>
           <p className="text-[10px] text-slate-500 font-semibold leading-tight">
-            Post logistics & exporter fee
+            Shared logistics & handling
           </p>
         </div>
 

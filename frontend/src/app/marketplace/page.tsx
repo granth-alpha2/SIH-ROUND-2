@@ -9,7 +9,7 @@ import CropDiscoveryCards, { CropCardData } from "./components/CropDiscoveryCard
 import MspRequestModal from "./components/MspRequestModal";
 import DirectMarketCatalog from "./components/DirectMarketCatalog";
 import GroupSellingBoard from "./components/GroupSellingBoard";
-import ExportOpportunitiesBoard from "./components/ExportOpportunitiesBoard";
+import MarketplacePillarCards from "./components/MarketplacePillarCards";
 import RequestBasketDrawer from "./components/RequestBasketDrawer";
 import ProcurementReceiptModal from "./components/ProcurementReceiptModal";
 import { MarketplaceUserRole, RequestBasketItem, ProcurementReceipt, DirectMarketListing } from "@/lib/marketplace-types";
@@ -129,75 +129,23 @@ export default function MarketplacePage() {
           onSearchChange={setSearchQuery}
         />
 
-        {/* Institutional Workstation Banners when logged in under official personas */}
-        {currentRole === "government_buyer" && (
-          <div className="p-4 bg-[#0b4d75] text-white rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-md border-l-4 border-amber-400">
-            <div className="space-y-1 max-w-2xl">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-amber-400 text-slate-950 font-black rounded text-[10px] uppercase tracking-wider">
-                  🔒 INSTITUTIONAL SESSION ACTIVE
-                </span>
-                <span className="text-xs text-amber-200 font-mono font-bold">FCI Station #PB-LDH-01</span>
-              </div>
-              <h2 className="text-base font-black">Official Mandi Procurement Station Desk Available</h2>
-              <p className="text-xs text-slate-200 leading-relaxed">
-                You are currently authenticated with Government Procurement Officer credentials. Review pending farmer MSP applications, verify 12-digit gate passes, execute UIDAI iris biometrics, and record weighbridge intake in your dedicated institutional terminal.
-              </p>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <Link
-                href="/marketplace/government"
-                className="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer"
-              >
-                <span>🏛️</span>
-                <span>Open Govt Procurement Console</span>
-                <span>➔</span>
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* 1. Layered Marketplace Pillar Cards (4 Dashboard-style Role Cards) */}
+        <MarketplacePillarCards />
 
-        {currentRole === "exporter" && (
-          <div className="p-4 bg-gradient-to-r from-indigo-900 to-slate-900 text-white rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-md border-l-4 border-indigo-400">
-            <div className="space-y-1 max-w-2xl">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-amber-400 text-slate-950 font-black rounded text-[10px] uppercase tracking-wider">
-                  🚢 APEDA EXPORTER DESK ACTIVE
-                </span>
-                <span className="text-xs text-indigo-200 font-mono font-bold">Category-A Export Hub</span>
-              </div>
-              <h2 className="text-base font-black">International Export Opportunities Gateway Available</h2>
-              <p className="text-xs text-slate-200 leading-relaxed">
-                Connect directly with farmer producer groups, inspect international FOB parity benchmarks across 10 destinations, and match export consignments in the dedicated trade terminal.
-              </p>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <Link
-                href="/marketplace/export"
-                className="px-4 py-2.5 bg-indigo-500 hover:bg-indigo-400 text-white font-black rounded-xl text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer"
-              >
-                <span>🚢</span>
-                <span>Open APEDA Export Gateway</span>
-                <span>➔</span>
-              </Link>
-            </div>
-          </div>
-        )}
-
-        {/* Today's Market Snapshot Cards */}
+        {/* 2. Today's Farmer Market Snapshot Cards */}
         <MarketSnapshotCards stats={stats} />
 
-        {/* Quick Selling Channel Cards */}
-        <section className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-6 shadow-md">
+        {/* 3. Quick Selling Channel Cards */}
+        <section id="farmer-selling-section" className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-6 shadow-md scroll-mt-6">
           <div className="max-w-3xl space-y-2">
             <span className="px-2.5 py-1 bg-emerald-700 text-emerald-100 rounded-full font-bold text-xs uppercase tracking-wider">
-              Two Primary Selling Modes
+              Farmer Produce Selling Channels
             </span>
             <h2 className="text-xl sm:text-2xl font-black tracking-tight">
               Choose Your Agricultural Selling Channel
             </h2>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Sell assured volume to the Government at statutory Minimum Support Prices (MSP), or list independent harvest directly for private wholesale buyers, cooperative groups, and Indian export houses.
+              Sell assured volume to the Government at statutory Minimum Support Prices (MSP), or list independent harvest directly for private wholesale buyers and cooperative farmer producer groups.
             </p>
             <div className="flex flex-wrap gap-3 pt-3">
               <button
@@ -231,7 +179,7 @@ export default function MarketplacePage() {
           </div>
         </section>
 
-        {/* Crop Discovery Cards Section */}
+        {/* 4. Crop Discovery Cards Section */}
         <CropDiscoveryCards
           crops={filteredCrops}
           onSelectCropForMsp={handleOpenMspForCrop}
@@ -241,7 +189,7 @@ export default function MarketplacePage() {
           }}
         />
 
-        {/* Direct Market & Group Selling Anchor Section */}
+        {/* 5. Direct Market & Group Selling Anchor Section */}
         <div id="direct-market-section" className="pt-4 space-y-6">
           <div className="border-t border-slate-200 pt-6">
             <DirectMarketCatalog onAddToBasket={handleAddToBasket} />
@@ -251,8 +199,30 @@ export default function MarketplacePage() {
             <GroupSellingBoard />
           </div>
 
+          {/* Institutional Cross-Border Gateway Referral */}
           <div className="border-t border-slate-200 pt-6">
-            <ExportOpportunitiesBoard />
+            <div className="p-6 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white rounded-3xl border border-indigo-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+              <div className="space-y-1 max-w-2xl">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 bg-amber-400 text-slate-950 font-black rounded text-[10px] uppercase tracking-wider">
+                    APEDA Trade Gateway
+                  </span>
+                  <span className="text-xs text-indigo-300 font-mono font-bold">Layer 2 · Official Clearance</span>
+                </div>
+                <h3 className="text-lg font-black tracking-tight">Looking for Cross-Border &amp; International Export Corridors?</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  APEDA-licensed export houses, container aggregator firms, and international buyers operate in the dedicated Trade Terminal. Authenticate with official DGFT / APEDA credentials to access international benchmarks.
+                </p>
+              </div>
+              <Link
+                href="/marketplace/export"
+                className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-xs flex items-center gap-2 shadow-md transition-all shrink-0 cursor-pointer"
+              >
+                <span>🚢</span>
+                <span>Open APEDA Exporter Gateway 🔒</span>
+                <span>➔</span>
+              </Link>
+            </div>
           </div>
         </div>
 

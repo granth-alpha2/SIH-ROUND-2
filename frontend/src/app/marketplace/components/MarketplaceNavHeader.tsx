@@ -103,54 +103,56 @@ export default function MarketplaceNavHeader({
           </div>
         </div>
 
-        {/* SIH Judge Demo Persona Switcher */}
-        <div className="flex items-center gap-2 ml-auto flex-wrap bg-slate-50 border border-slate-200 rounded-lg p-1.5">
-          <span className="text-[11px] font-bold text-slate-600 px-1">
-            Demo Persona:
+        {/* Layered Portal Access & Restricted Desk Clearances */}
+        <div className="flex items-center gap-2 ml-auto flex-wrap bg-slate-50 border border-slate-200 rounded-xl p-1.5">
+          <span className="text-[11px] font-bold text-slate-500 px-1">
+            Access Layer:
           </span>
           <button
             type="button"
             onClick={() => handleSwitchPersona("farmer")}
-            className={`px-2.5 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               currentRole === "farmer"
-                ? "bg-emerald-700 text-white shadow-sm"
+                ? "bg-emerald-700 text-white shadow-xs font-black"
                 : "text-slate-700 hover:bg-slate-200"
             }`}
           >
-            🌾 Farmer
+            🌾 Farmer Desk (Open)
           </button>
-          <button
-            type="button"
-            onClick={() => handleSwitchPersona("government_buyer")}
-            className={`px-2.5 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+          <Link
+            href="/marketplace/government"
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
               currentRole === "government_buyer"
-                ? "bg-[#0b4d75] text-white shadow-sm"
-                : "text-slate-700 hover:bg-slate-200"
+                ? "bg-[#0b4d75] text-white border-[#0b4d75] shadow-xs"
+                : "text-slate-700 bg-white border-slate-200 hover:bg-sky-50 hover:text-sky-900 hover:border-sky-300"
             }`}
+            title="Official FCI / APMC Government Officer Authentication Required"
           >
-            🏛️ Govt Officer
-          </button>
+            <span>🏛️ Govt Officer</span>
+            <span className="text-[9px] bg-amber-400 text-slate-950 font-black px-1 rounded">AUTH 🔒</span>
+          </Link>
+          <Link
+            href="/marketplace/export"
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+              currentRole === "exporter"
+                ? "bg-indigo-700 text-white border-indigo-700 shadow-xs"
+                : "text-slate-700 bg-white border-slate-200 hover:bg-indigo-50 hover:text-indigo-900 hover:border-indigo-300"
+            }`}
+            title="APEDA / DGFT Exporter License Authentication Required"
+          >
+            <span>🚢 Exporter</span>
+            <span className="text-[9px] bg-amber-400 text-slate-950 font-black px-1 rounded">AUTH 🔒</span>
+          </Link>
           <button
             type="button"
             onClick={() => handleSwitchPersona("private_buyer")}
-            className={`px-2.5 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               currentRole === "private_buyer"
-                ? "bg-amber-600 text-white shadow-sm"
+                ? "bg-amber-600 text-white shadow-xs font-black"
                 : "text-slate-700 hover:bg-slate-200"
             }`}
           >
-            🛒 Private Buyer
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSwitchPersona("exporter")}
-            className={`px-2.5 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
-              currentRole === "exporter"
-                ? "bg-indigo-700 text-white shadow-sm"
-                : "text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            🌍 Exporter
+            🛒 Buyer Sourcing
           </button>
         </div>
       </div>
@@ -209,30 +211,40 @@ export default function MarketplaceNavHeader({
             );
           })}
 
-          {/* Institutional Window Divider */}
-          <div className="h-6 w-px bg-slate-300 mx-1" />
+          {/* Institutional Window Divider & Clearances */}
+          <div className="h-6 w-px bg-slate-300 mx-2 hidden md:block" />
 
-          {/* Restricted Bilateral Windows */}
-          {RESTRICTED_TABS.map((tab) => {
-            const isActive = pathname.startsWith(tab.href);
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
-                  isActive
-                    ? "bg-[#0b4d75] text-white border-[#0b4d75] shadow-sm ring-2 ring-sky-300"
-                    : "bg-slate-100 text-slate-800 border-slate-300 hover:bg-sky-50 hover:border-sky-300 hover:text-sky-900"
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-                <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 font-black rounded text-[9px] uppercase tracking-wider">
-                  {tab.badge}
-                </span>
-              </Link>
-            );
-          })}
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden xl:inline">
+              Institutional Gateways:
+            </span>
+            <Link
+              href="/marketplace/government"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                pathname.startsWith("/marketplace/government")
+                  ? "bg-[#0b4d75] text-white border-[#0b4d75] shadow-xs"
+                  : "bg-slate-100 text-slate-800 border-slate-300 hover:bg-sky-50 hover:border-sky-300 hover:text-sky-900"
+              }`}
+            >
+              <span>🏛️ Govt Console</span>
+              <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 font-black rounded text-[9px] uppercase tracking-wider">
+                LOCK 🔒
+              </span>
+            </Link>
+            <Link
+              href="/marketplace/export"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                pathname.startsWith("/marketplace/export")
+                  ? "bg-indigo-700 text-white border-indigo-700 shadow-xs"
+                  : "bg-slate-100 text-slate-800 border-slate-300 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-900"
+              }`}
+            >
+              <span>🚢 APEDA Gateway</span>
+              <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 font-black rounded text-[9px] uppercase tracking-wider">
+                LOCK 🔒
+              </span>
+            </Link>
+          </div>
         </nav>
       </div>
     </div>
