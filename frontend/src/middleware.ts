@@ -7,6 +7,7 @@ export async function middleware(request: NextRequest) {
 
   // 1. Allow static files, Next.js internal assets, auth APIs, public assets, and public reference data
   if (
+    pathname === "/" ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/assistant") ||
