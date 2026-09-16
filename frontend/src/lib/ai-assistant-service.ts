@@ -302,7 +302,7 @@ class UnifiedAgronomistAIClient {
               Authorization: `Bearer ${this.openRouterKey.trim()}`,
               "Content-Type": "application/json",
               "HTTP-Referer": "https://agriprofit.in",
-              "X-Title": "AgriProfit AI Agronomist",
+              "X-Title": "AgriProfit Unnati AI",
             },
             body: JSON.stringify({
               model,
@@ -317,7 +317,7 @@ class UnifiedAgronomistAIClient {
             const content = data.choices?.[0]?.message?.content;
             const reply = cleanModelResponse(content || "");
             if (reply && reply.length > 20) {
-              console.log(`[AI Agronomist] Responded via model: ${model}`);
+              console.log(`[Unnati AI] Responded via model: ${model}`);
               return reply;
             }
           }
@@ -334,13 +334,19 @@ class UnifiedAgronomistAIClient {
 const aiClient = new UnifiedAgronomistAIClient();
 
 /**
- * Deterministic Contextual Agronomic Inference Engine (Always active as baseline fallback)
+ * Deterministic Contextual Agronomic & Platform Inference Engine (Always active as baseline fallback)
  */
-function generateContextualRuleResponse(userQuery: string, ctx: FarmerContext, hasImage = false): string {
+function generateContextualRuleResponse(
+  userQuery: string,
+  ctx: FarmerContext,
+  hasImage = false,
+  role: "farmer" | "government_officer" | "exporter" | "export_buyer" = "farmer"
+): string {
   const query = userQuery.toLowerCase();
 
+  // 1. Computer Vision Leaf Diagnosis (Any role or Farmer)
   if (hasImage || query.includes("scan") || query.includes("photo") || query.includes("image") || query.includes("leaf")) {
-    return `🔬 **Computer Vision Scan Diagnostic Results:**
+    return `🔬 **Computer Vision Scan Diagnostic Results (उन्नति AI):**
 
 **Active Field Analysis:** ${ctx.farmName} · **${ctx.activeCrop} (${ctx.cropHindiName})** at **${ctx.stageName} (${ctx.daysAfterSowing} DAS)**
 
@@ -354,7 +360,39 @@ function generateContextualRuleResponse(userQuery: string, ctx: FarmerContext, h
 *Please confirm visual leaf samples with your local Krishi Vigyan Kendra (KVK) advisory team (${ctx.location}).*`;
   }
 
-  // 1. Yellowing leaves query
+  // 2. Government Officer Queries
+  if (role === "government_officer" || query.includes("gate pass") || query.includes("weighbridge") || query.includes("fci") || query.includes("dbt") || query.includes("procurement officer")) {
+    return `🏛️ **उन्नति AI · Govt Procurement Officer Console Intelligence:**
+
+* **12-Digit Gate Pass Verification:** Inspect the farmer's encrypted 12-digit numeric authorization token in the Mandi Console. Once validated, verify the locked statutory MSP rate (e.g. Wheat ₹2,275/q, Mustard ₹5,650/q).
+* **UIDAI Iris / Biometric Protocol:** Execute zero-storage biometric clearance matching the farmer's Aadhaar registration. The cryptographic token generates a tamper-evident audit receipt.
+* **Electronic Weighbridge Intake:** Tare gross truck weight minus tare vehicle weight = net accepted quintals. Quality deduction formulas apply if moisture content exceeds 12.0%.
+* **PFMS / DBT Treasury Sanction:** Payouts settle via direct bank transfer to the verified bank account linked to the farmer's biometric profile within 48 hours.
+
+*Station Reference: FCI Station #PB-LDH-01 · Ludhiana Mandi Station Desk.*`;
+  }
+
+  // 3. Exporter Queries
+  if (role === "exporter" || query.includes("export") || query.includes("apeda") || query.includes("fob") || query.includes("container") || query.includes("customs") || query.includes("parity")) {
+    return `🚢 **उन्नति AI · APEDA Licensed Exporter Intelligence:**
+
+* **10-Country Global FOB Parity:** Real-time UN Comtrade & FAOSTAT references indicate strong demand in the UAE (₹3,150/q), Bangladesh, Saudi Arabia, and Southeast Asian corridors.
+* **Logistics & Deductions:** International FOB realization minus domestic freight (₹420/q) and exporter handling (₹180/q) leaves indicative net realization of ~₹2,550/q for top-grade grain.
+* **FPO Container Aggregation:** Connect with verified Farmer Producer Groups to aggregate 120+ quintal containerized consignments (20ft TEU / 40ft HQ).
+* **Documentation & Compliance:** Ensure APEDA RCMC certificate, phytosanitary clearance, and DGFT electronic IEC are attached before port dispatch.`;
+  }
+
+  // 4. Wholesale / Export Buyer Queries
+  if (role === "export_buyer" || query.includes("buyer") || query.includes("wholesal") || query.includes("miller") || query.includes("bidding") || query.includes("escrow")) {
+    return `🛒 **उन्नति AI · Wholesale Buyer & Processor Desk Intelligence:**
+
+* **Direct Farm Sourcing:** Browse direct harvest listings from certified producers in the Direct Market Catalog (` + "`/marketplace/direct`" + `).
+* **FPO Group Aggregation:** Save up to 5-8% on handling and logistics by ordering from cooperative Farmer Producer Groups who pool 40+ quintals in a single dispatch.
+* **Electronic Quality Assaying:** Inspect certified lab moisture, foreign matter (FOD < 1.0%), and protein test reports before bidding.
+* **Digital Trade Escrow:** Payment is held securely in platform escrow and disbursed only upon electronic weighbridge confirmation at your factory gate.`;
+  }
+
+  // 5. Farmer - Yellowing leaves query
   if (
     query.includes("yellow") ||
     query.includes("peele") ||
@@ -364,7 +402,7 @@ function generateContextualRuleResponse(userQuery: string, ctx: FarmerContext, h
   ) {
     return `**Farm Context:** Aapka **${ctx.activeCrop} (${ctx.cropHindiName})** khet (${ctx.location}) me abhi **${ctx.stageName} (${ctx.daysAfterSowing} DAS)** stage par hai.
 
-**Sambhavit Kaaran & Upay (Diagnostic Findings):**
+**Sambhavit Kaaran & Upay (उन्नति AI Diagnostic Findings):**
 1. **Nitrogen ki Kami (Most Common):** Agar nichle (purane) patte neeche se upar ki taraf V-shape me yellow ho rahe hain, to yeh Nitrogen deficiency hai.
    * **Upay:** Pehli sinchai (CRI irrigation, 20–25 DAS) ke sath **Urea @ 30–35 kg/acre** top-dressing karein.
 2. **Yellow Rust (Peela Ratuwa):** Agar patton par peele rang ki lambi dhariyan (stripes) dikh rahi hain aur ungli lagane par peela powder lagta hai:
@@ -374,7 +412,7 @@ function generateContextualRuleResponse(userQuery: string, ctx: FarmerContext, h
 *Kripya nazdiki Krishi Vigyan Kendra (KVK) se sampark karein.*`;
   }
 
-  // 2. Weather & Rain Management query
+  // 6. Weather & Rain Management query
   if (
     query.includes("rain") ||
     query.includes("barish") ||
@@ -391,7 +429,7 @@ function generateContextualRuleResponse(userQuery: string, ctx: FarmerContext, h
   3. **Suspend Chemical Sprays:** Do not apply foliar sprays within 24 hours of anticipated rainfall to prevent pesticide wash-off.`;
   }
 
-  // 3. Fertilizer / Stage query
+  // 7. Fertilizer / Stage query
   if (
     query.includes("fertilizer") ||
     query.includes("urea") ||
@@ -405,7 +443,7 @@ function generateContextualRuleResponse(userQuery: string, ctx: FarmerContext, h
 * **Zinc Sulphate:** If zinc was not applied at basal, spray 0.5% Zinc Sulphate heptahydrate (5g/L) + 2.5% Urea (25g/L) foliar solution.`;
   }
 
-  // 4. Market Prices & Profit query
+  // 8. Market Prices & Profit query
   if (
     query.includes("price") ||
     query.includes("mandi") ||
@@ -419,13 +457,13 @@ function generateContextualRuleResponse(userQuery: string, ctx: FarmerContext, h
 * **Strategic Advice:** Based on current mandi trends, diversifying across staples and cash crops maximizes expected net profit while preserving MSP downside protection.`;
   }
 
-  // 5. Default Response
-  return `Namaste! Based on your **${ctx.farmName}** (${ctx.farmAreaAcres} acres in ${ctx.location}):
-* **Active Crop:** ${ctx.activeCrop} (${ctx.cropHindiName}) at **${ctx.stageName} (${ctx.daysAfterSowing} DAS)**.
-* **Current Weather:** ${ctx.weather.current.tempC}°C, ${ctx.weather.current.condition}.
-* **Market Benchmark:** ₹${ctx.mandiPricePerQuintal}/q in local APMCs.
+  // 9. Default Response
+  return `Namaste! I am **उन्नति AI (Unnati AI)**, your all-in-one platform intelligence assistant for AgriProfit:
+* **Active Farm:** ${ctx.farmName} (${ctx.farmAreaAcres} acres in ${ctx.location}).
+* **Current Crop & Stage:** ${ctx.activeCrop} (${ctx.cropHindiName}) at ${ctx.stageName} (${ctx.daysAfterSowing} DAS).
+* **Weather & Mandi:** ${ctx.weather.current.tempC}°C, ${ctx.weather.current.condition} · Mandi modal rate ₹${ctx.mandiPricePerQuintal}/q.
 
-You can ask questions in Hindi, Hinglish, or English, or **upload a leaf photo** for instant AI disease diagnosis!`;
+How can I assist you today? Ask about **Crop Care & Fertilizers**, **MSP Gate Passes & Mandi Selling**, **Govt FCI Clearance**, **APEDA Export Corridors**, or **upload a leaf photo** for instant AI diagnosis!`;
 }
 
 /**
@@ -435,26 +473,35 @@ export async function askCropAssistant(
   userQuery: string,
   history: AssistantChatMessage[] = [],
   userId = "default-farmer",
-  imageUrl?: string
+  imageUrl?: string,
+  role: "farmer" | "government_officer" | "exporter" | "export_buyer" = "farmer"
 ): Promise<{ reply: string; context: FarmerContext; diagnosisCard?: AssistantChatMessage["diagnosisCard"] }> {
   const context = await getFarmerContext(userId);
   const hasImage = Boolean(imageUrl && imageUrl.trim().length > 0);
 
-  const systemPrompt = `You are the AgriProfit AI Agronomist, an expert real-time agricultural advisor and computer-vision decision support system for Indian farmers.
+  const systemPrompt = `You are "उन्नति AI" (Unnati AI), the official and comprehensive national agricultural intelligence agent powering the AgriProfit digital portal.
 
-Farmer Profile & Real-Time Context:
-- Farm: ${context.farmName} (${context.farmAreaAcres} acres, ${context.location})
+You assist FOUR core personas across India's agricultural ecosystem:
+1. FARMERS: Crop management, ICAR package-of-practices, plant disease leaf diagnostics, fertilizer schedules (Urea, DAP, NPK), weather advisories, 12-digit MSP gate pass generation, direct market selling, and cooperative FPO pooling.
+2. GOVERNMENT OFFICERS (FCI / APMC): 12-digit gate pass verification, biometric Iris clearance, weighbridge intake protocols, quality grading moisture thresholds (<12%), and PFMS / DBT treasury disbursement rules.
+3. LICENSED EXPORTERS (APEDA / DGFT): International FOB parity benchmarks (UAE, Bangladesh, Saudi Arabia), FPO container aggregation (120q+ lots), customs documentation, and logistics deductions.
+4. WHOLESALE & EXPORT BUYERS: Direct farm-gate procurement, batch bidding, quality assaying reports, and digital trade escrow contracts.
+
+Current Platform & Field Telemetry:
+- Active Role In Focus: ${role.toUpperCase()}
+- Active Farm: ${context.farmName} (${context.farmAreaAcres} acres, ${context.location})
 - Active Crop: ${context.activeCrop} (${context.cropHindiName}) at ${context.stageName} (${context.daysAfterSowing} Days After Sowing)
 - Soil Type: ${context.soilType}
-- Current Weather: ${context.weather.current.tempC}°C, Humidity ${context.weather.current.humidityPct}%, Condition: ${context.weather.current.condition}
-- Mandi Modal Price: ₹${context.mandiPricePerQuintal}/q (Govt MSP: ₹${context.mspPricePerQuintal}/q)
+- Live Weather: ${context.weather.current.tempC}°C, Humidity ${context.weather.current.humidityPct}%, ${context.weather.current.condition}
+- Mandi Price: ₹${context.mandiPricePerQuintal}/q (Statutory MSP Floor: ₹${context.mspPricePerQuintal}/q)
 - Active Agro-Alerts: ${context.activeAlerts.join("; ")}
 
 Guidelines:
-1. Language: Reply in the same language the farmer uses (Hindi, Romanized Hinglish, or English). If the farmer asks in Hinglish ("Mere wheat ke patte yellow ho rahe hain"), reply in natural, friendly Hinglish.
-2. Context-Aware: Explicitly reference their active crop (${context.activeCrop}), stage (${context.stageName}), and current weather conditions.
-3. If asking about plant diseases, give exact ICAR chemical fungicide/pesticide dosage (e.g. Propiconazole 25% EC @ 200ml/acre) and organic alternatives (Neem oil, Trichoderma).
-4. Structure with clean bold headers and concise bullet points.`;
+1. Identity: Always introduce or refer to yourself as "उन्नति AI (Unnati AI)".
+2. Language: Reply naturally in the language or dialect used by the user (Hindi, English, or Romanized Hinglish like "Bhaiya wheat me spray kab karein?").
+3. Accuracy: For disease queries, provide exact ICAR chemical dosages (e.g. Propiconazole 25% EC @ 200ml/acre) and organic alternatives (Neem oil, Trichoderma).
+4. Platform Mastery: You have complete knowledge of AgriProfit's modules: Satellite Land Mapping, 3-Layer Soil Testing, Crop Planning Wizard, Mandi & NCDEX Prices, Secondary Marketplace, and Welfare Schemes (PM-KISAN, PMFBY, AIF).
+5. Formatting: Structure replies with bold section headers and crisp bullet points.`;
 
   const messages: { role: string; content: string | object[] }[] = [
     { role: "system", content: systemPrompt },
@@ -476,7 +523,7 @@ Guidelines:
       content: [
         {
           type: "text",
-          text: `[IMAGE ATTACHMENT: Diseased Crop / Leaf Photo]\nAnalyze this crop photo for plant disease, pest damage, or nutrient deficiency. Provide exact disease name, severity, ICAR chemical dosage, and organic treatment.\nFarmer Question: ${userQuery || "Please scan and diagnose this leaf."}`,
+          text: `[IMAGE ATTACHMENT: Diseased Crop / Leaf Photo]\nAnalyze this crop photo for plant disease, pest damage, or nutrient deficiency. Provide exact disease name, severity, ICAR chemical dosage, and organic treatment.\nQuestion: ${userQuery || "Please scan and diagnose this leaf."}`,
         },
         {
           type: "image_url",
@@ -493,7 +540,7 @@ Guidelines:
 
   // Fallback to rule engine if all online providers are unavailable
   if (!reply) {
-    reply = generateContextualRuleResponse(userQuery, context, hasImage);
+    reply = generateContextualRuleResponse(userQuery, context, hasImage, role);
   }
 
   const diagnosisCard =

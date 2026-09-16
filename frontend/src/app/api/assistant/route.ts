@@ -6,8 +6,7 @@ import { SupportedLanguage, SUPPORTED_LANGUAGES } from "@/lib/translation/transl
 
 export async function GET() {
   const user = await getRequestUser();
-  if (!user) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required." } }, { status: 401 });
-  const userId = user.sub;
+  const userId = user?.sub || "default-farmer";
 
   try {
     const context = await getFarmerContext(userId);
@@ -19,8 +18,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const user = await getRequestUser();
-  if (!user) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required." } }, { status: 401 });
-  const userId = user.sub;
+  const userId = user?.sub || "default-farmer";
 
   const body = await request.json().catch(() => null);
   const message = body?.message;
@@ -34,9 +32,14 @@ export async function POST(request: Request) {
 
   const imageUrl = body?.imageUrl;
   const userLang = body?.language && SUPPORTED_LANGUAGES[body.language as SupportedLanguage] ? body.language : "en";
+  const userRole = (body?.role || (user?.role === "government_buyer" ? "government_officer" : user?.role) || "farmer") as
+    | "farmer"
+    | "government_officer"
+    | "exporter"
+    | "export_buyer";
 
   try {
-    const result = await askCropAssistant(message.trim(), body.history || [], userId, imageUrl);
+    const result = await askCropAssistant(message.trim(), body.history || [], userId, imageUrl, userRole);
 
     let finalReply = result.reply;
     let card = result.diagnosisCard;
@@ -47,7 +50,7 @@ export async function POST(request: Request) {
         const trans = await unifiedTranslation.translateText({
           text: result.reply,
           targetLang: userLang,
-          context: "AI agronomist advisory reply",
+          context: "Unnati AI advisory reply",
         });
         if (trans.translatedText) {
           finalReply = trans.translatedText;

@@ -38,7 +38,7 @@ const ROUTE_LABELS: Record<string, string> = {
   database: "Crop Database",
   crops: "Crop Agronomy Catalog",
   diagnostics: "Crop Vision Diagnostics",
-  assistant: "AI Kisan Agronomist",
+  assistant: "उन्नति AI (Unnati AI)",
   "market-services": "Market Services",
   prices: "APMC Daily Prices",
   markets: "APMC Mandi Prices",

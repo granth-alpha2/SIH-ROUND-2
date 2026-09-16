@@ -8,12 +8,12 @@ const initialMessages: AssistantChatMessage[] = [
   {
     id: "msg-init-1",
     sender: "assistant",
-    text: `Namaste! I am your **AgriProfit AI Agronomist & Real-Time Crop Vision Agent**. 
+    text: `Namaste! I am **उन्नति AI (Unnati AI)** — your Comprehensive Multi-Persona Agricultural & Trade Assistant. 
 
-I am connected to your farm's real-time agro-meteorological feeds and market price streams.
+I am connected to your farm's real-time agro-meteorological feeds, market price streams, 12-digit MSP procurement gate passes, FCI protocols, APEDA export benchmarks, and wholesale buyer markets.
 
 You can ask me questions in **English**, **हिंदी**, or **Hinglish**, use the **🎤 Voice Mic** to speak, or **📸 attach/scan a crop leaf photo** to get an instant AI vision diagnosis & ICAR chemical dosage!`,
-    timestamp: "Live Agronomist Online",
+    timestamp: "Live Unnati AI Online",
   },
 ];
 
@@ -328,7 +328,7 @@ export default function AssistantPage() {
   }
 
   return (
-    <AppShell pageTitle="AI Crop Agronomist Advisory">
+    <AppShell pageTitle="उन्नति AI (Unnati AI) Platform Assistant">
       <div className="w-full max-w-[1440px] mx-auto px-2 sm:px-4 py-2 flex flex-col h-[calc(100vh-140px)] min-h-[640px] space-y-3">
         {/* Source & Mandatory Advisory Disclosure Banner (Fix 9 & Fix 3) */}
         <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-lg text-xs text-amber-900 space-y-1 shadow-sm shrink-0">
@@ -364,7 +364,7 @@ export default function AssistantPage() {
                 Live Multimodal Engine
               </span>
               <span className="text-xs font-bold text-[var(--text-primary)] hidden sm:inline font-['Space_Grotesk']">
-                AgriProfit Agronomist Studio
+                उन्नति AI (Unnati AI) Studio
               </span>
             </div>
           </div>
@@ -559,7 +559,7 @@ export default function AssistantPage() {
                     <div className="flex justify-between items-center gap-3 mb-3 pb-2 border-b-2 border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2.5">
                         <span className={`text-base font-bold font-['Space_Grotesk'] ${msg.sender === "user" ? "text-emerald-100" : "text-[var(--color-primary)]"}`}>
-                          {msg.sender === "user" ? "👨‍🌾 You (Farmer)" : "🤖 AgriProfit Agronomist"}
+                          {msg.sender === "user" ? "👨‍🌾 You" : "🤖 उन्नति AI (Unnati AI)"}
                         </span>
                         <span className="text-xs text-[var(--text-muted)]">· {msg.timestamp}</span>
                       </div>
@@ -665,7 +665,7 @@ export default function AssistantPage() {
                 <div className="flex justify-start">
                   <div className="agri-card p-3.5 rounded-2xl text-xs text-[var(--text-secondary)] flex items-center gap-3">
                     <span className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin shrink-0" />
-                    <span className="font-medium">Synthesizing agronomic response via AI agronomist engine...</span>
+                    <span className="font-medium">Synthesizing platform response via उन्नति AI (Unnati AI) engine...</span>
                   </div>
                 </div>
               )}

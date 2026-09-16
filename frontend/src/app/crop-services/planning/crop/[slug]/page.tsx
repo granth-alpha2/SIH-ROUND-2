@@ -78,7 +78,7 @@ function CropDetailInner({ slug }: { slug: string }) {
               href={`/assistant?q=Provide+detailed+agronomic+management+for+${encodeURIComponent(crop.name)}`}
               className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all"
             >
-              Ask AI Agronomist 🤖
+              Ask उन्नति AI 🤖
             </Link>
           </div>
         </div>

@@ -221,15 +221,15 @@ export async function getSystemAdminMetrics(): Promise<SystemMetrics> {
       notes: "ST_GeogFromText, centroid coordinates, and multi-unit (Acres/Hectares) calculator",
     },
     {
-      feedName: "Contextual AI Agronomist Engine",
+      feedName: "उन्नति AI (Unnati AI) Multi-Persona Engine",
       sourceType: "Live External API",
       status: "LIVE / HEALTHY",
       lastRefreshed: "Live On-Demand",
-      updateFrequency: "Per Farmer Query",
+      updateFrequency: "Per User Query (Farmer/Officer/Exporter/Buyer)",
       cacheTtl: "Zero Cache / Dynamic Context",
       latencyMs: 285,
-      coverage: "English, Hindi, Romanized Hinglish",
-      notes: "Injects live farm boundary, crop stage (DAS), weather, and ICAR practices",
+      coverage: "English, Hindi, Romanized Hinglish (11 Languages)",
+      notes: "Injects live farm boundary, crop stage (DAS), weather, MSP gate passes, APEDA, and escrow",
     },
   ];
 

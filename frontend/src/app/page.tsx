@@ -85,7 +85,7 @@ export default function Home() {
         { label: "Crop Planning Wizard", href: "/crop-services/planning" },
         { label: "Compare Crops", href: "/crop-services/compare" },
         { label: "Short-Duration Crops", href: "/crop-services/seasonal" },
-        { label: "AI Agronomist Chat", href: "/assistant" },
+        { label: "उन्नति AI Assistant", href: "/assistant" },
       ],
     },
     {

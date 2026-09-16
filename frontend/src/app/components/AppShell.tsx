@@ -8,6 +8,7 @@ import { useTranslation } from "@/lib/i18n/TranslationContext";
 import LanguageSelector from "./LanguageSelector";
 import PageAudioTranslator from "./PageAudioTranslator";
 import PortalBreadcrumb from "./PortalBreadcrumb";
+import UnnatiAIPopup from "./UnnatiAIPopup";
 
 // Top-level Navigation strictly structured as Government Service Pillars
 const TOP_NAV_ITEMS = [
@@ -18,7 +19,6 @@ const TOP_NAV_ITEMS = [
   { label: "Reports & Records", href: "/reports", key: "nav.reports" },
   { label: "Schemes", href: "/schemes", key: "nav.schemes" },
   { label: "Knowledge Base", href: "/knowledge", key: "nav.knowledge" },
-  { label: "AI Agronomist", href: "/assistant", key: "nav.assistant" },
 ];
 
 const LANGUAGES = [
@@ -669,7 +669,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                 <li><Link href="/schemes" className="hover:text-white">PM-KISAN & PMFBY Guidelines</Link></li>
                 <li><Link href="/knowledge" className="hover:text-white">ICAR Crop Protection Practices</Link></li>
                 <li><Link href="/crops" className="hover:text-white">CACP 2024-25 MSP Floor Benchmarks</Link></li>
-                <li><Link href="/assistant" className="hover:text-white">AI Crop Agronomist Advisory</Link></li>
+                <li><Link href="/assistant" className="hover:text-white">उन्नति AI (Unnati AI) Advisory</Link></li>
               </ul>
             </div>
 
@@ -807,6 +807,8 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           </div>
         </div>
       )}
+      {/* Persistent Unnati AI Platform Assistant Pop-up Window */}
+      <UnnatiAIPopup />
     </div>
   );
 }

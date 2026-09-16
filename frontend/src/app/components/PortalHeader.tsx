@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LanguageSelector from "./LanguageSelector";
 import PageAudioTranslator from "./PageAudioTranslator";
+import { openUnnatiAI } from "./UnnatiAIPopup";
 
 interface PortalHeaderProps {
   userName?: string;
@@ -174,13 +175,14 @@ export default function PortalHeader({
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/assistant"
-              className="px-3 py-1 bg-sky-50 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 text-[#0b4d75] dark:text-sky-300 border border-sky-200 dark:border-sky-800 rounded-md text-xs font-semibold flex items-center gap-1 transition-all"
+            <button
+              type="button"
+              onClick={() => openUnnatiAI("farmer")}
+              className="px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
             >
-              <span>🔬</span>
-              <span>AI Kisan Agronomist</span>
-            </Link>
+              <span>🤖</span>
+              <span>उन्नति AI (Unnati AI)</span>
+            </button>
           </div>
         </div>
       </nav>
@@ -204,14 +206,17 @@ export default function PortalHeader({
                 <span>{item.label}</span>
               </Link>
             ))}
-            <Link
-              href="/assistant"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 bg-sky-50 dark:bg-sky-950/40 text-[#0b4d75] dark:text-sky-300 border border-sky-200 dark:border-sky-800 mt-2"
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openUnnatiAI("farmer");
+              }}
+              className="p-2.5 rounded-lg text-xs font-bold flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 mt-2 text-left w-full cursor-pointer"
             >
-              <span className="text-base">🔬</span>
-              <span>AI Kisan Agronomist & Vision</span>
-            </Link>
+              <span className="text-base">🤖</span>
+              <span>उन्नति AI (Unnati AI)</span>
+            </button>
           </div>
         </div>
       )}

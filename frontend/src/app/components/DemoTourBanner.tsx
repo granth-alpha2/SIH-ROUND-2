@@ -13,7 +13,7 @@ const demoSteps = [
   { step: 8, label: "Recommendations", path: "/recommendations", description: "4-part portfolio strategy" },
   { step: 9, label: "Crop Plan Roadmap", path: "/crop-plan", description: "ICAR milestone schedule" },
   { step: 10, label: "Advisory Inbox", path: "/notifications", description: "5-category farm alerts" },
-  { step: 11, label: "AI Agronomist", path: "/assistant", description: "Contextual Hinglish advisor" },
+  { step: 11, label: "उन्नति AI", path: "/assistant", description: "Contextual Multi-Persona AI Assistant" },
   { step: 12, label: "Admin Telemetry", path: "/admin", description: "Data quality & API health" },
 ];
 

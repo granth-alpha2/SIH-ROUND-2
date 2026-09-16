@@ -12,7 +12,7 @@ export const dictionaryHi = {
   "nav.schemes": "सरकारी योजनाएं",
   "nav.knowledge": "कृषि ज्ञान भंडार",
   "nav.reports": "रिपोर्ट व योजना",
-  "nav.assistant": "AI कृषि सलाहकार",
+  "nav.assistant": "उन्नति AI",
   "nav.admin": "प्रशासन",
   "nav.notifications": "सूचनाएं",
   "nav.logout": "लॉग आउट",
@@ -116,7 +116,7 @@ export const dictionaryHi = {
   "weather.irrigationWindow": "सिंचाई के लिए उपयुक्त समय",
 
   // AI Agronomist
-  "assistant.title": "AgriProfit AI कृषि विशेषज्ञ एवं फसल रोग निदान",
+  "assistant.title": "उन्नति AI (Unnati AI) बहु-भूमिका सहायक एवं फसल रोग निदान",
   "assistant.askPlaceholder": "अपनी भाषा में कोई भी कृषि प्रश्न पूछें या पत्ती की फोटो अपलोड करें...",
   "assistant.send": "प्रश्न पूछें",
   "assistant.voiceMic": "माइक से बोलें",

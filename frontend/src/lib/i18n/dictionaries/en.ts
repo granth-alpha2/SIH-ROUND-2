@@ -12,7 +12,7 @@ export const dictionaryEn = {
   "nav.schemes": "Government Schemes",
   "nav.knowledge": "Agricultural Knowledge",
   "nav.reports": "Reports",
-  "nav.assistant": "AI Agronomist",
+  "nav.assistant": "उन्नति AI",
   "nav.admin": "Admin",
   "nav.notifications": "Notifications",
   "nav.logout": "Sign out",
@@ -116,7 +116,7 @@ export const dictionaryEn = {
   "weather.irrigationWindow": "Optimal Irrigation Window",
 
   // AI Agronomist
-  "assistant.title": "AgriProfit AI Agronomist & Crop Vision Agent",
+  "assistant.title": "उन्नति AI (Unnati AI) Multi-Persona Platform Assistant & Vision Agent",
   "assistant.askPlaceholder": "Ask a crop question in any language, or upload a leaf photo...",
   "assistant.send": "Send Query",
   "assistant.voiceMic": "Voice Mic",
