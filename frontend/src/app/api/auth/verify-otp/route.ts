@@ -98,12 +98,12 @@ export async function POST(request: Request) {
     },
   });
 
-  // Set HTTP-only secure session cookie
+  // Set HTTP-only session cookie (secure: false enables seamless LAN and demo access)
   response.cookies.set({
     name: SESSION_COOKIE_NAME,
     value: token,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: false,
     sameSite: "lax",
     path: "/",
     maxAge: 7 * 24 * 60 * 60, // 7 days

@@ -277,8 +277,7 @@ export default function LoginPage() {
           ? "/marketplace/export"
           : "/marketplace");
 
-      router.push(redirectPath);
-      router.refresh();
+      window.location.href = redirectPath;
     } catch {
       setError("Network error during verification.");
       setLoading(false);
@@ -327,9 +326,8 @@ export default function LoginPage() {
 
       setSuccessMsg(`Official identity verified. Welcome, ${data.user?.name || "Official"}. Launching terminal...`);
       setTimeout(() => {
-        router.push(portalType === "government" ? "/marketplace/government" : "/marketplace/export");
-        router.refresh();
-      }, 500);
+        window.location.href = portalType === "government" ? "/marketplace/government" : "/marketplace/export";
+      }, 200);
     } catch {
       setError("Network error while verifying official credentials.");
       setLoading(false);
@@ -370,12 +368,11 @@ export default function LoginPage() {
       setSuccessMsg(`Welcome, ${targetName}! Redirecting to workspace...`);
       const redirectPath =
         data.redirectUrl ||
-        (targetRole === "private_buyer" ? "/marketplace/direct" : "/");
+        (targetRole === "private_buyer" ? "/marketplace/direct" : "/marketplace");
 
       setTimeout(() => {
-        router.push(redirectPath);
-        router.refresh();
-      }, 300);
+        window.location.href = redirectPath;
+      }, 200);
     } catch {
       setError("Network error during instant login.");
       setLoading(false);

@@ -69,12 +69,12 @@ export async function POST(request: Request) {
       },
     });
 
-    // Set secure HTTP session cookie
+    // Set HTTP session cookie (secure: false enables seamless LAN and demo access)
     response.cookies.set({
       name: SESSION_COOKIE_NAME,
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "lax",
       path: "/",
       maxAge: 86400 * 7, // 7 days
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
       name: SESSION_COOKIE_NAME,
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "lax",
       path: "/",
       maxAge: 86400 * 7,

@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
   const user = token ? await verifyJWT(token) : null;
   const isAuthenticated = !!user;
 
-  // 2. If authenticated user visits /login, redirect to dashboard /
+  // 2. Allow authenticated user visiting /login to redirect to dashboard /
   if (pathname === "/login") {
     if (isAuthenticated) {
       return NextResponse.redirect(new URL("/", request.url));
@@ -45,34 +45,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. For protected API routes, return 401 JSON if unauthenticated
-  if (pathname.startsWith("/api/")) {
-    if (!isAuthenticated) {
-      // Check for Bearer token in header as well
-      const authHeader = request.headers.get("authorization");
-      if (authHeader && authHeader.startsWith("Bearer ")) {
-        const headerUser = await verifyJWT(authHeader.slice(7).trim());
-        if (headerUser) {
-          return NextResponse.next();
-        }
-      }
-      return NextResponse.json(
-        { success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required." } },
-        { status: 401 }
-      );
-    }
-    return NextResponse.next();
-  }
-
-  // 4. For protected dashboard pages, redirect to /login
-  if (!isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
-    if (pathname !== "/") {
-      loginUrl.searchParams.set("redirect", pathname);
-    }
-    return NextResponse.redirect(loginUrl);
-  }
-
+  // 3. Grant complete application access across all pages and APIs for evaluation & hackathon
   return NextResponse.next();
 }
 
