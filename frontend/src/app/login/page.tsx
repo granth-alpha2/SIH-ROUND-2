@@ -126,9 +126,9 @@ const DEMO_PROFILES: Record<LoginRole, DemoProfile[]> = {
 export default function LoginPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<LoginRole>("farmer");
-  const [phone, setPhone] = useState("");
-  const [name, setName] = useState("");
-  const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
+  const [phone, setPhone] = useState("9876543210");
+  const [name, setName] = useState("Ramesh Kumar");
+  const [otpDigits, setOtpDigits] = useState(["1", "2", "3", "4", "5", "6"]);
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -336,6 +336,52 @@ export default function LoginPage() {
     }
   }
 
+  async function handleInstantLogin(targetRole: LoginRole, targetPhone: string, targetName: string) {
+    setError("");
+    setSuccessMsg("");
+    setLoading(true);
+
+    try {
+      if (targetRole === "government_buyer") {
+        return await handlePortalLogin("government", "FCI-PB-994", "FCI@Govt#2026");
+      }
+      if (targetRole === "exporter") {
+        return await handlePortalLogin("exporter", "IEC-0519928341", "Export@Sun#2026");
+      }
+
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: targetPhone,
+          otp: "123456",
+          name: targetName,
+          role: targetRole,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setError(data?.error?.message || "Login failed. Please retry.");
+        setLoading(false);
+        return;
+      }
+
+      setSuccessMsg(`Welcome, ${targetName}! Redirecting to workspace...`);
+      const redirectPath =
+        data.redirectUrl ||
+        (targetRole === "private_buyer" ? "/marketplace/direct" : "/");
+
+      setTimeout(() => {
+        router.push(redirectPath);
+        router.refresh();
+      }, 300);
+    } catch {
+      setError("Network error during instant login.");
+      setLoading(false);
+    }
+  }
+
   const roleMeta = {
     farmer: {
       title: "Farmer / Kisan Workspace Login",
@@ -393,6 +439,41 @@ export default function LoginPage() {
         </div>
 
         <div className="agri-card p-6 sm:p-8 space-y-6 shadow-elevated">
+          {/* Quick 1-Click Evaluation / Demo Login Bar */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 text-white shadow-lg space-y-2.5 border-2 border-emerald-500/30">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                ⚡ Instant 1-Click Demo Login (No SMS / Password Needed)
+              </span>
+              <span className="text-[10px] bg-emerald-500/30 text-emerald-200 border border-emerald-400/40 px-2.5 py-0.5 rounded-full font-bold">
+                Direct Entry
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => handleInstantLogin("farmer", "9876543210", "Ramesh Kumar")}
+                className="p-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-all flex items-center justify-center gap-2 shadow cursor-pointer active:scale-95"
+              >
+                <span>🌾</span> <span>Enter as Kisan Farmer</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePortalLogin("government", "FCI-PB-994", "FCI@Govt#2026")}
+                className="p-3 rounded-xl bg-sky-700 hover:bg-sky-600 text-white font-black text-xs transition-all flex items-center justify-center gap-2 shadow cursor-pointer active:scale-95"
+              >
+                <span>🏛️</span> <span>Enter as FCI Officer</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePortalLogin("exporter", "IEC-0519928341", "Export@Sun#2026")}
+                className="p-3 rounded-xl bg-indigo-700 hover:bg-indigo-600 text-white font-black text-xs transition-all flex items-center justify-center gap-2 shadow cursor-pointer active:scale-95"
+              >
+                <span>🚢</span> <span>Enter as Exporter</span>
+              </button>
+            </div>
+          </div>
+
           {/* 1. Structured Role Selector Segmented Tabs */}
           <div className="space-y-2">
             <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
@@ -403,9 +484,11 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => {
                   setSelectedRole("farmer");
-                  setName("");
-                  setPhone("");
+                  setName("Ramesh Kumar");
+                  setPhone("9876543210");
                   setStep("phone");
+                  setError("");
+                  setSuccessMsg("");
                 }}
                 className={`p-3 rounded-xl border-2 text-left font-bold transition-all cursor-pointer ${
                   selectedRole === "farmer"
@@ -663,7 +746,10 @@ export default function LoginPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    handleSendOtp();
+                    const clean = phone.replace(/\D/g, "");
+                    const targetPhone = clean.length === 10 ? clean : (selectedRole === "private_buyer" ? "9876500003" : "9876543210");
+                    const targetName = name.trim() || (selectedRole === "private_buyer" ? "AgroCorp Sourcing Desk" : "Ramesh Kumar");
+                    handleInstantLogin(selectedRole, targetPhone, targetName);
                   }}
                   className="space-y-5"
                 >
@@ -672,7 +758,7 @@ export default function LoginPage() {
                       htmlFor="farmer-name-input"
                       className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider block font-['Space_Grotesk']"
                     >
-                      {selectedRole === "farmer" ? "Farmer Name (Optional):" : "Entity / Representative Name:"}
+                      {selectedRole === "farmer" ? "Farmer Name:" : "Entity / Representative Name:"}
                     </label>
                     <input
                       id="farmer-name-input"
@@ -701,7 +787,7 @@ export default function LoginPage() {
                         inputMode="numeric"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                        placeholder="98765 00001"
+                        placeholder="9876543210"
                         className="agri-input flex-1 font-extrabold text-xl tracking-wider min-h-[50px]"
                         required
                         autoFocus
@@ -711,10 +797,10 @@ export default function LoginPage() {
 
                   <button
                     type="submit"
-                    disabled={loading || phone.length !== 10}
-                    className="agri-btn-primary w-full min-h-[54px] text-lg font-extrabold shadow-lg cursor-pointer"
+                    disabled={loading}
+                    className="agri-btn-primary w-full min-h-[54px] text-lg font-extrabold shadow-lg cursor-pointer hover:brightness-105"
                   >
-                    {loading ? "Preparing Authorization..." : `Continue as ${roleMeta.themeBadge} →`}
+                    {loading ? "Authenticating Session..." : `Enter Workspace as ${roleMeta.themeBadge} →`}
                   </button>
                 </form>
               )}
@@ -726,7 +812,7 @@ export default function LoginPage() {
                     ⚡ Official Test Profiles ({selectedRole.replace("_", " ").toUpperCase()})
                   </p>
                   <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    {selectedRole === "government_buyer" || selectedRole === "exporter" ? "Official ID & Password" : "Pre-fills Demo Master Key 123456"}
+                    1-Click Instant Login (No Password / OTP Needed)
                   </span>
                 </div>
 
@@ -751,7 +837,7 @@ export default function LoginPage() {
                         } else {
                           setPhone(profile.phone);
                           setName(profile.name);
-                          handleSendOtp(profile.phone, profile.name, profile.role);
+                          handleInstantLogin(profile.role, profile.phone, profile.name);
                         }
                       }}
                       className="w-full p-3.5 rounded-2xl bg-[var(--bg-surface-subtle)] hover:bg-[var(--bg-surface-accent)] border-2 border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-left transition-all flex items-center justify-between group cursor-pointer"
