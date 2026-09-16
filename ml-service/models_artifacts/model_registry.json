@@ -22,7 +22,7 @@
     "training_dataset": "ICAR crop yield dataset (7,000 rows)",
     "training_period": "Not explicitly recorded in artifact",
     "evaluation_metric": "R\u00b2 = 0.9601 on held-out test split",
-    "last_updated": "2026-09-15T06:39:36.901713+00:00",
+    "last_updated": "2026-09-16T07:08:46.879920+00:00",
     "status": "trained",
     "retraining_policy": {
       "auto_retrain_on_farmer_submission": false,
@@ -76,7 +76,7 @@
     "training_dataset": "APMC/mandi time-series dataset (19,500 rows)",
     "training_period": "Not explicitly recorded in artifact",
     "evaluation_metric": "R\u00b2 = 0.9733 on held-out test split; MAPE = 3.79%",
-    "last_updated": "2026-09-15T06:39:36.901733+00:00",
+    "last_updated": "2026-09-16T07:08:46.879931+00:00",
     "status": "trained",
     "retraining_policy": {
       "auto_retrain_on_farmer_submission": false,
