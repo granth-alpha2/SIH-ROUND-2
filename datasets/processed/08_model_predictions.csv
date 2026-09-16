@@ -1,7 +1,0 @@
-prediction_id,model_id,model_name,model_type,crop_id,crop_name,state,district,season,prediction_date,predicted_price_inr_per_q,predicted_yield_q_per_acre,confidence_metric,confidence_value,uncertainty_note,source_dataset,data_origin
-MLP000001,yield_prediction_v2_0_rf,AgriProfit Yield Prediction,Machine Learning Regression,CROP001,Rice (Paddy),Punjab,Amritsar,Rabi,2025-10-02,0.0,18.6,R²,0.9601,Prediction interval used for yield range,processed,DEMO
-MLP000002,price_forecast_ensemble_v2_0,AgriProfit Mandi Price Forecast,Machine Learning Regression,CROP006,Wheat,Punjab,Ludhiana,Rabi,2025-10-14,2425.0,0.0,R² / MAPE,0.9733 / 3.79%,Forecast available,processed,DEMO
-MLP000003,yield_prediction_v2_0_rf,AgriProfit Yield Prediction,Machine Learning Regression,CROP015,Mustard,Rajasthan,Bikaner,Rabi,2025-11-01,0.0,12.5,R²,0.9601,Prediction interval used for yield range,processed,DEMO
-MLP000004,price_forecast_ensemble_v2_0,AgriProfit Mandi Price Forecast,Machine Learning Regression,CROP018,Chickpea,Madhya Pradesh,Indore,Rabi,2025-11-12,4850.0,0.0,R² / MAPE,0.9733 / 3.79%,Forecast available,processed,DEMO
-MLP000005,yield_prediction_v2_0_rf,AgriProfit Yield Prediction,Machine Learning Regression,CROP009,Maize,Gujarat,Junagadh,Kharif,2025-12-04,0.0,24.1,R²,0.9601,Prediction interval used for yield range,processed,DEMO
-MLP000006,price_forecast_ensemble_v2_0,AgriProfit Mandi Price Forecast,Machine Learning Regression,CROP020,Cotton,Gujarat,Rajkot,Kharif,2025-12-18,7600.0,0.0,R² / MAPE,0.9733 / 3.79%,Forecast available,processed,DEMO

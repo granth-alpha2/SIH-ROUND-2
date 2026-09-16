@@ -1,7 +1,0 @@
-yield_id,farmer_id,farm_id,crop_id,crop_name,state,district,season,area_acres,observed_yield_q_per_acre,predicted_yield_q_per_acre,model_version,absolute_error_q_per_acre,source_type,source_name,record_date,data_origin
-YLD000001,FARMER001,FARM001,CROP001,Rice (Paddy),Punjab,Amritsar,Rabi,2.5,18.2,18.6,yield_prediction_v2_0_rf,0.4,Observed,Farmer record,2025-10-02,DEMO
-YLD000002,FARMER002,FARM012,CROP006,Wheat,Punjab,Ludhiana,Rabi,3.0,20.4,20.1,yield_prediction_v2_0_rf,0.3,Observed,Farmer record,2025-10-14,DEMO
-YLD000003,FARMER003,FARM024,CROP015,Mustard,Rajasthan,Bikaner,Rabi,4.0,12.1,12.5,yield_prediction_v2_0_rf,0.4,Observed,Farmer record,2025-11-01,DEMO
-YLD000004,FARMER004,FARM028,CROP018,Chickpea,Madhya Pradesh,Indore,Rabi,2.8,9.8,10.1,yield_prediction_v2_0_rf,0.3,Observed,Farmer record,2025-11-12,DEMO
-YLD000005,FARMER005,FARM037,CROP009,Maize,Gujarat,Junagadh,Kharif,5.0,24.7,24.1,yield_prediction_v2_0_rf,0.6,Observed,Farmer record,2025-12-04,DEMO
-YLD000006,FARMER006,FARM041,CROP020,Cotton,Gujarat,Rajkot,Kharif,3.5,14.6,14.3,yield_prediction_v2_0_rf,0.3,Observed,Farmer record,2025-12-18,DEMO

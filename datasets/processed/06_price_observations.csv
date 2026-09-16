@@ -1,7 +1,0 @@
-observation_id,farmer_id,farm_id,crop_id,crop_name,state,district,mandi_name,record_date,market_price_inr_per_q,ms_price_inr_per_q,market_price_delta_pct,source_type,source_name,observation_channel,data_origin
-PRC000001,FARMER001,FARM001,CROP001,Rice (Paddy),Punjab,Amritsar,Amritsar Mandi,2025-10-02,2200.0,2140.0,2.8,Live,Agmarknet / e-NAM,MSP,DEMO
-PRC000002,FARMER002,FARM012,CROP006,Wheat,Punjab,Ludhiana,Ludhiana Mandi,2025-10-14,2425.0,2350.0,3.2,Live,Agmarknet / e-NAM,Direct Market,DEMO
-PRC000003,FARMER003,FARM024,CROP015,Mustard,Rajasthan,Bikaner,Bikaner Mandi,2025-11-01,5200.0,5050.0,2.97,Recent,Agmarknet / e-NAM,Group Selling,DEMO
-PRC000004,FARMER004,FARM028,CROP018,Chickpea,Madhya Pradesh,Indore,Indore Mandi,2025-11-12,4850.0,4700.0,3.19,Recent,Agmarknet / e-NAM,Group Selling,DEMO
-PRC000005,FARMER005,FARM037,CROP009,Maize,Gujarat,Junagadh,Junagadh Mandi,2025-12-04,2820.0,0.0,0.0,Reference,Market benchmark,Export,DEMO
-PRC000006,FARMER006,FARM041,CROP020,Cotton,Gujarat,Rajkot,Rajkot Mandi,2025-12-18,7600.0,0.0,0.0,Reference,Market benchmark,Direct Market,DEMO

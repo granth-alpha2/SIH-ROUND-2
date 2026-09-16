@@ -559,47 +559,67 @@ export default function RecommendationDashboard() {
     return "LOSS RISK";
   }, [simResult.expectedNetProfit, simResult.roiPercentage]);
 
+  const selectedAllocatedCrop = useMemo(() => {
+    return (
+      portfolio.allocations.find(
+        (a) =>
+          a.cropName.toLowerCase() === simCropName.toLowerCase() ||
+          a.cropSlug.toLowerCase() === simCropName.toLowerCase()
+      ) || portfolio.allocations[0]
+    );
+  }, [portfolio.allocations, simCropName]);
+
   const profitabilityComparison = useMemo(() => {
-    const primaryCrop = portfolio.allocations[0];
-    const quantityKg = (primaryCrop?.allocatedAcres ?? simArea) * (primaryCrop?.expectedYieldPerAcre ?? simYield) * 100;
+    const activeCrop = selectedAllocatedCrop;
+    const area = simArea;
+    const yieldPerAcre = simYield;
+    const totalCost = simResult.totalEstimatedCost;
+    const pricePerQuintal = simPrice;
+    const quantityQuintals = Math.max(0.1, area * yieldPerAcre);
+
+    // Split total cost: 20% fixed (equipment, preparation) and 80% variable (seeds, fertilizer, harvesting)
+    const fixedCost = totalCost * 0.2;
+    const variableCostPerQuintal = (totalCost * 0.8) / quantityQuintals;
+
+    const mspPrice = activeCrop?.mspPrice && activeCrop.mspPrice > 0 ? activeCrop.mspPrice : pricePerQuintal;
 
     return compareProfitabilityStrategies({
-      quantity: quantityKg,
-      quantityUnit: "kg",
-      fixedCost: (primaryCrop?.costPerAcre ?? simCost) * (primaryCrop?.allocatedAcres ?? simArea) * 0.2,
-      variableCostPerUnit: (primaryCrop?.costPerAcre ?? simCost) / Math.max(1, primaryCrop?.expectedYieldPerAcre ?? simYield),
-      variableCostUnit: "kg",
-      mspPricePerUnit: primaryCrop?.mspPrice ?? (primaryCrop?.expectedSellingPricePerQuintal ?? simPrice),
+      quantity: quantityQuintals,
+      quantityUnit: "quintal",
+      fixedCost: fixedCost,
+      variableCostPerUnit: variableCostPerQuintal,
+      variableCostUnit: "quintal",
+      mspPricePerUnit: mspPrice,
       mspPriceUnit: "quintal",
-      directMarketPricePerUnit: primaryCrop?.expectedSellingPricePerQuintal ?? simPrice,
+      directMarketPricePerUnit: pricePerQuintal,
       directMarketPriceUnit: "quintal",
-      directMarketExtraCostPerUnit: Math.max(0, (primaryCrop?.expectedSellingPricePerQuintal ?? simPrice) * 0.04),
+      directMarketExtraCostPerUnit: Math.max(0, pricePerQuintal * 0.02),
       directMarketExtraCostUnit: "quintal",
-      groupSellingPricePerUnit: (primaryCrop?.expectedSellingPricePerQuintal ?? simPrice) * 1.03,
+      groupSellingPricePerUnit: pricePerQuintal * 1.03,
       groupSellingPriceUnit: "quintal",
-      groupAggregationCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 1000),
+      groupAggregationCostPerUnit: 25,
       groupAggregationCostUnit: "quintal",
-      groupHandlingCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 1500),
+      groupHandlingCostPerUnit: 15,
       groupHandlingCostUnit: "quintal",
-      groupStorageCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 2200),
+      groupStorageCostPerUnit: 10,
       groupStorageCostUnit: "quintal",
-      exportOfferPerUnit: ((primaryCrop?.expectedSellingPricePerQuintal ?? simPrice) * 0.96),
+      exportOfferPerUnit: pricePerQuintal * 1.25,
       exportOfferUnit: "quintal",
-      exportPackagingCostPerUnit: ((primaryCrop?.costPerAcre ?? simCost) / 500),
+      exportPackagingCostPerUnit: 60,
       exportPackagingCostUnit: "quintal",
-      exportDocumentationCost: ((primaryCrop?.costPerAcre ?? simCost) * 0.12),
-      exportLogisticsCost: ((primaryCrop?.costPerAcre ?? simCost) * 0.2),
-      exportTransportCost: ((primaryCrop?.costPerAcre ?? simCost) * 0.18),
-      exportChargesPct: 0.04,
+      exportDocumentationCost: 1500,
+      exportLogisticsCost: 2500,
+      exportTransportCost: 2000,
+      exportChargesPct: 0.02,
     });
-  }, [portfolio, simArea, simPrice, simYield, simCost]);
+  }, [selectedAllocatedCrop, simArea, simYield, simResult.totalEstimatedCost, simPrice]);
 
   const activeScenarioRow = useMemo(
     () => profitabilityComparison.find((row) => row.strategy === activeProfitabilityScenario) ?? profitabilityComparison[0],
     [activeProfitabilityScenario, profitabilityComparison]
   );
 
-  const primaryCrop = portfolio.allocations[0];
+  const primaryCrop = selectedAllocatedCrop;
   const primaryMandiRecord = MANDI_BENCHMARK_PRICES.find((record) => record.cropSlug === primaryCrop?.cropSlug);
 
   const breakEvenChart = useMemo(() => {
@@ -640,7 +660,7 @@ export default function RecommendationDashboard() {
   }, [breakEvenTotalQuantity, expectedQuantity, simPrice, simResult.expectedGrossRevenue, simResult.totalEstimatedCost]);
 
   const groupSellingSummary = useMemo(() => {
-    const primaryCrop = portfolio.allocations[0];
+    const primaryCrop = selectedAllocatedCrop;
     const quantityPerFarmer = Math.max(6, (primaryCrop?.expectedYieldPerAcre ?? simYield) * (primaryCrop?.allocatedAcres ?? simArea) / 3);
     const productionCostPerQuintal = Math.max(1200, (primaryCrop?.costPerAcre ?? simCost) / Math.max(1, primaryCrop?.expectedYieldPerAcre ?? simYield));
     const aggregationCostPerQuintal = Math.max(20, (primaryCrop?.costPerAcre ?? simCost) / 1000);
@@ -705,7 +725,7 @@ export default function RecommendationDashboard() {
   }, [simCost, simPrice, simYield]);
 
   const exportEconomics = useMemo(() => {
-    const primaryCrop = portfolio.allocations[0];
+    const primaryCrop = selectedAllocatedCrop;
     const quantityQuintals = Math.max(1, (primaryCrop?.allocatedAcres ?? simArea) * (primaryCrop?.expectedYieldPerAcre ?? simYield));
     const localPricePerQuintal = primaryCrop?.expectedSellingPricePerQuintal ?? simPrice;
     const exportResult = simulateExportScenario({
@@ -837,6 +857,23 @@ export default function RecommendationDashboard() {
       const el = document.getElementById(`crop-card-${farmerCrop.id}`);
       el?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 150);
+  }
+
+  function handleSelectCrop(crop: AllocatedCropItem) {
+    setSimCropName(crop.cropName);
+    const area = crop.allocatedAcres > 0 ? crop.allocatedAcres : 1.0;
+    const yieldVal = crop.expectedYieldPerAcre || 14.5;
+    const priceVal = crop.expectedSellingPricePerQuintal || 2380;
+    const costVal = crop.costPerAcre || 11500;
+
+    setSimArea(area);
+    setSimPrice(priceVal);
+    setSimYield(yieldVal);
+    setSimCost(costVal);
+
+    setWhatIfPrice(priceVal);
+    setWhatIfQuantity(area * yieldVal);
+    setWhatIfProductionCost(costVal * area);
   }
 
   function saveCurrentProfitabilityAnalysis() {
@@ -1047,33 +1084,75 @@ export default function RecommendationDashboard() {
           </div>
         </section>
 
-        <section className="p-6 bg-white border border-slate-200 rounded-lg shadow-sm space-y-5">
-          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-4">
+        <section className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Production · Market · Break-even</p>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">{simCropName.toUpperCase()}</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Production · Market · Break-even</p>
+              <div className="flex items-center gap-2 mt-1">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">{simCropName.toUpperCase()}</h2>
+                <span className="text-xs px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-semibold">
+                  {simArea.toFixed(2)} ac allocated
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={saveCurrentProfitabilityAnalysis}
-                className="px-4 py-2 bg-slate-900 text-white text-xs font-bold uppercase tracking-[0.12em] rounded hover:bg-slate-800 cursor-pointer"
+                className="px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold uppercase tracking-[0.12em] rounded-md transition-colors cursor-pointer"
               >
                 Save Analysis
               </button>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-bold ${
                   breakEvenStatus === "PROFITABLE"
-                    ? "bg-emerald-100 text-emerald-800"
+                    ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
                     : breakEvenStatus === "HIGH PROFIT POTENTIAL"
-                      ? "bg-violet-100 text-violet-800"
+                      ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
                       : breakEvenStatus === "BREAK-EVEN"
-                        ? "bg-amber-100 text-amber-800"
-                        : "bg-red-100 text-red-800"
+                        ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
+                        : "bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800"
                 }`}
               >
                 {breakEvenStatus}
               </span>
+            </div>
+          </div>
+
+          {/* Dynamic Crop Switcher for all allocated crops */}
+          <div className="bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <span>🌾</span> Select Crop to Analyze (Updates Graph in Real Time):
+              </span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                Switching crops dynamically updates all break-even thresholds & charts
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2 pt-1">
+              {portfolio.allocations.map((crop) => {
+                const isSelected = crop.cropName.toLowerCase() === simCropName.toLowerCase() || crop.cropSlug.toLowerCase() === simCropName.toLowerCase();
+                const icon = crop.category?.includes("Safety") ? "🌾" : crop.category?.includes("Cash") ? "🌿" : crop.category?.includes("Profit") ? "🥔" : "🌱";
+                return (
+                  <button
+                    key={crop.cropId}
+                    type="button"
+                    onClick={() => handleSelectCrop(crop)}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer border ${
+                      isSelected
+                        ? "bg-emerald-800 text-white border-emerald-900 shadow-sm ring-2 ring-emerald-600/30 font-bold"
+                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:border-emerald-600 dark:hover:border-emerald-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    <span>{icon}</span>
+                    <span>{crop.cropName}</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded ${isSelected ? "bg-emerald-900 text-white font-medium" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}`}>
+                      {crop.allocatedAcres.toFixed(2)} ac ({crop.percentage}%)
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -1227,28 +1306,35 @@ export default function RecommendationDashboard() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm text-slate-700">
-              <thead className="bg-slate-100 text-slate-700 uppercase tracking-[0.14em] text-[10px]">
+            <table className="min-w-full text-left text-sm text-slate-700 dark:text-slate-300">
+              <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase tracking-[0.14em] text-[10px]">
                 <tr>
                   <th className="px-4 py-3 font-bold">Strategy</th>
-                  <th className="px-4 py-3 font-bold">Expected Price</th>
-                  <th className="px-4 py-3 font-bold">Cost</th>
-                  <th className="px-4 py-3 font-bold">Revenue</th>
-                  <th className="px-4 py-3 font-bold">Profit</th>
-                  <th className="px-4 py-3 font-bold">Margin</th>
+                  <th className="px-4 py-3 font-bold">Expected Realization</th>
+                  <th className="px-4 py-3 font-bold">Total Cost</th>
+                  <th className="px-4 py-3 font-bold">Gross Revenue</th>
+                  <th className="px-4 py-3 font-bold">Net Profit</th>
+                  <th className="px-4 py-3 font-bold">Profit Margin</th>
                 </tr>
               </thead>
               <tbody>
                 {profitabilityComparison.map((row) => (
-                  <tr key={row.strategy} className="border-t border-slate-200">
-                    <td className="px-4 py-3 font-semibold text-slate-900">{row.label}</td>
-                    <td className="px-4 py-3">₹{Math.round(row.expectedPrice).toLocaleString("en-IN")}/kg</td>
-                    <td className="px-4 py-3">₹{Math.round(row.cost).toLocaleString("en-IN")}</td>
-                    <td className="px-4 py-3">₹{Math.round(row.revenue).toLocaleString("en-IN")}</td>
-                    <td className={`px-4 py-3 font-bold ${row.profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>
-                      ₹{Math.round(row.profit).toLocaleString("en-IN")}
+                  <tr key={row.strategy} className="border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="px-4 py-3 font-semibold text-slate-900 dark:text-slate-100">{row.label}</td>
+                    <td className="px-4 py-3 font-medium">
+                      <span>₹{Math.round(row.expectedPrice * 100).toLocaleString("en-IN")}/q</span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 ml-1.5">(₹{Math.round(row.expectedPrice)}/kg)</span>
                     </td>
-                    <td className="px-4 py-3">{row.margin.toFixed(2)}%</td>
+                    <td className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">₹{Math.round(row.cost).toLocaleString("en-IN")}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">₹{Math.round(row.revenue).toLocaleString("en-IN")}</td>
+                    <td className={`px-4 py-3 font-bold ${row.profit >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
+                      {row.profit >= 0 ? "+" : ""}₹{Math.round(row.profit).toLocaleString("en-IN")}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold ${row.margin >= 0 ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300" : "bg-red-100 text-red-800"}`}>
+                        {row.margin >= 0 ? "+" : ""}{row.margin.toFixed(1)}%
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
