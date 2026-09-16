@@ -19,22 +19,18 @@ if (fs.existsSync(envPath)) {
 import { askCropAssistant } from "../frontend/src/lib/ai-assistant-service";
 
 async function main() {
-  console.log("=== Testing Unnati AI with Gemini Key ===");
-  console.log("GEMINI_KEY present:", Boolean(process.env.GEMINI_API_KEY));
-  console.log("GEMINI_MODEL:", process.env.GEMINI_MODEL);
-
+  console.log("=== Testing Unnati AI with Query: 'give a code for bfs' ===");
   const res = await askCropAssistant(
-    "गेहूं की फसल में पीला रतुआ (Yellow Rust) के नियंत्रण के लिए ICAR द्वारा कौन सी दवा और खुराक बताई गई है?",
+    "give a code for bfs in python with explanation",
     [],
     "default-farmer",
     undefined,
     "farmer"
   );
 
-  console.log("\n--- Reply from Unnati AI (powered by Gemini) ---");
+  console.log("\n--- Reply from Unnati AI ---");
   console.log(res.reply);
-  console.log("\nContext Farm:", res.context?.farmName);
-  console.log("Active Crop:", res.context?.activeCrop);
+  console.log("\nDiagnosis Card Present?", Boolean(res.diagnosisCard));
 }
 
 main().catch(console.error);

@@ -358,6 +358,88 @@ export default function UnnatiAIPopup() {
     }
   }
 
+  function renderMessageContent(text: string) {
+    const segments = text.split(/(```[\s\S]*?```)/g);
+    return segments.map((seg, idx) => {
+      if (seg.startsWith("```") && seg.endsWith("```")) {
+        const firstLineEnd = seg.indexOf("\n");
+        const lang = firstLineEnd !== -1 ? seg.slice(3, firstLineEnd).trim() : "";
+        const code = firstLineEnd !== -1 ? seg.slice(firstLineEnd + 1, -3) : seg.slice(3, -3);
+        return (
+          <div key={idx} className="my-2 rounded-xl overflow-hidden bg-slate-950 text-slate-100 border border-slate-700 shadow-md">
+            <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-[10px] font-mono text-slate-400">
+              <span className="uppercase tracking-wider font-bold">{lang || "code"}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  if (navigator.clipboard) {
+                    navigator.clipboard.writeText(code);
+                  }
+                }}
+                className="hover:text-emerald-400 transition-colors cursor-pointer text-[10px] font-sans"
+              >
+                📋 Copy
+              </button>
+            </div>
+            <pre className="p-3 overflow-x-auto font-mono text-[11px] leading-relaxed select-text">
+              <code>{code}</code>
+            </pre>
+          </div>
+        );
+      }
+
+      return (
+        <div key={idx} className="space-y-1">
+          {seg.split("\n").map((line, lIdx) => {
+            const trimmed = line.trim();
+            if (!trimmed) return <div key={lIdx} className="h-1" />;
+            const isHeading = trimmed.startsWith("### ") || trimmed.startsWith("## ") || trimmed.startsWith("# ");
+            const isBullet = trimmed.startsWith("* ") || trimmed.startsWith("- ") || /^\d+\.\s/.test(trimmed);
+            const cleanLine = isHeading
+              ? trimmed.replace(/^#+\s/, "")
+              : isBullet
+              ? trimmed.replace(/^([*-]|\d+\.)\s/, "")
+              : line;
+
+            const parts = cleanLine.split(/(\*\*.*?\*\*|`.*?`)/g);
+            const rendered = parts.map((p, pI) => {
+              if (p.startsWith("**") && p.endsWith("**")) {
+                return <strong key={pI} className="font-bold text-slate-900 dark:text-emerald-200">{p.slice(2, -2)}</strong>;
+              }
+              if (p.startsWith("`") && p.endsWith("`")) {
+                return <code key={pI} className="px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px] text-pink-700 dark:text-pink-400">{p.slice(1, -1)}</code>;
+              }
+              return p;
+            });
+
+            if (isHeading) {
+              return (
+                <h4 key={lIdx} className="font-bold text-xs text-slate-900 dark:text-white mt-2 mb-1 border-b border-slate-200 dark:border-slate-700 pb-0.5">
+                  {rendered}
+                </h4>
+              );
+            }
+
+            if (isBullet) {
+              return (
+                <div key={lIdx} className="flex items-start gap-1.5 ml-1 text-xs">
+                  <span className="text-emerald-600 font-black shrink-0">•</span>
+                  <span className="leading-relaxed flex-1">{rendered}</span>
+                </div>
+              );
+            }
+
+            return (
+              <p key={lIdx} className="text-xs leading-relaxed">
+                {rendered}
+              </p>
+            );
+          })}
+        </div>
+      );
+    });
+  }
+
   const currentConfig = PERSONA_CONFIGS[activeRole];
 
   return (
@@ -519,11 +601,9 @@ export default function UnnatiAIPopup() {
                           />
                         )}
 
-                        {/* Text formatting with basic bold rendering */}
-                        <div className="space-y-1 whitespace-pre-wrap">
-                          {msg.text.split("\n").map((line, idx) => (
-                            <p key={idx}>{line}</p>
-                          ))}
+                        {/* Rich formatted text with code block and bold support */}
+                        <div className="space-y-1">
+                          {renderMessageContent(msg.text)}
                         </div>
 
                         {/* Disease Card if generated */}
