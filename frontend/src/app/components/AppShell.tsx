@@ -204,11 +204,9 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
   async function handleLogout() {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
-      router.push("/login");
-      router.refresh();
-    } catch {
-      router.push("/login");
-    }
+    } catch {}
+    setUser(null);
+    window.location.href = "/login";
   }
 
   async function handleSaveProfile(e: React.FormEvent) {
@@ -256,20 +254,20 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
   const isBuyer = user?.role === "private_buyer";
   const isExporter = user?.role === "exporter";
 
-  let displayName = user?.name || "Farmer Account";
+  let displayName = "";
   if (isGovt) {
     displayName = user?.name || "Officer S. Sharma (FCI)";
   } else if (isBuyer) {
     displayName = user?.name || "AgroCorp Buyer";
   } else if (isExporter) {
     displayName = user?.name || "APEDA Exporter";
-  } else {
-    const isDefaultName = !user?.name || user.name.startsWith("Farmer (") || user.name.includes("(+91");
+  } else if (user) {
+    const isDefaultName = !user.name || user.name.startsWith("Farmer (") || user.name.includes("(+91");
     displayName = isDefaultName
-      ? user?.phone
+      ? user.phone
         ? `Farmer (+91 ${user.phone.slice(-4)})`
-        : "Farmer Portal Account"
-      : user?.name || "Farmer Portal Account";
+        : "Farmer Account"
+      : user.name;
   }
 
   return (
@@ -409,37 +407,51 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
               )}
             </Link>
 
-            {/* Farmer Account Button */}
-            <button
-              type="button"
-              onClick={() => setShowEditModal(true)}
-              className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800"
-              title="Edit account profile"
-            >
-              <span className={`w-7 h-7 rounded-full font-black flex items-center justify-center text-xs ${
-                isGovt
-                  ? "bg-sky-100 text-sky-900"
-                  : isBuyer
-                  ? "bg-amber-100 text-amber-900"
-                  : isExporter
-                  ? "bg-indigo-100 text-indigo-900"
-                  : "bg-emerald-100 text-emerald-800"
-              }`}>
-                {isGovt ? "🏛️" : isBuyer ? "🏢" : isExporter ? "🚢" : "👤"}
-              </span>
-              <span className="hidden sm:inline-block max-w-[150px] truncate">{displayName}</span>
-            </button>
+            {user ? (
+              <>
+                {/* Farmer / User Account Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(true)}
+                  className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800"
+                  title="Edit account profile"
+                >
+                  <span className={`w-7 h-7 rounded-full font-black flex items-center justify-center text-xs ${
+                    isGovt
+                      ? "bg-sky-100 text-sky-900"
+                      : isBuyer
+                      ? "bg-amber-100 text-amber-900"
+                      : isExporter
+                      ? "bg-indigo-100 text-indigo-900"
+                      : "bg-emerald-100 text-emerald-800"
+                  }`}>
+                    {isGovt ? "🏛️" : isBuyer ? "🏢" : isExporter ? "🚢" : "👤"}
+                  </span>
+                  <span className="hidden sm:inline-block max-w-[150px] truncate">{displayName}</span>
+                </button>
 
-            {/* Logout Button */}
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold cursor-pointer"
-              title="Sign Out"
-            >
-              <span className="hidden sm:inline">Sign out</span>
-              <span className="sm:hidden">⇦</span>
-            </button>
+                {/* Logout Button */}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold cursor-pointer transition-colors"
+                  title="Sign Out"
+                >
+                  <span className="hidden sm:inline">Sign out</span>
+                  <span className="sm:hidden">⇦</span>
+                </button>
+              </>
+            ) : (
+              /* Sign In Button for Guests / Unauthenticated Visitors */
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-sm transition-all"
+                title="Sign in to your account"
+              >
+                <span>🔐</span>
+                <span className="font-extrabold">Sign in</span>
+              </Link>
+            )}
 
             {/* Mobile Hamburger Menu Toggle */}
             <button
@@ -574,6 +586,28 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                 >
                   ⚙️ Farmer Preferences
                 </Link>
+
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full text-left px-3 py-2.5 rounded text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 flex items-center justify-between"
+                  >
+                    <span>🚪 Sign Out ({displayName})</span>
+                    <span>⇦</span>
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2.5 rounded text-xs font-black text-emerald-800 bg-emerald-100 hover:bg-emerald-200 text-center"
+                  >
+                    🔐 Sign In to Portal
+                  </Link>
+                )}
               </div>
             </nav>
           </div>

@@ -37,11 +37,8 @@ export async function middleware(request: NextRequest) {
   const user = token ? await verifyJWT(token) : null;
   const isAuthenticated = !!user;
 
-  // 2. Allow authenticated user visiting /login to redirect to dashboard /
+  // 2. Allow visiting /login so users can switch accounts or re-authenticate
   if (pathname === "/login") {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
     return NextResponse.next();
   }
 

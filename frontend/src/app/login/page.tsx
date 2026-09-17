@@ -134,8 +134,24 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [resendCountdown, setResendCountdown] = useState(0);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const digitInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    async function checkCurrent() {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.user) {
+            setCurrentUser(json.user);
+          }
+        }
+      } catch {}
+    }
+    checkCurrent();
+  }, []);
 
   useEffect(() => {
     if (resendCountdown <= 0) return;
@@ -436,6 +452,58 @@ export default function LoginPage() {
         </div>
 
         <div className="agri-card p-6 sm:p-8 space-y-6 shadow-elevated">
+          {/* Active Session Notice if already signed in */}
+          {currentUser && (
+            <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs animate-in fade-in">
+              <div>
+                <span className="font-black text-amber-900 flex items-center gap-1.5 text-xs">
+                  <span>●</span> <span>Currently Signed In: <strong>{currentUser.name}</strong></span>
+                  <span className="px-2 py-0.2 rounded bg-amber-200 text-amber-900 text-[10px] font-bold uppercase">
+                    {currentUser.role === "government_buyer"
+                      ? "Govt Officer"
+                      : currentUser.role === "exporter"
+                      ? "Exporter"
+                      : currentUser.role === "private_buyer"
+                      ? "Buyer"
+                      : "Farmer"}
+                  </span>
+                </span>
+                <p className="text-amber-800 text-[11px] mt-0.5">
+                  To access with another role or profile, select one below or sign out.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={
+                    currentUser.role === "government_buyer"
+                      ? "/marketplace/government"
+                      : currentUser.role === "exporter"
+                      ? "/marketplace/export"
+                      : currentUser.role === "private_buyer"
+                      ? "/marketplace/direct"
+                      : "/marketplace"
+                  }
+                  className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs transition-colors"
+                >
+                  Go to Dashboard →
+                </Link>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await fetch("/api/auth/logout", { method: "POST" });
+                    } catch {}
+                    setCurrentUser(null);
+                    setSuccessMsg("Signed out. You can now select any profile below.");
+                  }}
+                  className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition-colors cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Quick 1-Click Evaluation / Demo Login Bar */}
           <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 text-white shadow-lg space-y-2.5 border-2 border-emerald-500/30">
             <div className="flex items-center justify-between">
